@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge.m99.eu/schemas/brand.schema.json",
+  "title": "M99 Brand Schema",
+  "description": "Canonical schema for brand entities in the M99 Knowledge Platform.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "id",
+    "code",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+
+    "id": {
+      "type": "string",
+      "pattern": "^BR-[0-9]{6}$",
+      "description": "Internal immutable M99 Brand ID"
+    },
+
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_-]{2,30}$",
+      "description": "Short unique code"
+    },
+
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 150
+    },
+
+    "official_name": {
+      "type": "string"
+    },
+
+    "manufacturer": {
+      "type": "string"
+    },
+
+    "country": {
+      "type": "string"
+    },
+
+    "website": {
+      "type": "string",
+      "format": "uri"
+    },
+
+    "description": {
+      "type": "string"
+    },
+
+    "logo": {
+      "type": "string",
+      "format": "uri"
+    },
+
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "technologies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "standards": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+
+    "seo": {
+      "type": "object",
+      "properties": {
+
+        "title": {
+          "type": "string"
+        },
+
+        "description": {
+          "type": "string"
+        },
+
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+
+      }
+    },
+
+    "ai": {
+      "type": "object",
+      "properties": {
+
+        "summary": {
+          "type": "string"
+        },
+
+        "knowledge_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+
+      }
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "review",
+        "approved",
+        "deprecated"
+      ]
+    },
+
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+
+  }
+}
