@@ -1,0 +1,105 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "standards": [
+    {
+      "standard_id": "STD-000001",
+      "code": "EN ISO 20345:2022",
+      "title": "Personal protective equipment - Safety footwear",
+      "status": "official",
+      "mandatory": true,
+
+      "description": "European standard specifying requirements for professional safety footwear with protective toe cap.",
+
+      "applies_to": [
+        "Safety footwear"
+      ],
+
+      "verified": true,
+      "confidence": 100
+    },
+
+    {
+      "standard_id": "STD-000002",
+      "code": "S3S",
+
+      "status": "official",
+
+      "description": "Safety footwear with toe protection, closed heel, anti-static properties, energy absorption in the heel, fuel oil resistant outsole, penetration-resistant insert and water-resistant upper.",
+
+      "requirements": [
+        "Protective toe cap",
+        "Closed heel",
+        "Antistatic",
+        "Heel energy absorption",
+        "Penetration resistance",
+        "Water-resistant upper"
+      ],
+
+      "verified": true,
+      "confidence": 100
+    },
+
+    {
+      "standard_id": "STD-000003",
+      "code": "ESD",
+
+      "status": "official",
+
+      "description": "Electrostatic discharge protection for work in ESD sensitive environments.",
+
+      "applications": [
+        "Electronics industry",
+        "Automotive",
+        "Industrial assembly",
+        "Warehousing"
+      ],
+
+      "verified": true,
+      "confidence": 100
+    },
+
+    {
+      "standard_id": "STD-000004",
+      "code": "FO",
+
+      "status": "official",
+
+      "description": "Outsole resistant to fuel oil.",
+
+      "verified": true,
+      "confidence": 100
+    },
+
+    {
+      "standard_id": "STD-000005",
+      "code": "HRO",
+
+      "status": "official",
+
+      "description": "Outsole resistant to contact heat up to 300°C under laboratory test conditions.",
+
+      "verified": true,
+      "confidence": 100
+    },
+
+    {
+      "standard_id": "STD-000006",
+      "code": "SR",
+
+      "status": "official",
+
+      "description": "Slip resistance tested according to EN ISO 20345:2022.",
+
+      "verified": true,
+      "confidence": 100
+    }
+  ],
+
+  "metadata": {
+    "version": "1.0.0",
+    "language": "en",
+    "status": "validated"
+  }
+}
