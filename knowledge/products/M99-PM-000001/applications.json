@@ -1,0 +1,130 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "applications": {
+    "recommended_industries": [
+      {
+        "industry_id": "IND-000001",
+        "name": "Manufacturing",
+        "priority": "High"
+      },
+      {
+        "industry_id": "IND-000002",
+        "name": "Automotive Industry",
+        "priority": "High"
+      },
+      {
+        "industry_id": "IND-000003",
+        "name": "Logistics & Warehousing",
+        "priority": "High"
+      },
+      {
+        "industry_id": "IND-000004",
+        "name": "Mechanical Engineering",
+        "priority": "High"
+      },
+      {
+        "industry_id": "IND-000005",
+        "name": "Electronics Manufacturing",
+        "priority": "High"
+      },
+      {
+        "industry_id": "IND-000006",
+        "name": "Construction",
+        "priority": "Medium"
+      },
+      {
+        "industry_id": "IND-000007",
+        "name": "Maintenance",
+        "priority": "High"
+      }
+    ],
+
+    "recommended_professions": [
+      {
+        "profession_id": "PROF-000001",
+        "name": "Industrial Worker"
+      },
+      {
+        "profession_id": "PROF-000002",
+        "name": "Maintenance Technician"
+      },
+      {
+        "profession_id": "PROF-000003",
+        "name": "Electrician"
+      },
+      {
+        "profession_id": "PROF-000004",
+        "name": "Warehouse Operator"
+      },
+      {
+        "profession_id": "PROF-000005",
+        "name": "Machine Operator"
+      },
+      {
+        "profession_id": "PROF-000006",
+        "name": "Automotive Technician"
+      },
+      {
+        "profession_id": "PROF-000007",
+        "name": "Production Operator"
+      }
+    ],
+
+    "working_environment": [
+      "Indoor",
+      "Outdoor",
+      "Industrial Floors",
+      "Concrete Floors",
+      "Warehouses",
+      "Production Facilities",
+      "Assembly Lines"
+    ],
+
+    "hazards": [
+      {
+        "risk_id": "RISK-000001",
+        "name": "Impact from falling objects"
+      },
+      {
+        "risk_id": "RISK-000002",
+        "name": "Sharp objects on the floor"
+      },
+      {
+        "risk_id": "RISK-000003",
+        "name": "Slippery surfaces"
+      },
+      {
+        "risk_id": "RISK-000004",
+        "name": "Electrostatic discharge (ESD)"
+      },
+      {
+        "risk_id": "RISK-000005",
+        "name": "Hot floor contact"
+      }
+    ],
+
+    "recommended_use": {
+      "daily_use": true,
+      "long_working_hours": true,
+      "standing_work": true,
+      "walking_intensive_work": true
+    },
+
+    "not_recommended_for": [
+      "Chemical splash protection",
+      "Chainsaw protection",
+      "Firefighting",
+      "Foundry work requiring specialised heat-resistant footwear"
+    ]
+  },
+
+  "knowledge": {
+    "status": "validated",
+    "confidence": 97,
+    "last_review": "2026-08-04"
+  },
+
+  "version": "1.0.0"
+}
