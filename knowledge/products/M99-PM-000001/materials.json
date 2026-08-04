@@ -1,0 +1,104 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "materials": {
+
+    "upper": {
+      "material_id": "MAT-000001",
+      "name": null,
+      "description": null,
+      "status": "pending_official_verification",
+      "confidence": 0
+    },
+
+    "lining": {
+      "material_id": "MAT-000002",
+      "name": "BreathActive Functional Lining",
+      "type": "Functional textile lining",
+      "properties": [
+        "Breathable",
+        "Moisture management",
+        "Comfort"
+      ],
+      "status": "official",
+      "confidence": 99
+    },
+
+    "toe_cap": {
+      "material_id": "MAT-000003",
+      "name": "Fiberglass Toe Cap",
+      "type": "Composite",
+      "metal_free": true,
+      "properties": [
+        "Lightweight",
+        "Non-magnetic",
+        "Corrosion resistant"
+      ],
+      "status": "official",
+      "confidence": 100
+    },
+
+    "penetration_protection": {
+      "material_id": "MAT-000004",
+      "name": "FAP® Flexible Anti-Perforation Protection",
+      "type": "Non-metallic",
+      "metal_free": true,
+      "properties": [
+        "Flexible",
+        "Lightweight",
+        "Full foot protection"
+      ],
+      "status": "official",
+      "confidence": 100
+    },
+
+    "footbed": {
+      "material_id": "MAT-000005",
+      "name": "evercushion® BA",
+      "properties": [
+        "Shock absorption",
+        "Ergonomic support",
+        "Long-term comfort"
+      ],
+      "status": "official",
+      "confidence": 99
+    },
+
+    "midsole": {
+      "material_id": "MAT-000006",
+      "name": "IMPULSE.FOAM®",
+      "properties": [
+        "Energy return",
+        "Dynamic cushioning",
+        "Reduced fatigue"
+      ],
+      "status": "official",
+      "confidence": 100
+    },
+
+    "outsole": {
+      "material_id": "MAT-000007",
+      "name": "Rubber Outsole",
+      "properties": [
+        "Slip resistant",
+        "Heat resistant",
+        "Fuel oil resistant"
+      ],
+      "status": "official",
+      "confidence": 100
+    }
+
+  },
+
+  "validation": {
+    "status": "validated",
+    "missing_information": [
+      "Upper material composition",
+      "Upper material thickness",
+      "Outsole rubber compound"
+    ]
+  },
+
+  "version": "1.0.0"
+}
