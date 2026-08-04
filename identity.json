@@ -1,0 +1,74 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "identity": {
+    "m99_sku": "M99-PM-000001",
+    "manufacturer": "PUMA Safety",
+    "brand": "PUMA Safety",
+    "collection": "MOTION PROTECT",
+    "model": "Velocity 2.0 Black Low",
+    "manufacturer_sku": "643870",
+    "supplier_sku": "4077",
+    "supplier": "Stenso",
+
+    "product_type": "Safety Footwear",
+    "category": "Low Safety Shoes",
+    "gender": "Unisex",
+
+    "color": {
+      "primary": "Black",
+      "secondary": "Yellow"
+    },
+
+    "sizes": [
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47"
+    ],
+
+    "ean": [],
+    "gtin": [],
+
+    "country_of_origin": null,
+
+    "launch_year": null,
+
+    "active": true
+  },
+
+  "classification": {
+    "ppe_category": "Safety Footwear",
+    "industry": "Professional",
+    "market": "B2B"
+  },
+
+  "references": {
+    "manufacturer_url": "https://puma-safety.com",
+    "supplier_url": "https://stenso.net/produkt/polovinki/4077-puma-velocity-20-black-low-s3-esd-rabotni-obuvki"
+  },
+
+  "status": "validated",
+
+  "source_priority": [
+    "Official Manufacturer",
+    "Official Catalog",
+    "Official Technical Documentation",
+    "Supplier"
+  ],
+
+  "version": "1.0.0",
+
+  "audit": {
+    "created_by": "M99 Knowledge Platform",
+    "created_at": "2026-08-04T08:00:00Z",
+    "updated_by": "M99 Knowledge Platform",
+    "updated_at": "2026-08-04T08:00:00Z"
+  }
+}
