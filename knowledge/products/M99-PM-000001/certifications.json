@@ -1,0 +1,105 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "certifications": [
+    {
+      "certificate_id": "CERT-000001",
+      "name": "EN ISO 20345:2022 Certification",
+      "type": "European Standard",
+      "status": "official",
+      "issuer": null,
+      "certificate_number": null,
+      "issue_date": null,
+      "expiry_date": null,
+
+      "scope": [
+        "Safety Footwear"
+      ],
+
+      "covers": [
+        "Protective toe cap",
+        "Slip resistance",
+        "Heel energy absorption",
+        "Fuel oil resistance",
+        "Penetration resistance"
+      ],
+
+      "verification_status": "pending_document",
+      "confidence": 100
+    }
+  ],
+
+  "declarations": [
+    {
+      "declaration_id": "DOC-000001",
+      "type": "EU Declaration of Conformity",
+      "available": false,
+      "document_url": null,
+      "status": "pending_collection"
+    }
+  ],
+
+  "laboratory_tests": [
+    {
+      "test_id": "LAB-000001",
+      "name": "Slip Resistance (SR)",
+      "status": "verified_by_standard",
+      "test_report": null
+    },
+    {
+      "test_id": "LAB-000002",
+      "name": "Heat Resistance (HRO)",
+      "status": "verified_by_standard",
+      "test_report": null
+    },
+    {
+      "test_id": "LAB-000003",
+      "name": "Fuel Oil Resistance (FO)",
+      "status": "verified_by_standard",
+      "test_report": null
+    },
+    {
+      "test_id": "LAB-000004",
+      "name": "Electrostatic Discharge (ESD)",
+      "status": "verified_by_standard",
+      "test_report": null
+    }
+  ],
+
+  "official_documents": [
+    {
+      "document_id": "DOC-000002",
+      "type": "Technical Data Sheet",
+      "available": false,
+      "source": "PUMA Safety",
+      "status": "pending_download"
+    },
+    {
+      "document_id": "DOC-000003",
+      "type": "Product Catalog",
+      "available": true,
+      "source": "PUMA Safety",
+      "status": "catalog_reference"
+    },
+    {
+      "document_id": "DOC-000004",
+      "type": "User Information",
+      "available": false,
+      "status": "pending_collection"
+    }
+  ],
+
+  "quality": {
+    "official_documents_collected": 1,
+    "official_documents_expected": 4,
+    "documentation_completeness": 25,
+    "confidence": 98
+  },
+
+  "metadata": {
+    "language": "en",
+    "status": "validated",
+    "version": "1.0.0"
+  }
+}
