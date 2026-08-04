@@ -1,0 +1,134 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "technologies": [
+    {
+      "technology_id": "TECH-000001",
+      "name": "IMPULSE.FOAM®",
+      "category": "Midsole Technology",
+      "manufacturer": "PUMA Safety",
+      "status": "official",
+
+      "purpose": "Energy return and long-term cushioning",
+
+      "functions": [
+        "Absorbs impact during walking",
+        "Returns part of the absorbed energy",
+        "Reduces fatigue during long working hours",
+        "Provides dynamic cushioning"
+      ],
+
+      "benefits": [
+        "Higher walking comfort",
+        "Reduced stress on joints",
+        "Better comfort on hard industrial floors"
+      ],
+
+      "used_in": [
+        "M99-PM-000001"
+      ],
+
+      "source_priority": 1,
+
+      "confidence": 100
+    },
+
+    {
+      "technology_id": "TECH-000002",
+      "name": "FAP®",
+      "category": "Penetration Protection",
+
+      "manufacturer": "PUMA Safety",
+
+      "status": "official",
+
+      "purpose": "Flexible anti-perforation protection",
+
+      "functions": [
+        "Protects the foot against sharp objects",
+        "Metal-free construction",
+        "Maintains shoe flexibility"
+      ],
+
+      "benefits": [
+        "Lower weight",
+        "Higher flexibility",
+        "Improved wearing comfort"
+      ],
+
+      "used_in": [
+        "M99-PM-000001"
+      ],
+
+      "confidence": 100
+    },
+
+    {
+      "technology_id": "TECH-000003",
+      "name": "BreathActive",
+
+      "category": "Lining",
+
+      "manufacturer": "PUMA Safety",
+
+      "status": "official",
+
+      "purpose": "Breathable functional lining",
+
+      "functions": [
+        "Improves air circulation",
+        "Supports moisture transport",
+        "Increases wearing comfort"
+      ],
+
+      "benefits": [
+        "Drier feet",
+        "Reduced heat build-up"
+      ],
+
+      "used_in": [
+        "M99-PM-000001"
+      ],
+
+      "confidence": 99
+    },
+
+    {
+      "technology_id": "TECH-000004",
+
+      "name": "evercushion® BA",
+
+      "category": "Footbed",
+
+      "manufacturer": "PUMA Safety",
+
+      "status": "official",
+
+      "purpose": "Ergonomic comfort footbed",
+
+      "functions": [
+        "Supports the foot",
+        "Improves pressure distribution",
+        "Increases long-term comfort"
+      ],
+
+      "benefits": [
+        "Better cushioning",
+        "Reduced fatigue"
+      ],
+
+      "used_in": [
+        "M99-PM-000001"
+      ],
+
+      "confidence": 99
+    }
+  ],
+
+  "metadata": {
+    "version": "1.0.0",
+    "language": "en",
+    "status": "validated"
+  }
+}
