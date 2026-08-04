@@ -1,0 +1,123 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "specifications": {
+    "product_name": "PUMA Velocity 2.0 Black Low",
+
+    "footwear_type": "Low safety shoe",
+
+    "protection_class": "S3S",
+
+    "standard": "EN ISO 20345:2022",
+
+    "additional_markings": [
+      "ESD",
+      "FO",
+      "HRO",
+      "SR"
+    ],
+
+    "toe_cap": {
+      "type": "Fiberglass",
+      "metal_free": true
+    },
+
+    "penetration_resistance": {
+      "type": "FAP® flexible anti-perforation protection",
+      "metal_free": true
+    },
+
+    "upper": {
+      "material": null,
+      "water_resistant": true
+    },
+
+    "lining": {
+      "material": "BreathActive functional lining"
+    },
+
+    "footbed": {
+      "type": "evercushion® BA"
+    },
+
+    "midsole": {
+      "technology": "IMPULSE.FOAM®"
+    },
+
+    "outsole": {
+      "construction": "Rubber outsole",
+      "heat_resistance": "HRO",
+      "fuel_oil_resistant": true,
+      "slip_resistance": "SR"
+    },
+
+    "electrostatic_discharge": {
+      "esd": true
+    },
+
+    "closure": {
+      "type": "Laces"
+    },
+
+    "available_sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+    ],
+
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+
+    "color": {
+      "primary": "Black",
+      "secondary": "Yellow"
+    }
+  },
+
+  "validation": {
+    "status": "validated",
+    "confidence": 96,
+    "officially_verified_fields": [
+      "standard",
+      "protection_class",
+      "additional_markings",
+      "toe_cap",
+      "penetration_resistance",
+      "footbed",
+      "midsole",
+      "lining",
+      "outsole"
+    ],
+    "pending_verification": [
+      "upper.material",
+      "weight",
+      "country_of_origin"
+    ]
+  },
+
+  "sources": [
+    {
+      "priority": 1,
+      "type": "manufacturer",
+      "name": "PUMA Safety",
+      "status": "official"
+    },
+    {
+      "priority": 2,
+      "type": "supplier",
+      "name": "Stenso",
+      "status": "reference"
+    }
+  ],
+
+  "version": "1.0.0"
+}
