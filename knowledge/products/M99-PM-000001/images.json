@@ -1,0 +1,122 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+
+  "images": [
+    {
+      "image_id": "IMG-000001",
+      "position": 1,
+      "type": "main",
+      "view": "front_left",
+
+      "title": {
+        "bg": "PUMA Velocity 2.0 Black Low S3S ESD - основно изображение",
+        "en": "PUMA Velocity 2.0 Black Low S3S ESD - main image",
+        "ro": "PUMA Velocity 2.0 Black Low S3S ESD - imagine principală"
+      },
+
+      "alt": {
+        "bg": "Работни обувки PUMA Velocity 2.0 Black Low S3S ESD",
+        "en": "PUMA Velocity 2.0 Black Low S3S ESD safety shoes",
+        "ro": "Pantofi de protecție PUMA Velocity 2.0 Black Low S3S ESD"
+      },
+
+      "filename": {
+        "original": "643870_main.jpg",
+        "webp": "643870_main.webp"
+      },
+
+      "dimensions": {
+        "width": null,
+        "height": null
+      },
+
+      "copyright": "PUMA Safety",
+
+      "source": "Official Manufacturer",
+
+      "status": "official",
+
+      "visible_technologies": [
+        "TECH-000001",
+        "TECH-000002"
+      ],
+
+      "hash": null
+    },
+
+    {
+      "image_id": "IMG-000002",
+      "position": 2,
+      "type": "gallery",
+      "view": "side",
+
+      "title": {
+        "bg": "Страничен изглед",
+        "en": "Side view",
+        "ro": "Vedere laterală"
+      },
+
+      "alt": {
+        "bg": "Страничен изглед на PUMA Velocity 2.0",
+        "en": "Side view of PUMA Velocity 2.0",
+        "ro": "Vedere laterală PUMA Velocity 2.0"
+      },
+
+      "filename": {
+        "original": "643870_side.jpg",
+        "webp": "643870_side.webp"
+      },
+
+      "copyright": "PUMA Safety",
+
+      "status": "official"
+    },
+
+    {
+      "image_id": "IMG-000003",
+      "position": 3,
+      "type": "gallery",
+      "view": "sole",
+
+      "title": {
+        "bg": "Подметка",
+        "en": "Outsole",
+        "ro": "Talpă"
+      },
+
+      "alt": {
+        "bg": "Подметка на PUMA Velocity 2.0",
+        "en": "Outsole of PUMA Velocity 2.0",
+        "ro": "Talpa PUMA Velocity 2.0"
+      },
+
+      "filename": {
+        "original": "643870_sole.jpg",
+        "webp": "643870_sole.webp"
+      },
+
+      "copyright": "PUMA Safety",
+
+      "status": "official"
+    }
+  ],
+
+  "seo": {
+    "image_naming_standard": "m99",
+    "generate_webp": true,
+    "generate_thumbnails": true,
+    "generate_alt_per_language": true
+  },
+
+  "quality": {
+    "expected_images": 8,
+    "available_images": 3,
+    "completion": 38
+  },
+
+  "metadata": {
+    "version": "1.0.0",
+    "status": "validated"
+  }
+}
