@@ -13,6 +13,7 @@ Author: M99 Knowledge Platform
 
 import json
 from pathlib import Path
+print(__file__)
 
 # =====================================================
 # CONFIGURATION
