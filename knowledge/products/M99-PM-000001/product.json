@@ -1,92 +1,33 @@
 {
   "knowledge_id": "KNW-00000001",
   "product_id": "M99-PM-000001",
+  "version": "1.0.0",
+  "status": "gold-master",
 
-  "identity": {
-    "sku": "M99-PM-000001",
-    "manufacturer_sku": "643870",
-    "ean": null,
-    "brand": "PUMA Safety",
-    "collection": "MOTION PROTECT",
-    "model": "Velocity 2.0 Black Low",
-    "product_type": "Safety Shoes",
-    "gender": "Unisex"
+  "identity": "identity.json",
+  "specifications": "specifications.json",
+  "materials": "materials.json",
+  "technologies": "technologies.json",
+  "standards": "standards.json",
+  "applications": "applications.json",
+  "certifications": "certifications.json",
+
+  "content": {
+    "bg": "content.bg.json",
+    "en": null,
+    "ro": null,
+    "de": null
   },
 
-  "classification": {
-    "category": "Safety Footwear",
-    "subcategory": "Low Safety Shoes",
-    "market": "Professional PPE"
-  },
-
-  "certification": {
-    "standard": "EN ISO 20345:2022",
-    "protection_class": "S3S",
-    "additional_markings": [
-      "FO",
-      "HRO",
-      "SR",
-      "ESD"
-    ]
-  },
-
-  "technologies": [
-    {
-      "id": "TECH-000001",
-      "name": "IMPULSE.FOAM®"
-    },
-    {
-      "id": "TECH-000002",
-      "name": "FAP®"
-    },
-    {
-      "id": "TECH-000003",
-      "name": "BreathActive"
-    },
-    {
-      "id": "TECH-000004",
-      "name": "evercushion® BA"
-    }
-  ],
-
-  "construction": {
-    "toe_cap": "Fiberglass",
-    "penetration_protection": "Flexible FAP® anti-perforation protection",
-    "upper": null,
-    "lining": null,
-    "sole": "Rubber outsole with IMPULSE.FOAM® midsole"
-  },
-
-  "business": {
-    "supplier": "Stenso",
-    "availability": {
-      "in_stock_delivery_days": "3",
-      "out_of_stock_delivery_days": "15-45"
-    }
-  },
-
-  "knowledge": {
-    "status": "validated",
-    "knowledge_score": 42,
-    "confidence": 96,
-    "sources": [
-      {
-        "type": "supplier",
-        "name": "Stenso",
-        "url": "https://stenso.net/produkt/polovinki/4077-puma-velocity-20-black-low-s3-esd-rabotni-obuvki"
-      },
-      {
-        "type": "manufacturer",
-        "name": "PUMA Safety"
-      }
-    ]
+  "media": {
+    "images": "images.json",
+    "documents": null
   },
 
   "metadata": {
-    "language": "en",
-    "version": "0.1.0",
     "created_by": "M99 Knowledge Platform",
-    "created_at": "2026-08-03T00:00:00Z",
-    "updated_at": "2026-08-03T00:00:00Z"
+    "created_at": "2026-08-06T00:00:00Z",
+    "updated_at": "2026-08-06T00:00:00Z",
+    "schema_version": "1.0.0"
   }
 }
