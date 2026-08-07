@@ -3,130 +3,343 @@
 
 """
 M99 Knowledge Platform
-Build Product v0.1
+Build Product v0.2
 
-Reads a Gold Master product and generates
-the first HTML product page.
+Loads a complete Gold Master product through
+M99 ProductLoader and generates an HTML page.
 
-Author: M99 Knowledge Platform
+Usage:
+
+    python scripts/build_product.py
+
+or:
+
+    python scripts/build_product.py M99-PM-000001
 """
 
-import json
+import sys
 from pathlib import Path
-print(__file__)
+from html import escape
+
+# =====================================================
+# PROJECT PATH
+# =====================================================
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# Make project root available for imports
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from core.loader import ProductLoader, LoaderError
+
 
 # =====================================================
 # CONFIGURATION
 # =====================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
-PRODUCT_ID = "M99-PM-000001"
-
-PRODUCT_FILE = (
-    PROJECT_ROOT
-    / "knowledge"
-    / "products"
-    / PRODUCT_ID
-    / "product.json"
-)
+DEFAULT_PRODUCT_ID = "M99-PM-000001"
 
 OUTPUT_FOLDER = PROJECT_ROOT / "output"
 OUTPUT_FOLDER.mkdir(exist_ok=True)
 
-# =====================================================
-# LOAD PRODUCT
-# =====================================================
-
-print("========================================")
-print("M99 Knowledge Platform")
-print("Build Product")
-print("========================================")
-print()
-
-if not PRODUCT_FILE.exists():
-    raise FileNotFoundError(f"Missing file:\n{PRODUCT_FILE}")
-
-print("Loading product.json...")
-
-with open(PRODUCT_FILE, "r", encoding="utf-8") as f:
-    product = json.load(f)
-
-print("OK")
 
 # =====================================================
-# READ DATA
+# HELPERS
 # =====================================================
 
-identity = product.get("identity", {})
-classification = product.get("classification", {})
-certification = product.get("certification", {})
-construction = product.get("construction", {})
-knowledge = product.get("knowledge", {})
-metadata = product.get("metadata", {})
+def safe(value):
+    """
+    Safely convert a value to HTML text.
+    """
 
-brand = identity.get("brand", "")
-model = identity.get("model", "")
-collection = identity.get("collection", "")
-sku = identity.get("sku", "")
-manufacturer_sku = identity.get("manufacturer_sku", "")
+    if value is None:
+        return ""
 
-category = classification.get("category", "")
-subcategory = classification.get("subcategory", "")
+    return escape(str(value))
 
-standard = certification.get("standard", "")
-protection = certification.get("protection_class", "")
-markings = certification.get("additional_markings", [])
 
-toe_cap = construction.get("toe_cap", "")
-penetration = construction.get("penetration_protection", "")
-sole = construction.get("sole", "")
+def get_value(data, key, default=""):
+    """
+    Safely get a value from a dictionary.
+    """
 
-score = knowledge.get("knowledge_score", "")
-confidence = knowledge.get("confidence", "")
+    if not isinstance(data, dict):
+        return default
 
-version = metadata.get("version", "")
+    return data.get(key, default)
 
-technologies = product.get("technologies", [])
+
+def render_list(items):
+    """
+    Convert a list into HTML list items.
+    """
+
+    if not items:
+        return "<li>Няма налични данни</li>"
+
+    html = ""
+
+    for item in items:
+
+        if isinstance(item, dict):
+
+            name = item.get("name", "")
+
+            if name:
+                html += f"<li>{safe(name)}</li>"
+
+            else:
+                html += f"<li>{safe(item)}</li>"
+
+        else:
+
+            html += f"<li>{safe(item)}</li>"
+
+    return html
+
+
+def render_dict_table(data):
+    """
+    Convert a dictionary into a simple HTML table.
+    """
+
+    if not isinstance(data, dict) or not data:
+        return "<p>Няма налични данни.</p>"
+
+    rows = ""
+
+    for key, value in data.items():
+
+        if isinstance(value, list):
+
+            if value and isinstance(value[0], dict):
+                display_value = ", ".join(
+                    str(
+                        item.get("name", item)
+                    )
+                    for item in value
+                )
+            else:
+                display_value = ", ".join(
+                    str(item)
+                    for item in value
+                )
+
+        elif isinstance(value, dict):
+
+            display_value = ", ".join(
+                f"{k}: {v}"
+                for k, v in value.items()
+            )
+
+        else:
+
+            display_value = value
+
+        rows += f"""
+        <tr>
+            <th>{safe(key)}</th>
+            <td>{safe(display_value)}</td>
+        </tr>
+        """
+
+    return f"""
+    <table>
+        <tbody>
+            {rows}
+        </tbody>
+    </table>
+    """
+
 
 # =====================================================
-# BUILD HTML
+# HTML GENERATOR
 # =====================================================
 
-print("Generating HTML...")
+def generate_html(product, product_id):
+    """
+    Generate complete HTML product page.
+    """
 
-html = f"""<!DOCTYPE html>
+    manifest = product.get("manifest", {})
+
+    identity = product.get("identity", {})
+    specifications = product.get("specifications", {})
+    materials = product.get("materials", {})
+    technologies = product.get("technologies", {})
+    standards = product.get("standards", {})
+    applications = product.get("applications", {})
+    certifications = product.get("certifications", {})
+
+    content = product.get("content", {})
+    content_bg = content.get("bg", {})
+
+    media = product.get("media", {})
+    images = media.get("images", {})
+
+    # -------------------------------------------------
+    # Identity
+    # -------------------------------------------------
+
+    brand = get_value(identity, "brand")
+    model = get_value(identity, "model")
+    collection = get_value(identity, "collection")
+    sku = get_value(identity, "sku")
+    manufacturer_sku = get_value(
+        identity,
+        "manufacturer_sku"
+    )
+
+    product_type = get_value(
+        identity,
+        "product_type"
+    )
+
+    gender = get_value(
+        identity,
+        "gender"
+    )
+
+    # -------------------------------------------------
+    # Content
+    # -------------------------------------------------
+
+    title = (
+        get_value(content_bg, "title")
+        or f"{brand} {model}"
+    )
+
+    short_description = (
+        get_value(
+            content_bg,
+            "short_description"
+        )
+    )
+
+    description = (
+        get_value(
+            content_bg,
+            "description"
+        )
+    )
+
+    # -------------------------------------------------
+    # Build HTML
+    # -------------------------------------------------
+
+    html = f"""<!DOCTYPE html>
+
 <html lang="bg">
+
 <head>
+
 <meta charset="utf-8">
-<title>{brand} {model}</title>
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>{safe(title)}</title>
+
+<meta name="generator"
+      content="M99 Knowledge Platform">
+
+<meta name="product-id"
+      content="{safe(product_id)}">
 
 <style>
 
 body {{
-    font-family: Arial, Helvetica, sans-serif;
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 40px;
+
     line-height: 1.6;
+
+    color: #222;
+
+    background: #fff;
+}}
+
+header {{
+    margin-bottom: 40px;
+}}
+
+h1 {{
+    font-size: 36px;
+
+    margin-bottom: 10px;
+}}
+
+h2 {{
+    margin-top: 45px;
+
+    border-bottom:
+        2px solid #222;
+
+    padding-bottom: 8px;
 }}
 
 table {{
     border-collapse: collapse;
+
     width: 100%;
+
+    margin-top: 15px;
 }}
 
-td, th {{
-    border:1px solid #cccccc;
-    padding:8px;
+th,
+td {{
+    border:
+        1px solid #ddd;
+
+    padding: 10px;
+
+    text-align: left;
+
+    vertical-align: top;
 }}
 
-h1 {{
-    color:#222;
+th {{
+    width: 30%;
+
+    background: #f5f5f5;
 }}
 
-.section {{
-    margin-top:40px;
+ul {{
+    padding-left: 25px;
+}}
+
+.product-meta {{
+    color: #666;
+
+    margin-bottom: 25px;
+}}
+
+.description {{
+    font-size: 18px;
+
+    margin-top: 25px;
+}}
+
+.footer {{
+    margin-top: 60px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #ddd;
+
+    color: #777;
+
+    font-size: 13px;
 }}
 
 </style>
@@ -135,99 +348,487 @@ h1 {{
 
 <body>
 
-<h1>{brand} {model}</h1>
+<header>
 
-<p><strong>Collection:</strong> {collection}</p>
+<h1>{safe(title)}</h1>
 
-<p><strong>SKU:</strong> {sku}</p>
+<div class="product-meta">
 
-<p><strong>Manufacturer SKU:</strong> {manufacturer_sku}</p>
+<strong>Brand:</strong>
+{safe(brand)}
+<br>
 
-<div class="section">
+<strong>Model:</strong>
+{safe(model)}
+<br>
 
-<h2>Classification</h2>
-
-<table>
-
-<tr><th>Category</th><td>{category}</td></tr>
-
-<tr><th>Subcategory</th><td>{subcategory}</td></tr>
-
-<tr><th>Protection Class</th><td>{protection}</td></tr>
-
-<tr><th>Standard</th><td>{standard}</td></tr>
-
-<tr><th>Additional Markings</th><td>{", ".join(markings)}</td></tr>
-
-</table>
+<strong>Product ID:</strong>
+{safe(product_id)}
 
 </div>
 
-<div class="section">
+"""
 
-<h2>Construction</h2>
+    if short_description:
+
+        html += f"""
+<div class="description">
+
+{safe(short_description)}
+
+</div>
+"""
+
+    if description:
+
+        html += f"""
+<div class="description">
+
+{safe(description)}
+
+</div>
+"""
+
+    # -------------------------------------------------
+    # Identity
+    # -------------------------------------------------
+
+    html += f"""
+
+<h2>Product Identity</h2>
 
 <table>
 
-<tr><th>Toe Cap</th><td>{toe_cap}</td></tr>
+<tr>
+<th>SKU</th>
+<td>{safe(sku)}</td>
+</tr>
 
-<tr><th>Penetration Protection</th><td>{penetration}</td></tr>
+<tr>
+<th>Manufacturer SKU</th>
+<td>{safe(manufacturer_sku)}</td>
+</tr>
 
-<tr><th>Sole</th><td>{sole}</td></tr>
+<tr>
+<th>Brand</th>
+<td>{safe(brand)}</td>
+</tr>
+
+<tr>
+<th>Collection</th>
+<td>{safe(collection)}</td>
+</tr>
+
+<tr>
+<th>Model</th>
+<td>{safe(model)}</td>
+</tr>
+
+<tr>
+<th>Product Type</th>
+<td>{safe(product_type)}</td>
+</tr>
+
+<tr>
+<th>Gender</th>
+<td>{safe(gender)}</td>
+</tr>
 
 </table>
+"""
 
-</div>
+    # -------------------------------------------------
+    # Specifications
+    # -------------------------------------------------
 
-<div class="section">
+    if specifications:
+
+        html += """
+
+<h2>Specifications</h2>
+
+"""
+
+        html += render_dict_table(
+            specifications
+        )
+
+    # -------------------------------------------------
+    # Materials
+    # -------------------------------------------------
+
+    if materials:
+
+        html += """
+
+<h2>Materials</h2>
+
+"""
+
+        html += render_dict_table(
+            materials
+        )
+
+    # -------------------------------------------------
+    # Technologies
+    # -------------------------------------------------
+
+    if technologies:
+
+        html += """
 
 <h2>Technologies</h2>
 
-<ul>
 """
 
-for tech in technologies:
-    html += f"<li>{tech.get('name','')}</li>\n"
+        if isinstance(
+            technologies,
+            list
+        ):
 
-html += f"""
+            html += f"""
+<ul>
+
+{render_list(technologies)}
+
 </ul>
+"""
 
-</div>
+        else:
 
-<div class="section">
+            html += render_dict_table(
+                technologies
+            )
 
-<h2>Knowledge Status</h2>
+    # -------------------------------------------------
+    # Standards
+    # -------------------------------------------------
+
+    if standards:
+
+        html += """
+
+<h2>Standards</h2>
+
+"""
+
+        html += render_dict_table(
+            standards
+        )
+
+    # -------------------------------------------------
+    # Applications
+    # -------------------------------------------------
+
+    if applications:
+
+        html += """
+
+<h2>Applications</h2>
+
+"""
+
+        if isinstance(
+            applications,
+            list
+        ):
+
+            html += f"""
+<ul>
+
+{render_list(applications)}
+
+</ul>
+"""
+
+        else:
+
+            html += render_dict_table(
+                applications
+            )
+
+    # -------------------------------------------------
+    # Certifications
+    # -------------------------------------------------
+
+    if certifications:
+
+        html += """
+
+<h2>Certifications</h2>
+
+"""
+
+        html += render_dict_table(
+            certifications
+        )
+
+    # -------------------------------------------------
+    # Media
+    # -------------------------------------------------
+
+    if images:
+
+        html += """
+
+<h2>Images</h2>
+
+"""
+
+        if isinstance(
+            images,
+            list
+        ):
+
+            html += "<ul>"
+
+            for image in images:
+
+                if isinstance(
+                    image,
+                    dict
+                ):
+
+                    image_url = (
+                        image.get("url")
+                        or image.get("src")
+                        or ""
+                    )
+
+                    if image_url:
+
+                        html += f"""
+<li>
+<a href="{safe(image_url)}">
+{safe(image_url)}
+</a>
+</li>
+"""
+
+                else:
+
+                    html += (
+                        f"<li>{safe(image)}</li>"
+                    )
+
+            html += "</ul>"
+
+        else:
+
+            html += render_dict_table(
+                images
+            )
+
+    # -------------------------------------------------
+    # Manifest
+    # -------------------------------------------------
+
+    html += f"""
+
+<h2>Knowledge Metadata</h2>
 
 <table>
 
-<tr><th>Knowledge Score</th><td>{score}</td></tr>
+<tr>
+<th>Knowledge ID</th>
+<td>{safe(
+    get_value(
+        manifest,
+        "knowledge_id"
+    )
+)}</td>
+</tr>
 
-<tr><th>Confidence</th><td>{confidence}%</td></tr>
+<tr>
+<th>Product ID</th>
+<td>{safe(
+    get_value(
+        manifest,
+        "product_id"
+    )
+    or product_id
+)}</td>
+</tr>
 
-<tr><th>Version</th><td>{version}</td></tr>
+<tr>
+<th>Knowledge Version</th>
+<td>{safe(
+    get_value(
+        manifest,
+        "version"
+    )
+)}</td>
+</tr>
+
+<tr>
+<th>Schema Version</th>
+<td>{safe(
+    get_value(
+        manifest.get(
+            "metadata",
+            {}
+        ),
+        "schema_version"
+    )
+)}</td>
+</tr>
 
 </table>
+
+<div class="footer">
+
+Generated by
+<strong>M99 Knowledge Platform</strong>
+
+<br>
+
+Product:
+{safe(product_id)}
 
 </div>
 
 </body>
+
 </html>
 """
 
+    return html
+
+
 # =====================================================
-# SAVE
+# MAIN
 # =====================================================
 
-OUTPUT_FILE = OUTPUT_FOLDER / f"{PRODUCT_ID}.html"
+def main():
 
-with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    f.write(html)
+    print()
+    print("========================================")
+    print("M99 Knowledge Platform")
+    print("Build Product v0.2")
+    print("========================================")
+    print()
 
-print()
-print("========================================")
-print("SUCCESS")
-print("========================================")
-print()
-print(f"HTML generated:")
-print(OUTPUT_FILE)
-print()
+    # -------------------------------------------------
+    # Product ID
+    # -------------------------------------------------
+
+    if len(sys.argv) > 1:
+
+        product_id = sys.argv[1]
+
+    else:
+
+        product_id = DEFAULT_PRODUCT_ID
+
+    print(
+        f"Product: {product_id}"
+    )
+
+    print()
+
+    # -------------------------------------------------
+    # Loader
+    # -------------------------------------------------
+
+    try:
+
+        loader = ProductLoader(
+            PROJECT_ROOT
+        )
+
+        product = loader.load(
+            product_id
+        )
+
+    except LoaderError as error:
+
+        print()
+        print("ERROR")
+        print("----------------------------------------")
+        print(error)
+        print()
+
+        sys.exit(1)
+
+    except Exception as error:
+
+        print()
+        print("UNEXPECTED ERROR")
+        print("----------------------------------------")
+        print(error)
+        print()
+
+        raise
+
+    # -------------------------------------------------
+    # Generate
+    # -------------------------------------------------
+
+    print(
+        "Generating HTML..."
+    )
+
+    html = generate_html(
+        product,
+        product_id
+    )
+
+    # -------------------------------------------------
+    # Save
+    # -------------------------------------------------
+
+    output_file = (
+        OUTPUT_FOLDER
+        / f"{product_id}.html"
+    )
+
+    with open(
+        output_file,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
+        f.write(html)
+
+    # -------------------------------------------------
+    # Success
+    # -------------------------------------------------
+
+    print()
+
+    print("========================================")
+    print("SUCCESS")
+    print("========================================")
+
+    print()
+
+    print(
+        "Knowledge loaded:"
+        " YES"
+    )
+
+    print(
+        "HTML generated:"
+        " YES"
+    )
+
+    print()
+
+    print(
+        f"Output:"
+    )
+
+    print(
+        output_file
+    )
+
+    print()
+
+
+# =====================================================
+# ENTRY POINT
+# =====================================================
+
+if __name__ == "__main__":
+
+    main()
