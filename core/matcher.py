@@ -3,60 +3,29 @@
 
 """
 M99 Knowledge Platform
-Product Matcher v0.4
+Product Matcher v0.5
 
-Purpose
--------
-Matches external / legacy articles against the M99 Identity Architecture.
-
-Architecture
-------------
+M99 Identity Architecture
 
 External Article
-       |
-       v
-PRODUCT MATCH
-       |
-       v
-VARIANT MATCH
-       |
-       v
-FINAL DECISION
+        |
+        v
+Product Match
+        |
+        v
+Variant Match
+        |
+        v
+Final Decision
 
-Important rules
----------------
-
-1. Product identity and Variant identity are evaluated separately.
-
-2. Missing information is NOT a conflict.
-
-3. Conflicting information IS a conflict.
-
-4. A Variant can never be CONFIRMED if Product is only REVIEW.
-
-5. Name alone may identify a Product candidate,
-   but never identifies a Variant.
-
-6. Size alone may identify a Variant only when
-   the size is unique inside the Product Master.
-
-7. Color alone may identify a Variant only when
-   the color is unique inside the Product Master.
-
-8. Size + Color identifies a Variant when both
-   attributes match the same Variant.
-
-9. Zero-information variants are NOT candidates.
-
-10. Matcher NEVER creates or modifies M99 products,
-    variants or mappings.
-
-11. The final decision can never be more confident
-    than the Product identity.
-
-Version: 0.4
+Version 0.5 adds:
+- Decision Codes
+- clearer rejection reasons
+- independent Product / Variant decisions
+- final decision capped by Product confidence
+- no zero-information variant candidates
+- no automatic creation/modification of mappings
 """
-
 
 from __future__ import annotations
 
@@ -73,9 +42,65 @@ CONFIRMED = "CONFIRMED"
 HIGH_CONFIDENCE = "HIGH_CONFIDENCE"
 REVIEW = "REVIEW"
 REJECTED = "REJECTED"
-
 AMBIGUOUS = "AMBIGUOUS"
 NOT_DETERMINED = "NOT_DETERMINED"
+
+
+# ============================================================
+# PRODUCT DECISION CODES
+# ============================================================
+
+PRODUCT_CONFIRMED = "PRODUCT_CONFIRMED"
+PRODUCT_HIGH_CONFIDENCE = "PRODUCT_HIGH_CONFIDENCE"
+PRODUCT_REVIEW = "PRODUCT_REVIEW"
+PRODUCT_REJECTED = "PRODUCT_REJECTED"
+
+
+# ============================================================
+# VARIANT DECISION CODES
+# ============================================================
+
+VARIANT_CONFIRMED_SIZE_COLOR = (
+    "VARIANT_CONFIRMED_SIZE_COLOR"
+)
+
+VARIANT_HIGH_CONFIDENCE_SIZE = (
+    "VARIANT_HIGH_CONFIDENCE_SIZE"
+)
+
+VARIANT_HIGH_CONFIDENCE_COLOR = (
+    "VARIANT_HIGH_CONFIDENCE_COLOR"
+)
+
+VARIANT_AMBIGUOUS = (
+    "VARIANT_AMBIGUOUS"
+)
+
+VARIANT_NOT_DETERMINED = (
+    "VARIANT_NOT_DETERMINED"
+)
+
+VARIANT_SIZE_NOT_AVAILABLE = (
+    "VARIANT_SIZE_NOT_AVAILABLE"
+)
+
+VARIANT_COLOR_NOT_AVAILABLE = (
+    "VARIANT_COLOR_NOT_AVAILABLE"
+)
+
+VARIANT_SIZE_COLOR_NOT_AVAILABLE = (
+    "VARIANT_SIZE_COLOR_NOT_AVAILABLE"
+)
+
+
+# ============================================================
+# FINAL DECISION CODES
+# ============================================================
+
+FINAL_CONFIRMED = "FINAL_CONFIRMED"
+FINAL_HIGH_CONFIDENCE = "FINAL_HIGH_CONFIDENCE"
+FINAL_REVIEW = "FINAL_REVIEW"
+FINAL_REJECTED = "FINAL_REJECTED"
 
 
 # ============================================================
@@ -174,7 +199,7 @@ def name_similarity(
 
 
 # ============================================================
-# EXTERNAL ARTICLE
+# EXTERNAL PRODUCT
 # ============================================================
 
 @dataclass
@@ -294,6 +319,8 @@ class ProductMatchResult:
 
     score: float
 
+    decision_code: str
+
     product_id: Optional[str] = None
 
     matched_fields: list[str] = field(
@@ -316,8 +343,14 @@ class ProductMatchResult:
 
         return {
             "status": self.status,
-            "score": round(self.score, 2),
-            "product_id": self.product_id,
+            "score": round(
+                self.score,
+                2,
+            ),
+            "decision_code":
+                self.decision_code,
+            "product_id":
+                self.product_id,
             "matched_fields":
                 self.matched_fields,
             "missing_fields":
@@ -339,6 +372,8 @@ class VariantMatchResult:
     status: str
 
     score: float
+
+    decision_code: str
 
     variant_id: Optional[str] = None
 
@@ -366,8 +401,14 @@ class VariantMatchResult:
 
         return {
             "status": self.status,
-            "score": round(self.score, 2),
-            "variant_id": self.variant_id,
+            "score": round(
+                self.score,
+                2,
+            ),
+            "decision_code":
+                self.decision_code,
+            "variant_id":
+                self.variant_id,
             "matched_fields":
                 self.matched_fields,
             "missing_fields":
@@ -390,9 +431,15 @@ class MatchResult:
 
     status: str
 
-    product: Optional[ProductMatchResult] = None
+    decision_code: str
 
-    variant: Optional[VariantMatchResult] = None
+    product: Optional[
+        ProductMatchResult
+    ] = None
+
+    variant: Optional[
+        VariantMatchResult
+    ] = None
 
     product_id: Optional[str] = None
 
@@ -405,17 +452,28 @@ class MatchResult:
     def to_dict(self):
 
         return {
-            "status": self.status,
-            "product_id": self.product_id,
-            "variant_id": self.variant_id,
+            "status":
+                self.status,
+
+            "decision_code":
+                self.decision_code,
+
+            "product_id":
+                self.product_id,
+
+            "variant_id":
+                self.variant_id,
+
             "product":
                 self.product.to_dict()
                 if self.product
                 else None,
+
             "variant":
                 self.variant.to_dict()
                 if self.variant
                 else None,
+
             "reasons":
                 self.reasons,
         }
@@ -427,19 +485,14 @@ class MatchResult:
 
 class ProductMatcher:
 
-    # --------------------------------------------------------
-    # PRODUCT
-    # --------------------------------------------------------
-
     NAME_STRONG = 0.80
+
     NAME_GOOD = 0.55
+
     NAME_WEAK = 0.30
 
-    # --------------------------------------------------------
-    # VARIANT
-    # --------------------------------------------------------
-
     SIZE_WEIGHT = 50
+
     COLOR_WEIGHT = 50
 
     # ========================================================
@@ -468,8 +521,10 @@ class ProductMatcher:
 
         if external.ean:
 
-            product_ean = product.__dict__.get(
-                "ean"
+            product_ean = getattr(
+                product,
+                "ean",
+                None,
             )
 
             if product_ean:
@@ -649,6 +704,10 @@ class ProductMatcher:
 
             status = REJECTED
 
+            decision_code = (
+                PRODUCT_REJECTED
+            )
+
             reasons.append(
                 "Product identity conflict detected."
             )
@@ -656,6 +715,10 @@ class ProductMatcher:
         elif score >= 90:
 
             status = CONFIRMED
+
+            decision_code = (
+                PRODUCT_CONFIRMED
+            )
 
             reasons.append(
                 "Product identity confirmed."
@@ -665,6 +728,10 @@ class ProductMatcher:
 
             status = HIGH_CONFIDENCE
 
+            decision_code = (
+                PRODUCT_HIGH_CONFIDENCE
+            )
+
             reasons.append(
                 "Product identity has high confidence."
             )
@@ -673,18 +740,32 @@ class ProductMatcher:
 
             status = REVIEW
 
+            decision_code = (
+                PRODUCT_REVIEW
+            )
+
             reasons.append(
                 "Product identity requires review."
             )
 
         return ProductMatchResult(
             status=status,
-            score=min(score, 100),
-            product_id=product.product_id,
-            matched_fields=matched,
-            missing_fields=missing,
-            conflicts=conflicts,
-            reasons=reasons,
+            score=min(
+                score,
+                100,
+            ),
+            decision_code=
+                decision_code,
+            product_id=
+                product.product_id,
+            matched_fields=
+                matched,
+            missing_fields=
+                missing,
+            conflicts=
+                conflicts,
+            reasons=
+                reasons,
         )
 
     # ========================================================
@@ -708,27 +789,38 @@ class ProductMatcher:
         )
 
         # ----------------------------------------------------
-        # NO VARIANT INFORMATION
+        # NO SIZE / COLOR
         # ----------------------------------------------------
 
-        if not external_size and not external_color:
+        if (
+            not external_size
+            and not external_color
+        ):
 
             return VariantMatchResult(
                 status=NOT_DETERMINED,
+
                 score=0,
+
+                decision_code=
+                    VARIANT_NOT_DETERMINED,
+
                 variant_id=None,
+
                 missing_fields=[
                     "external.size",
                     "external.color",
                 ],
+
                 reasons=[
                     "No size or color was supplied."
                 ],
+
                 candidates=[],
             )
 
         # ----------------------------------------------------
-        # CHECK VARIANTS
+        # VARIANT EVALUATION
         # ----------------------------------------------------
 
         for variant in product.variants:
@@ -749,9 +841,9 @@ class ProductMatcher:
 
             score = 0.0
 
-            # ------------------------------------------------
+            # ----------------------------------------------
             # SIZE
-            # ------------------------------------------------
+            # ----------------------------------------------
 
             if external_size:
 
@@ -767,7 +859,9 @@ class ProductMatcher:
                     variant_size
                 ):
 
-                    score += self.SIZE_WEIGHT
+                    score += (
+                        self.SIZE_WEIGHT
+                    )
 
                     matched.append(
                         "size"
@@ -785,9 +879,9 @@ class ProductMatcher:
                     "external.size"
                 )
 
-            # ------------------------------------------------
+            # ----------------------------------------------
             # COLOR
-            # ------------------------------------------------
+            # ----------------------------------------------
 
             if external_color:
 
@@ -803,7 +897,9 @@ class ProductMatcher:
                     variant_color
                 ):
 
-                    score += self.COLOR_WEIGHT
+                    score += (
+                        self.COLOR_WEIGHT
+                    )
 
                     matched.append(
                         "color"
@@ -821,17 +917,17 @@ class ProductMatcher:
                     "external.color"
                 )
 
-            # ------------------------------------------------
-            # CONFLICT = NOT A CANDIDATE
-            # ------------------------------------------------
+            # ----------------------------------------------
+            # CONFLICT = NOT CANDIDATE
+            # ----------------------------------------------
 
             if conflicts:
 
                 continue
 
-            # ------------------------------------------------
-            # ZERO MATCH = NOT A CANDIDATE
-            # ------------------------------------------------
+            # ----------------------------------------------
+            # ZERO MATCH = NOT CANDIDATE
+            # ----------------------------------------------
 
             if not matched:
 
@@ -859,13 +955,56 @@ class ProductMatcher:
 
         if not candidates:
 
+            if (
+                external_size
+                and external_color
+            ):
+
+                decision_code = (
+                    VARIANT_SIZE_COLOR_NOT_AVAILABLE
+                )
+
+                reason = (
+                    "Requested size and color "
+                    "combination is not available."
+                )
+
+            elif external_size:
+
+                decision_code = (
+                    VARIANT_SIZE_NOT_AVAILABLE
+                )
+
+                reason = (
+                    "Requested size is not "
+                    "available for this product."
+                )
+
+            else:
+
+                decision_code = (
+                    VARIANT_COLOR_NOT_AVAILABLE
+                )
+
+                reason = (
+                    "Requested color is not "
+                    "available for this product."
+                )
+
             return VariantMatchResult(
                 status=REJECTED,
+
                 score=0,
+
+                decision_code=
+                    decision_code,
+
                 variant_id=None,
+
                 reasons=[
-                    "No compatible variant found."
+                    reason
                 ],
+
                 candidates=[],
             )
 
@@ -898,15 +1037,25 @@ class ProductMatcher:
 
             return VariantMatchResult(
                 status=AMBIGUOUS,
+
                 score=best_score,
+
+                decision_code=
+                    VARIANT_AMBIGUOUS,
+
                 variant_id=None,
+
                 matched_fields=
                     best["matched_fields"],
+
                 missing_fields=
                     best["missing_fields"],
+
                 reasons=[
-                    "Multiple variants match with equal evidence."
+                    "Multiple variants match "
+                    "with equal evidence."
                 ],
+
                 candidates=candidates,
             )
 
@@ -924,16 +1073,26 @@ class ProductMatcher:
 
             return VariantMatchResult(
                 status=CONFIRMED,
+
                 score=100,
+
+                decision_code=
+                    VARIANT_CONFIRMED_SIZE_COLOR,
+
                 variant_id=
                     best["variant_id"],
+
                 matched_fields=
                     best["matched_fields"],
+
                 missing_fields=
                     best["missing_fields"],
+
                 reasons=[
-                    "Exact size and color variant match."
+                    "Exact size and color "
+                    "variant match."
                 ],
+
                 candidates=candidates,
             )
 
@@ -948,16 +1107,26 @@ class ProductMatcher:
 
             return VariantMatchResult(
                 status=HIGH_CONFIDENCE,
+
                 score=50,
+
+                decision_code=
+                    VARIANT_HIGH_CONFIDENCE_SIZE,
+
                 variant_id=
                     best["variant_id"],
+
                 matched_fields=
                     best["matched_fields"],
+
                 missing_fields=
                     best["missing_fields"],
+
                 reasons=[
-                    "Unique size identifies one variant."
+                    "Unique size identifies "
+                    "one variant."
                 ],
+
                 candidates=candidates,
             )
 
@@ -972,16 +1141,26 @@ class ProductMatcher:
 
             return VariantMatchResult(
                 status=HIGH_CONFIDENCE,
+
                 score=50,
+
+                decision_code=
+                    VARIANT_HIGH_CONFIDENCE_COLOR,
+
                 variant_id=
                     best["variant_id"],
+
                 matched_fields=
                     best["matched_fields"],
+
                 missing_fields=
                     best["missing_fields"],
+
                 reasons=[
-                    "Unique color identifies one variant."
+                    "Unique color identifies "
+                    "one variant."
                 ],
+
                 candidates=candidates,
             )
 
@@ -991,15 +1170,24 @@ class ProductMatcher:
 
         return VariantMatchResult(
             status=REVIEW,
+
             score=best_score,
+
+            decision_code=
+                VARIANT_AMBIGUOUS,
+
             variant_id=None,
+
             matched_fields=
                 best["matched_fields"],
+
             missing_fields=
                 best["missing_fields"],
+
             reasons=[
                 "Variant requires review."
             ],
+
             candidates=candidates,
         )
 
@@ -1007,27 +1195,47 @@ class ProductMatcher:
     # FINAL DECISION
     # ========================================================
 
-    def final_status(
+    def final_decision(
         self,
-        product_status: str,
-        variant_status: str,
-    ) -> str:
+        product_result: ProductMatchResult,
+        variant_result: VariantMatchResult,
+    ) -> tuple[str, str]:
+
+        product_status = (
+            product_result.status
+        )
+
+        variant_status = (
+            variant_result.status
+        )
 
         # ----------------------------------------------------
         # PRODUCT REJECTED
         # ----------------------------------------------------
 
-        if product_status == REJECTED:
+        if (
+            product_status
+            == REJECTED
+        ):
 
-            return REJECTED
+            return (
+                REJECTED,
+                FINAL_REJECTED,
+            )
 
         # ----------------------------------------------------
-        # PRODUCT REVIEW ALWAYS CAPS RESULT
+        # PRODUCT REVIEW
         # ----------------------------------------------------
 
-        if product_status == REVIEW:
+        if (
+            product_status
+            == REVIEW
+        ):
 
-            return REVIEW
+            return (
+                REVIEW,
+                FINAL_REVIEW,
+            )
 
         # ----------------------------------------------------
         # PRODUCT HIGH CONFIDENCE
@@ -1038,15 +1246,30 @@ class ProductMatcher:
             == HIGH_CONFIDENCE
         ):
 
-            if variant_status == CONFIRMED:
+            if (
+                variant_status
+                == CONFIRMED
+            ):
 
-                return HIGH_CONFIDENCE
+                return (
+                    HIGH_CONFIDENCE,
+                    FINAL_HIGH_CONFIDENCE,
+                )
 
-            if variant_status == HIGH_CONFIDENCE:
+            if (
+                variant_status
+                == HIGH_CONFIDENCE
+            ):
 
-                return HIGH_CONFIDENCE
+                return (
+                    HIGH_CONFIDENCE,
+                    FINAL_HIGH_CONFIDENCE,
+                )
 
-            return REVIEW
+            return (
+                REVIEW,
+                FINAL_REVIEW,
+            )
 
         # ----------------------------------------------------
         # PRODUCT CONFIRMED
@@ -1057,27 +1280,35 @@ class ProductMatcher:
             == CONFIRMED
         ):
 
-            if variant_status == CONFIRMED:
+            if (
+                variant_status
+                == CONFIRMED
+            ):
 
-                return CONFIRMED
+                return (
+                    CONFIRMED,
+                    FINAL_CONFIRMED,
+                )
 
-            if variant_status == HIGH_CONFIDENCE:
+            if (
+                variant_status
+                == HIGH_CONFIDENCE
+            ):
 
-                return HIGH_CONFIDENCE
+                return (
+                    HIGH_CONFIDENCE,
+                    FINAL_HIGH_CONFIDENCE,
+                )
 
-            if variant_status == NOT_DETERMINED:
+            return (
+                REVIEW,
+                FINAL_REVIEW,
+            )
 
-                return REVIEW
-
-            if variant_status == AMBIGUOUS:
-
-                return REVIEW
-
-            if variant_status == REJECTED:
-
-                return REVIEW
-
-        return REVIEW
+        return (
+            REVIEW,
+            FINAL_REVIEW,
+        )
 
     # ========================================================
     # COMPLETE MATCH
@@ -1107,10 +1338,19 @@ class ProductMatcher:
 
             return MatchResult(
                 status=REJECTED,
-                product=product_result,
+
+                decision_code=
+                    FINAL_REJECTED,
+
+                product=
+                    product_result,
+
                 variant=None,
+
                 product_id=None,
+
                 variant_id=None,
+
                 reasons=[
                     "Product identity rejected."
                 ],
@@ -1131,9 +1371,11 @@ class ProductMatcher:
         # FINAL
         # ----------------------------------------------------
 
-        final = self.final_status(
-            product_result.status,
-            variant_result.status,
+        final_status, final_code = (
+            self.final_decision(
+                product_result,
+                variant_result,
+            )
         )
 
         # ----------------------------------------------------
@@ -1150,7 +1392,7 @@ class ProductMatcher:
 
         variant_id = None
 
-        if final in {
+        if final_status in {
             CONFIRMED,
             HIGH_CONFIDENCE,
         }:
@@ -1160,15 +1402,31 @@ class ProductMatcher:
             )
 
         return MatchResult(
-            status=final,
-            product=product_result,
-            variant=variant_result,
-            product_id=product_id,
-            variant_id=variant_id,
+            status=final_status,
+
+            decision_code=
+                final_code,
+
+            product=
+                product_result,
+
+            variant=
+                variant_result,
+
+            product_id=
+                product_id,
+
+            variant_id=
+                variant_id,
+
             reasons=[
-                "Product and variant evaluated separately.",
-                f"Final status limited by product status: "
-                f"{product_result.status}.",
+                "Product and variant "
+                "evaluated separately.",
+
+                (
+                    "Final decision is capped "
+                    "by Product identity confidence."
+                ),
             ],
         )
 
@@ -1221,34 +1479,49 @@ def create_demo_product():
 
             M99Variant(
                 variant_id="M99-PV-000001",
-                product_id="M99-PM-000001",
+
+                product_id=
+                    "M99-PM-000001",
+
                 name=(
                     "PUMA Velocity 2.0 "
                     "Black Low 40 Black"
                 ),
+
                 size="40",
+
                 color="Black",
             ),
 
             M99Variant(
                 variant_id="M99-PV-000002",
-                product_id="M99-PM-000001",
+
+                product_id=
+                    "M99-PM-000001",
+
                 name=(
                     "PUMA Velocity 2.0 "
                     "Black Low 41 Black"
                 ),
+
                 size="41",
+
                 color="Black",
             ),
 
             M99Variant(
                 variant_id="M99-PV-000003",
-                product_id="M99-PM-000001",
+
+                product_id=
+                    "M99-PM-000001",
+
                 name=(
                     "PUMA Velocity 2.0 "
                     "Black Low 42 Black"
                 ),
+
                 size="42",
+
                 color="Black",
             ),
         ],
@@ -1297,25 +1570,27 @@ if __name__ == "__main__":
     )
 
     print(
-        "Product Matcher v0.4"
+        "Product Matcher v0.5"
     )
 
     print(
         "========================================"
     )
 
-    product = create_demo_product()
+    product = (
+        create_demo_product()
+    )
 
     matcher = ProductMatcher()
 
     # ========================================================
     # TEST 1
-    # Name + Size + Color
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 1 - Name + Size + Color",
 
         moneyworks_product(
@@ -1333,12 +1608,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 2
-    # Name + Size
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 2 - Name + Size",
 
         moneyworks_product(
@@ -1354,12 +1629,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 3
-    # Name + Color
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 3 - Name + Color",
 
         moneyworks_product(
@@ -1375,12 +1650,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 4
-    # Name Only
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 4 - Name Only",
 
         moneyworks_product(
@@ -1394,12 +1669,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 5
-    # Wrong Size
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 5 - Wrong Size",
 
         moneyworks_product(
@@ -1417,12 +1692,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 6
-    # Different Product
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 6 - Different Product",
 
         moneyworks_product(
@@ -1438,12 +1713,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 7
-    # Unique Size
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 7 - Size Only",
 
         moneyworks_product(
@@ -1457,12 +1732,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 8
-    # NO SIZE / NO COLOR
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 8 - No Variant Information",
 
         moneyworks_product(
@@ -1474,12 +1749,12 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 9
-    # CONFLICTING SIZE
     # ========================================================
 
     run_test(
         matcher,
         product,
+
         "TEST 9 - Conflicting Size",
 
         moneyworks_product(
@@ -1499,7 +1774,7 @@ if __name__ == "__main__":
     )
 
     print(
-        "Product Matcher v0.4 test completed."
+        "Product Matcher v0.5 test completed."
     )
 
     print(
