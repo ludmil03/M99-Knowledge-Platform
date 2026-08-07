@@ -3,44 +3,60 @@
 
 """
 M99 Knowledge Platform
-Product Matcher v0.3
+Product Matcher v0.4
 
-Architecture:
+Purpose
+-------
+Matches external / legacy articles against the M99 Identity Architecture.
 
-    External / Legacy Article
-                |
-                v
-          PRODUCT MATCH
-                |
-                v
-          VARIANT MATCH
-                |
-                v
-       Final Match Decision
+Architecture
+------------
 
-Designed for incomplete MoneyWorks data.
+External Article
+       |
+       v
+PRODUCT MATCH
+       |
+       v
+VARIANT MATCH
+       |
+       v
+FINAL DECISION
 
-MoneyWorks may contain:
+Important rules
+---------------
 
-    code
-    name
-    size
-    color
+1. Product identity and Variant identity are evaluated separately.
 
-Any of size/color may be missing.
+2. Missing information is NOT a conflict.
 
-Important rules:
+3. Conflicting information IS a conflict.
 
-    Missing information != conflict
+4. A Variant can never be CONFIRMED if Product is only REVIEW.
 
-    Conflicting information = conflict
+5. Name alone may identify a Product candidate,
+   but never identifies a Variant.
 
-    Product identity is evaluated separately
-    from variant identity.
+6. Size alone may identify a Variant only when
+   the size is unique inside the Product Master.
 
-    The matcher NEVER creates an M99 Product
-    or M99 Variant automatically.
+7. Color alone may identify a Variant only when
+   the color is unique inside the Product Master.
+
+8. Size + Color identifies a Variant when both
+   attributes match the same Variant.
+
+9. Zero-information variants are NOT candidates.
+
+10. Matcher NEVER creates or modifies M99 products,
+    variants or mappings.
+
+11. The final decision can never be more confident
+    than the Product identity.
+
+Version: 0.4
 """
+
 
 from __future__ import annotations
 
@@ -50,7 +66,7 @@ import re
 
 
 # ============================================================
-# STATUS CONSTANTS
+# STATUS
 # ============================================================
 
 CONFIRMED = "CONFIRMED"
@@ -58,8 +74,8 @@ HIGH_CONFIDENCE = "HIGH_CONFIDENCE"
 REVIEW = "REVIEW"
 REJECTED = "REJECTED"
 
-VARIANT_NOT_DETERMINED = "NOT_DETERMINED"
-VARIANT_AMBIGUOUS = "AMBIGUOUS"
+AMBIGUOUS = "AMBIGUOUS"
+NOT_DETERMINED = "NOT_DETERMINED"
 
 
 # ============================================================
@@ -97,13 +113,9 @@ def normalize_size(value: Any) -> str:
 
     value = normalize_text(value)
 
-    # Examples:
-    #
-    # "Size: 40" -> "40"
-    # "Shoes Size: 40" -> "40"
-
     value = re.sub(
-        r"^(size|shoes size)\s*[:\-]?\s*",
+        r"^(size|shoes size)"
+        r"\s*[:\-]?\s*",
         "",
         value,
         flags=re.IGNORECASE,
@@ -121,7 +133,7 @@ def normalize_color(value: Any) -> str:
 
 
 # ============================================================
-# NAME TOKENIZATION
+# NAME PROCESSING
 # ============================================================
 
 def name_tokens(value: str) -> set[str]:
@@ -157,9 +169,6 @@ def name_similarity(
     union = (
         first_tokens | second_tokens
     )
-
-    if not union:
-        return 0.0
 
     return len(intersection) / len(union)
 
@@ -275,7 +284,7 @@ class M99Product:
 
 
 # ============================================================
-# PRODUCT MATCH RESULT
+# PRODUCT RESULT
 # ============================================================
 
 @dataclass
@@ -321,7 +330,7 @@ class ProductMatchResult:
 
 
 # ============================================================
-# VARIANT MATCH RESULT
+# VARIANT RESULT
 # ============================================================
 
 @dataclass
@@ -373,7 +382,7 @@ class VariantMatchResult:
 
 
 # ============================================================
-# FINAL MATCH RESULT
+# FINAL RESULT
 # ============================================================
 
 @dataclass
@@ -397,63 +406,41 @@ class MatchResult:
 
         return {
             "status": self.status,
-
-            "product_id":
-                self.product_id,
-
-            "variant_id":
-                self.variant_id,
-
+            "product_id": self.product_id,
+            "variant_id": self.variant_id,
             "product":
                 self.product.to_dict()
                 if self.product
                 else None,
-
             "variant":
                 self.variant.to_dict()
                 if self.variant
                 else None,
-
             "reasons":
                 self.reasons,
         }
 
 
 # ============================================================
-# PRODUCT MATCHER
+# MATCHER
 # ============================================================
 
 class ProductMatcher:
 
     # --------------------------------------------------------
-    # PRODUCT WEIGHTS
+    # PRODUCT
     # --------------------------------------------------------
 
-    EAN_WEIGHT = 100
-
-    MANUFACTURER_SKU_WEIGHT = 90
-
-    SUPPLIER_SKU_WEIGHT = 80
-
-    BRAND_WEIGHT = 25
-
-    NAME_WEIGHT = 60
+    NAME_STRONG = 0.80
+    NAME_GOOD = 0.55
+    NAME_WEAK = 0.30
 
     # --------------------------------------------------------
-    # VARIANT WEIGHTS
+    # VARIANT
     # --------------------------------------------------------
 
-    VARIANT_EAN_WEIGHT = 100
-
-    VARIANT_SIZE_WEIGHT = 50
-
-    VARIANT_COLOR_WEIGHT = 50
-
-    VARIANT_MANUFACTURER_WEIGHT = 90
-
-    VARIANT_SUPPLIER_WEIGHT = 80
-
-    CONFLICT_PENALTY = 100
+    SIZE_WEIGHT = 50
+    COLOR_WEIGHT = 50
 
     # ========================================================
     # PRODUCT MATCH
@@ -481,14 +468,31 @@ class ProductMatcher:
 
         if external.ean:
 
-            if external.ean and product.manufacturer_sku:
-                pass
+            product_ean = product.__dict__.get(
+                "ean"
+            )
 
-            # Product-level EAN is not currently stored
-            # in the demo Product Master.
-            #
-            # Therefore EAN is ignored at product level
-            # unless supplied through attributes.
+            if product_ean:
+
+                if (
+                    external.normalized_ean()
+                    ==
+                    normalize_identifier(
+                        product_ean
+                    )
+                ):
+
+                    score += 100
+
+                    matched.append(
+                        "ean"
+                    )
+
+                else:
+
+                    conflicts.append(
+                        "ean"
+                    )
 
         else:
 
@@ -514,9 +518,7 @@ class ProductMatcher:
                     )
                 ):
 
-                    score += (
-                        self.MANUFACTURER_SKU_WEIGHT
-                    )
+                    score += 90
 
                     matched.append(
                         "manufacturer_sku"
@@ -546,9 +548,7 @@ class ProductMatcher:
                     )
                 ):
 
-                    score += (
-                        self.SUPPLIER_SKU_WEIGHT
-                    )
+                    score += 80
 
                     matched.append(
                         "supplier_sku"
@@ -578,9 +578,7 @@ class ProductMatcher:
                     )
                 ):
 
-                    score += (
-                        self.BRAND_WEIGHT
-                    )
+                    score += 20
 
                     matched.append(
                         "brand"
@@ -601,23 +599,21 @@ class ProductMatcher:
             product.name,
         )
 
-        if similarity >= 0.80:
+        if similarity >= self.NAME_STRONG:
 
-            score += self.NAME_WEIGHT
+            score += 60
 
             matched.append(
-                "name_exact_or_near_exact"
+                "name_strong"
             )
 
             reasons.append(
                 "Strong product-name similarity."
             )
 
-        elif similarity >= 0.55:
+        elif similarity >= self.NAME_GOOD:
 
-            score += (
-                self.NAME_WEIGHT * 0.75
-            )
+            score += 45
 
             matched.append(
                 "name_partial"
@@ -627,11 +623,9 @@ class ProductMatcher:
                 "Good product-name similarity."
             )
 
-        elif similarity >= 0.30:
+        elif similarity >= self.NAME_WEAK:
 
-            score += (
-                self.NAME_WEIGHT * 0.40
-            )
+            score += 20
 
             matched.append(
                 "name_weak"
@@ -648,7 +642,7 @@ class ProductMatcher:
             )
 
         # ----------------------------------------------------
-        # FINAL PRODUCT STATUS
+        # PRODUCT DECISION
         # ----------------------------------------------------
 
         if conflicts:
@@ -675,7 +669,7 @@ class ProductMatcher:
                 "Product identity has high confidence."
             )
 
-        elif score >= 30:
+        else:
 
             status = REVIEW
 
@@ -683,17 +677,9 @@ class ProductMatcher:
                 "Product identity requires review."
             )
 
-        else:
-
-            status = REJECTED
-
-            reasons.append(
-                "Insufficient product identity evidence."
-            )
-
         return ProductMatchResult(
             status=status,
-            score=min(100.0, score),
+            score=min(score, 100),
             product_id=product.product_id,
             matched_fields=matched,
             missing_fields=missing,
@@ -713,13 +699,47 @@ class ProductMatcher:
 
         candidates = []
 
+        external_size = (
+            external.normalized_size()
+        )
+
+        external_color = (
+            external.normalized_color()
+        )
+
         # ----------------------------------------------------
-        # TEST EACH VARIANT
+        # NO VARIANT INFORMATION
+        # ----------------------------------------------------
+
+        if not external_size and not external_color:
+
+            return VariantMatchResult(
+                status=NOT_DETERMINED,
+                score=0,
+                variant_id=None,
+                missing_fields=[
+                    "external.size",
+                    "external.color",
+                ],
+                reasons=[
+                    "No size or color was supplied."
+                ],
+                candidates=[],
+            )
+
+        # ----------------------------------------------------
+        # CHECK VARIANTS
         # ----------------------------------------------------
 
         for variant in product.variants:
 
-            score = 0.0
+            variant_size = (
+                variant.normalized_size()
+            )
+
+            variant_color = (
+                variant.normalized_color()
+            )
 
             matched = []
 
@@ -727,66 +747,36 @@ class ProductMatcher:
 
             conflicts = []
 
-            # ------------------------------------------------
-            # EAN
-            # ------------------------------------------------
-
-            if external.ean:
-
-                if variant.ean:
-
-                    if (
-                        external.normalized_ean()
-                        ==
-                        variant.normalized_ean()
-                    ):
-
-                        score += (
-                            self.VARIANT_EAN_WEIGHT
-                        )
-
-                        matched.append(
-                            "ean"
-                        )
-
-                    else:
-
-                        conflicts.append(
-                            "ean"
-                        )
+            score = 0.0
 
             # ------------------------------------------------
             # SIZE
             # ------------------------------------------------
 
-            if external.size:
+            if external_size:
 
-                if variant.size:
-
-                    if (
-                        external.normalized_size()
-                        ==
-                        variant.normalized_size()
-                    ):
-
-                        score += (
-                            self.VARIANT_SIZE_WEIGHT
-                        )
-
-                        matched.append(
-                            "size"
-                        )
-
-                    else:
-
-                        conflicts.append(
-                            "size"
-                        )
-
-                else:
+                if not variant_size:
 
                     missing.append(
                         "variant.size"
+                    )
+
+                elif (
+                    external_size
+                    ==
+                    variant_size
+                ):
+
+                    score += self.SIZE_WEIGHT
+
+                    matched.append(
+                        "size"
+                    )
+
+                else:
+
+                    conflicts.append(
+                        "size"
                     )
 
             else:
@@ -799,34 +789,30 @@ class ProductMatcher:
             # COLOR
             # ------------------------------------------------
 
-            if external.color:
+            if external_color:
 
-                if variant.color:
-
-                    if (
-                        external.normalized_color()
-                        ==
-                        variant.normalized_color()
-                    ):
-
-                        score += (
-                            self.VARIANT_COLOR_WEIGHT
-                        )
-
-                        matched.append(
-                            "color"
-                        )
-
-                    else:
-
-                        conflicts.append(
-                            "color"
-                        )
-
-                else:
+                if not variant_color:
 
                     missing.append(
                         "variant.color"
+                    )
+
+                elif (
+                    external_color
+                    ==
+                    variant_color
+                ):
+
+                    score += self.COLOR_WEIGHT
+
+                    matched.append(
+                        "color"
+                    )
+
+                else:
+
+                    conflicts.append(
+                        "color"
                     )
 
             else:
@@ -836,74 +822,18 @@ class ProductMatcher:
                 )
 
             # ------------------------------------------------
-            # MANUFACTURER SKU
-            # ------------------------------------------------
-
-            if external.manufacturer_sku:
-
-                if variant.manufacturer_sku:
-
-                    if (
-                        normalize_identifier(
-                            external.manufacturer_sku
-                        )
-                        ==
-                        normalize_identifier(
-                            variant.manufacturer_sku
-                        )
-                    ):
-
-                        score += (
-                            self.VARIANT_MANUFACTURER_WEIGHT
-                        )
-
-                        matched.append(
-                            "manufacturer_sku"
-                        )
-
-                    else:
-
-                        conflicts.append(
-                            "manufacturer_sku"
-                        )
-
-            # ------------------------------------------------
-            # SUPPLIER SKU
-            # ------------------------------------------------
-
-            if external.supplier_sku:
-
-                if variant.supplier_sku:
-
-                    if (
-                        normalize_identifier(
-                            external.supplier_sku
-                        )
-                        ==
-                        normalize_identifier(
-                            variant.supplier_sku
-                        )
-                    ):
-
-                        score += (
-                            self.VARIANT_SUPPLIER_WEIGHT
-                        )
-
-                        matched.append(
-                            "supplier_sku"
-                        )
-
-                    else:
-
-                        conflicts.append(
-                            "supplier_sku"
-                        )
-
-            # ------------------------------------------------
-            # CONFLICT
+            # CONFLICT = NOT A CANDIDATE
             # ------------------------------------------------
 
             if conflicts:
+
+                continue
+
+            # ------------------------------------------------
+            # ZERO MATCH = NOT A CANDIDATE
+            # ------------------------------------------------
+
+            if not matched:
 
                 continue
 
@@ -913,10 +843,7 @@ class ProductMatcher:
                         variant.variant_id,
 
                     "score":
-                        min(
-                            100.0,
-                            score
-                        ),
+                        score,
 
                     "matched_fields":
                         matched,
@@ -934,10 +861,12 @@ class ProductMatcher:
 
             return VariantMatchResult(
                 status=REJECTED,
-                score=0.0,
+                score=0,
+                variant_id=None,
                 reasons=[
                     "No compatible variant found."
                 ],
+                candidates=[],
             )
 
         # ====================================================
@@ -945,7 +874,8 @@ class ProductMatcher:
         # ====================================================
 
         candidates.sort(
-            key=lambda x: x["score"],
+            key=lambda item:
+                item["score"],
             reverse=True,
         )
 
@@ -953,158 +883,201 @@ class ProductMatcher:
 
         best_score = best["score"]
 
-        # ----------------------------------------------------
-        # SAME SCORE = AMBIGUITY
-        # ----------------------------------------------------
+        # ====================================================
+        # AMBIGUOUS
+        # ====================================================
 
-        same_score = [
+        equal_candidates = [
             candidate
             for candidate in candidates
-            if candidate["score"] == best_score
+            if candidate["score"]
+            == best_score
         ]
 
-        if len(same_score) > 1:
+        if len(equal_candidates) > 1:
 
             return VariantMatchResult(
-                status=VARIANT_AMBIGUOUS,
+                status=AMBIGUOUS,
                 score=best_score,
                 variant_id=None,
-                matched_fields=best[
-                    "matched_fields"
-                ],
-                missing_fields=best[
-                    "missing_fields"
-                ],
+                matched_fields=
+                    best["matched_fields"],
+                missing_fields=
+                    best["missing_fields"],
                 reasons=[
-                    "Multiple variants have identical matching evidence."
+                    "Multiple variants match with equal evidence."
                 ],
                 candidates=candidates,
             )
 
         # ====================================================
-        # VARIANT STATUS
+        # SIZE + COLOR
         # ====================================================
 
-        matched_fields = best[
-            "matched_fields"
-        ]
-
-        missing_fields = best[
-            "missing_fields"
-        ]
-
-        # ----------------------------------------------------
-        # SIZE + COLOR
-        # ----------------------------------------------------
-
-        has_size = (
+        if (
             "size"
-            in matched_fields
-        )
-
-        has_color = (
+            in best["matched_fields"]
+            and
             "color"
-            in matched_fields
-        )
+            in best["matched_fields"]
+        ):
 
-        # ----------------------------------------------------
-        # BOTH SIZE AND COLOR
-        # ----------------------------------------------------
-
-        if has_size and has_color:
-
-            status = CONFIRMED
-
-            reason = (
-                "Exact size and color variant match."
+            return VariantMatchResult(
+                status=CONFIRMED,
+                score=100,
+                variant_id=
+                    best["variant_id"],
+                matched_fields=
+                    best["matched_fields"],
+                missing_fields=
+                    best["missing_fields"],
+                reasons=[
+                    "Exact size and color variant match."
+                ],
+                candidates=candidates,
             )
 
-        # ----------------------------------------------------
-        # UNIQUE SIZE
-        # ----------------------------------------------------
+        # ====================================================
+        # SIZE ONLY
+        # ====================================================
 
-        elif has_size and not has_color:
+        if (
+            "size"
+            in best["matched_fields"]
+        ):
 
-            same_size = [
-                candidate
-                for candidate in candidates
-                if "size"
-                in candidate["matched_fields"]
-            ]
-
-            if len(same_size) == 1:
-
-                status = HIGH_CONFIDENCE
-
-                reason = (
+            return VariantMatchResult(
+                status=HIGH_CONFIDENCE,
+                score=50,
+                variant_id=
+                    best["variant_id"],
+                matched_fields=
+                    best["matched_fields"],
+                missing_fields=
+                    best["missing_fields"],
+                reasons=[
                     "Unique size identifies one variant."
-                )
-
-            else:
-
-                status = VARIANT_AMBIGUOUS
-
-                reason = (
-                    "Size matches multiple variants."
-                )
-
-        # ----------------------------------------------------
-        # UNIQUE COLOR
-        # ----------------------------------------------------
-
-        elif has_color and not has_size:
-
-            same_color = [
-                candidate
-                for candidate in candidates
-                if "color"
-                in candidate["matched_fields"]
-            ]
-
-            if len(same_color) == 1:
-
-                status = HIGH_CONFIDENCE
-
-                reason = (
-                    "Unique color identifies one variant."
-                )
-
-            else:
-
-                status = VARIANT_AMBIGUOUS
-
-                reason = (
-                    "Color matches multiple variants."
-                )
-
-        # ----------------------------------------------------
-        # NO VARIANT ATTRIBUTE
-        # ----------------------------------------------------
-
-        else:
-
-            status = VARIANT_NOT_DETERMINED
-
-            reason = (
-                "No sufficient variant attributes were supplied."
+                ],
+                candidates=candidates,
             )
+
+        # ====================================================
+        # COLOR ONLY
+        # ====================================================
+
+        if (
+            "color"
+            in best["matched_fields"]
+        ):
+
+            return VariantMatchResult(
+                status=HIGH_CONFIDENCE,
+                score=50,
+                variant_id=
+                    best["variant_id"],
+                matched_fields=
+                    best["matched_fields"],
+                missing_fields=
+                    best["missing_fields"],
+                reasons=[
+                    "Unique color identifies one variant."
+                ],
+                candidates=candidates,
+            )
+
+        # ====================================================
+        # FALLBACK
+        # ====================================================
 
         return VariantMatchResult(
-            status=status,
+            status=REVIEW,
             score=best_score,
-            variant_id=(
-                best["variant_id"]
-                if status not in {
-                    VARIANT_AMBIGUOUS,
-                    VARIANT_NOT_DETERMINED,
-                }
-                else None
-            ),
-            matched_fields=matched_fields,
-            missing_fields=missing_fields,
-            reasons=[reason],
+            variant_id=None,
+            matched_fields=
+                best["matched_fields"],
+            missing_fields=
+                best["missing_fields"],
+            reasons=[
+                "Variant requires review."
+            ],
             candidates=candidates,
         )
+
+    # ========================================================
+    # FINAL DECISION
+    # ========================================================
+
+    def final_status(
+        self,
+        product_status: str,
+        variant_status: str,
+    ) -> str:
+
+        # ----------------------------------------------------
+        # PRODUCT REJECTED
+        # ----------------------------------------------------
+
+        if product_status == REJECTED:
+
+            return REJECTED
+
+        # ----------------------------------------------------
+        # PRODUCT REVIEW ALWAYS CAPS RESULT
+        # ----------------------------------------------------
+
+        if product_status == REVIEW:
+
+            return REVIEW
+
+        # ----------------------------------------------------
+        # PRODUCT HIGH CONFIDENCE
+        # ----------------------------------------------------
+
+        if (
+            product_status
+            == HIGH_CONFIDENCE
+        ):
+
+            if variant_status == CONFIRMED:
+
+                return HIGH_CONFIDENCE
+
+            if variant_status == HIGH_CONFIDENCE:
+
+                return HIGH_CONFIDENCE
+
+            return REVIEW
+
+        # ----------------------------------------------------
+        # PRODUCT CONFIRMED
+        # ----------------------------------------------------
+
+        if (
+            product_status
+            == CONFIRMED
+        ):
+
+            if variant_status == CONFIRMED:
+
+                return CONFIRMED
+
+            if variant_status == HIGH_CONFIDENCE:
+
+                return HIGH_CONFIDENCE
+
+            if variant_status == NOT_DETERMINED:
+
+                return REVIEW
+
+            if variant_status == AMBIGUOUS:
+
+                return REVIEW
+
+            if variant_status == REJECTED:
+
+                return REVIEW
+
+        return REVIEW
 
     # ========================================================
     # COMPLETE MATCH
@@ -1127,81 +1100,81 @@ class ProductMatcher:
         # PRODUCT REJECTED
         # ----------------------------------------------------
 
-        if product_result.status == REJECTED:
+        if (
+            product_result.status
+            == REJECTED
+        ):
 
             return MatchResult(
                 status=REJECTED,
                 product=product_result,
+                variant=None,
                 product_id=None,
+                variant_id=None,
                 reasons=[
-                    "Product identity could not be confirmed."
+                    "Product identity rejected."
                 ],
             )
 
         # ----------------------------------------------------
-        # PRODUCT OK
+        # VARIANT
         # ----------------------------------------------------
 
-        variant_result = self.match_variant(
-            external,
-            product,
+        variant_result = (
+            self.match_variant(
+                external,
+                product,
+            )
         )
 
         # ----------------------------------------------------
-        # VARIANT CONFIRMED
+        # FINAL
         # ----------------------------------------------------
 
-        if (
-            variant_result.status
-            == CONFIRMED
-        ):
+        final = self.final_status(
+            product_result.status,
+            variant_result.status,
+        )
 
-            final_status = CONFIRMED
+        # ----------------------------------------------------
+        # PRODUCT ID
+        # ----------------------------------------------------
 
-            final_variant_id = (
+        product_id = (
+            product.product_id
+        )
+
+        # ----------------------------------------------------
+        # VARIANT ID
+        # ----------------------------------------------------
+
+        variant_id = None
+
+        if final in {
+            CONFIRMED,
+            HIGH_CONFIDENCE,
+        }:
+
+            variant_id = (
                 variant_result.variant_id
             )
-
-        elif (
-            variant_result.status
-            == HIGH_CONFIDENCE
-        ):
-
-            final_status = HIGH_CONFIDENCE
-
-            final_variant_id = (
-                variant_result.variant_id
-            )
-
-        elif (
-            variant_result.status
-            == VARIANT_AMBIGUOUS
-        ):
-
-            final_status = REVIEW
-
-            final_variant_id = None
-
-        else:
-
-            final_status = REVIEW
-
-            final_variant_id = None
 
         return MatchResult(
-            status=final_status,
+            status=final,
             product=product_result,
             variant=variant_result,
-            product_id=product.product_id,
-            variant_id=final_variant_id,
+            product_id=product_id,
+            variant_id=variant_id,
             reasons=[
-                "Product and variant evaluated separately."
+                "Product and variant evaluated separately.",
+                f"Final status limited by product status: "
+                f"{product_result.status}.",
             ],
         )
 
 
 # ============================================================
-# MONEYWORKS HELPER
+# MONEYWORKS FACTORY
 # ============================================================
 
 def moneyworks_product(
@@ -1221,122 +1194,92 @@ def moneyworks_product(
 
 
 # ============================================================
-# DEMO PRODUCTS
+# DEMO PRODUCT MASTER
 # ============================================================
 
-def create_demo_products():
+def create_demo_product():
 
-    return [
+    return M99Product(
 
-        M99Product(
-            product_id="M99-PM-000001",
+        product_id="M99-PM-000001",
 
-            name=(
-                "PUMA Velocity 2.0 Black Low"
+        name=(
+            "PUMA Velocity 2.0 Black Low"
+        ),
+
+        brand="PUMA Safety",
+
+        model=(
+            "Velocity 2.0 Black Low"
+        ),
+
+        manufacturer_sku="643870",
+
+        supplier_sku="06100288",
+
+        variants=[
+
+            M99Variant(
+                variant_id="M99-PV-000001",
+                product_id="M99-PM-000001",
+                name=(
+                    "PUMA Velocity 2.0 "
+                    "Black Low 40 Black"
+                ),
+                size="40",
+                color="Black",
             ),
 
-            brand="PUMA Safety",
-
-            model=(
-                "Velocity 2.0 Black Low"
+            M99Variant(
+                variant_id="M99-PV-000002",
+                product_id="M99-PM-000001",
+                name=(
+                    "PUMA Velocity 2.0 "
+                    "Black Low 41 Black"
+                ),
+                size="41",
+                color="Black",
             ),
 
-            manufacturer_sku="643870",
-
-            supplier_sku="06100288",
-
-            variants=[
-
-                M99Variant(
-                    variant_id="M99-PV-000001",
-
-                    product_id="M99-PM-000001",
-
-                    name=(
-                        "PUMA Velocity 2.0 "
-                        "Black Low Size 40 Black"
-                    ),
-
-                    size="40",
-
-                    color="Black",
-
-                    manufacturer_sku="643870",
-
-                    supplier_sku="06100288",
+            M99Variant(
+                variant_id="M99-PV-000003",
+                product_id="M99-PM-000001",
+                name=(
+                    "PUMA Velocity 2.0 "
+                    "Black Low 42 Black"
                 ),
-
-                M99Variant(
-                    variant_id="M99-PV-000002",
-
-                    product_id="M99-PM-000001",
-
-                    name=(
-                        "PUMA Velocity 2.0 "
-                        "Black Low Size 41 Black"
-                    ),
-
-                    size="41",
-
-                    color="Black",
-
-                    manufacturer_sku="643870",
-
-                    supplier_sku="06100288",
-                ),
-
-                M99Variant(
-                    variant_id="M99-PV-000003",
-
-                    product_id="M99-PM-000001",
-
-                    name=(
-                        "PUMA Velocity 2.0 "
-                        "Black Low Size 42 Black"
-                    ),
-
-                    size="42",
-
-                    color="Black",
-
-                    manufacturer_sku="643870",
-
-                    supplier_sku="06100288",
-                ),
-
-            ],
-        )
-    ]
+                size="42",
+                color="Black",
+            ),
+        ],
+    )
 
 
 # ============================================================
-# TEST
+# TEST RUNNER
 # ============================================================
 
 def run_test(
-    matcher,
-    products,
-    title,
-    external,
+    matcher: ProductMatcher,
+    product: M99Product,
+    title: str,
+    external: ExternalProduct,
 ):
 
     print()
     print("=" * 60)
     print(title)
     print("=" * 60)
+    print()
 
     result = matcher.match(
         external,
-        products[0],
+        product,
     )
-
-    print()
 
     print(
         result.to_dict()
     )
-
-    print()
 
 
 # ============================================================
@@ -1354,18 +1297,16 @@ if __name__ == "__main__":
     )
 
     print(
-        "Product Matcher v0.3"
+        "Product Matcher v0.4"
     )
 
     print(
         "========================================"
     )
 
-    print()
+    product = create_demo_product()
 
     matcher = ProductMatcher()
-
-    products = create_demo_products()
 
     # ========================================================
     # TEST 1
@@ -1374,17 +1315,15 @@ if __name__ == "__main__":
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 1 - Name + Size + Color",
 
         moneyworks_product(
-            code="MW-0001842",
+            "MW-0001842",
 
-            name=(
-                "Работни обувки PUMA "
-                "VELOCITY 2.0 BLACK LOW "
-                "S3 ESD"
-            ),
+            "Работни обувки PUMA "
+            "VELOCITY 2.0 BLACK LOW "
+            "S3 ESD",
 
             size="40",
 
@@ -1399,17 +1338,15 @@ if __name__ == "__main__":
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 2 - Name + Size",
 
         moneyworks_product(
-            code="MW-0001843",
+            "MW-0001843",
 
-            name=(
-                "Работни обувки PUMA "
-                "VELOCITY 2.0 BLACK LOW "
-                "S3 ESD"
-            ),
+            "Работни обувки PUMA "
+            "VELOCITY 2.0 BLACK LOW "
+            "S3 ESD",
 
             size="41",
         ),
@@ -1422,17 +1359,15 @@ if __name__ == "__main__":
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 3 - Name + Color",
 
         moneyworks_product(
-            code="MW-0001844",
+            "MW-0001844",
 
-            name=(
-                "Работни обувки PUMA "
-                "VELOCITY 2.0 BLACK LOW "
-                "S3 ESD"
-            ),
+            "Работни обувки PUMA "
+            "VELOCITY 2.0 BLACK LOW "
+            "S3 ESD",
 
             color="Black",
         ),
@@ -1440,43 +1375,39 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 4
-    # Name only
+    # Name Only
     # ========================================================
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 4 - Name Only",
 
         moneyworks_product(
-            code="MW-0001845",
+            "MW-0001845",
 
-            name=(
-                "Работни обувки PUMA "
-                "VELOCITY 2.0 BLACK LOW "
-                "S3 ESD"
-            ),
+            "Работни обувки PUMA "
+            "VELOCITY 2.0 BLACK LOW "
+            "S3 ESD",
         ),
     )
 
     # ========================================================
     # TEST 5
-    # Wrong size
+    # Wrong Size
     # ========================================================
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 5 - Wrong Size",
 
         moneyworks_product(
-            code="MW-0001846",
+            "MW-0001846",
 
-            name=(
-                "Работни обувки PUMA "
-                "VELOCITY 2.0 BLACK LOW "
-                "S3 ESD"
-            ),
+            "Работни обувки PUMA "
+            "VELOCITY 2.0 BLACK LOW "
+            "S3 ESD",
 
             size="45",
 
@@ -1486,18 +1417,18 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 6
-    # Completely different product
+    # Different Product
     # ========================================================
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 6 - Different Product",
 
         moneyworks_product(
-            code="MW-0001847",
+            "MW-0001847",
 
-            name="Safety Shoes Other Brand",
+            "Safety Shoes Other Brand",
 
             size="40",
 
@@ -1507,35 +1438,68 @@ if __name__ == "__main__":
 
     # ========================================================
     # TEST 7
-    # Size only, but UNIQUE size
+    # Unique Size
     # ========================================================
 
     run_test(
         matcher,
-        products,
+        product,
         "TEST 7 - Size Only",
 
         moneyworks_product(
-            code="MW-0001848",
+            "MW-0001848",
 
-            name=(
-                "PUMA Velocity 2.0 Black Low"
-            ),
+            "PUMA Velocity 2.0 Black Low",
 
             size="42",
         ),
     )
 
     # ========================================================
-    # COMPLETE
+    # TEST 8
+    # NO SIZE / NO COLOR
     # ========================================================
 
+    run_test(
+        matcher,
+        product,
+        "TEST 8 - No Variant Information",
+
+        moneyworks_product(
+            "MW-0001849",
+
+            "PUMA Velocity 2.0 Black Low",
+        ),
+    )
+
+    # ========================================================
+    # TEST 9
+    # CONFLICTING SIZE
+    # ========================================================
+
+    run_test(
+        matcher,
+        product,
+        "TEST 9 - Conflicting Size",
+
+        moneyworks_product(
+            "MW-0001850",
+
+            "PUMA Velocity 2.0 Black Low",
+
+            size="45",
+
+            color="Black",
+        ),
+    )
+
+    print()
     print(
         "========================================"
     )
 
     print(
-        "Product Matcher v0.3 test completed."
+        "Product Matcher v0.4 test completed."
     )
 
     print(
