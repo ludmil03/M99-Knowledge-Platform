@@ -29,6 +29,11 @@ class DolibarrProductExporterTests(unittest.TestCase):
         rows = self.exporter.build_rows("M99-PM-000001")
         self.assertEqual(self.exporter.validate_required(rows), [])
 
+    def test_pmp_is_never_null_for_new_products(self):
+        rows = self.exporter.build_rows("M99-PM-000001")
+        self.assertTrue(all(row["p.pmp"] == 0 for row in rows))
+        self.assertTrue(all(row["p.pmp"] is not None for row in rows))
+
     def test_csv_row_width(self):
         rows = self.exporter.build_rows("M99-PM-000001")
         with tempfile.TemporaryDirectory() as d:

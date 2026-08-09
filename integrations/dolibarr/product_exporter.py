@@ -174,6 +174,9 @@ class DolibarrProductExporter:
             row["p.finished"] = 1
             row["p.price_base_type"] = price_base_type
             row["p.tobatch"] = 0
+            # Dolibarr 20.0.2 compatibility: llx_product.pmp is NOT NULL.
+            # New products start with technical PMP = 0 until stock valuation exists.
+            row["p.pmp"] = 0
 
             if vat_rate is not None:
                 row["p.tva_tx"] = vat_rate

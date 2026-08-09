@@ -186,3 +186,13 @@ Status
 - ARTDATA opaque numeric tail is not interpreted as price.
 - Unknown price/VAT/cost values remain blank.
 - Real customer and supplier datasets are not committed to Git.
+
+---
+
+# [0.5.3] - 2026-08-09
+
+## Dolibarr Compatibility Fix
+- Fixed Dolibarr 20.0.2 error: `Column 'pmp' cannot be null`.
+- New product exports initialize `p.pmp` to numeric `0`.
+- This is a technical initial PMP, not an inferred purchase price or cost.
+- Added regression test ensuring PMP is never NULL.
