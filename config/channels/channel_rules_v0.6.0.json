@@ -1,0 +1,127 @@
+{
+  "version": "0.6.0",
+  "applications": [
+    "workwear",
+    "safety",
+    "medical",
+    "horeca",
+    "hotel",
+    "restaurant",
+    "spa_wellness",
+    "beauty",
+    "cleaning",
+    "food_industry",
+    "industrial"
+  ],
+  "channels": {
+    "mela99.com": {
+      "market": "BG",
+      "languages": [
+        "bg",
+        "en"
+      ],
+      "allow": [
+        "workwear",
+        "safety",
+        "medical",
+        "horeca",
+        "hotel",
+        "restaurant",
+        "spa_wellness",
+        "beauty",
+        "cleaning",
+        "food_industry",
+        "industrial"
+      ]
+    },
+    "m99.eu": {
+      "market": "EU",
+      "languages": [
+        "bg",
+        "en"
+      ],
+      "allow": [
+        "workwear",
+        "safety",
+        "medical",
+        "horeca",
+        "hotel",
+        "restaurant",
+        "spa_wellness",
+        "beauty",
+        "cleaning",
+        "food_industry",
+        "industrial"
+      ]
+    },
+    "rabotni-drehi.com": {
+      "market": "BG",
+      "languages": [
+        "bg"
+      ],
+      "allow": [
+        "workwear",
+        "safety",
+        "medical",
+        "horeca",
+        "hotel",
+        "restaurant",
+        "spa_wellness",
+        "beauty",
+        "cleaning",
+        "food_industry",
+        "industrial"
+      ]
+    },
+    "medicinski-drehi.com": {
+      "market": "BG",
+      "languages": [
+        "bg"
+      ],
+      "allow": [
+        "medical"
+      ],
+      "strict_medical_only": true
+    },
+    "laviro.ro": {
+      "market": "RO",
+      "languages": [
+        "ro"
+      ],
+      "allow": [
+        "workwear",
+        "safety",
+        "medical",
+        "horeca",
+        "hotel",
+        "restaurant",
+        "spa_wellness",
+        "beauty",
+        "cleaning",
+        "food_industry",
+        "industrial"
+      ]
+    },
+    "alviro.ro": {
+      "market": "RO",
+      "languages": [
+        "ro"
+      ],
+      "allow": [
+        "medical",
+        "horeca",
+        "hotel",
+        "restaurant",
+        "spa_wellness",
+        "beauty"
+      ],
+      "strict_medical_only": false
+    }
+  },
+  "publication": {
+    "new_productgroup_requires_operator_approval": true,
+    "existing_url_is_protected": true,
+    "legacy_channel_identifiers_are_preserved": true,
+    "seo_replace_only_with_positive_evidence": true
+  }
+}
