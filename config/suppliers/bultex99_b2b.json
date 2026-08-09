@@ -1,0 +1,7 @@
+{
+  "source_kind": "AUTHENTICATED_HTML",
+  "base_url": "https://b2b.bultex99.com:8823",
+  "credentials_storage": "ENVIRONMENT_VARIABLES_ONLY",
+  "live_login_enabled": false,
+  "reason": "Exact login POST fields not yet confirmed"
+}

@@ -1,0 +1,10 @@
+{
+  "discount_vs_stenso_pct": 1.5,
+  "hard_floor": "DOLIBARR_ACQUISITION_COST",
+  "profit_floor": "CONFIGURABLE",
+  "rules": [
+    "Target price = Stenso public gross price - 1.5%",
+    "Never publish below Dolibarr acquisition cost",
+    "B2B supplier price does not overwrite historical Dolibarr acquisition cost"
+  ]
+}

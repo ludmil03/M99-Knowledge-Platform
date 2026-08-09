@@ -196,3 +196,38 @@ Status
 - New product exports initialize `p.pmp` to numeric `0`.
 - This is a technical initial PMP, not an inferred purchase price or cost.
 - Added regression test ensuring PMP is never NULL.
+
+
+# M99 v0.5.4 — Identity, Catalog & Optimization Guardrails
+
+- Canonical M99 ID: `M99 000001` (M99 + space + six digits).
+- Existing MoneyWork, Dolibarr and website identifiers are preserved as mappings.
+- Existing website canonical URLs are protected during SEO/content enrichment.
+- Hierarchy: ProductGroup -> Product -> Variant.
+- Each stock-managed variant gets its own M99 ID.
+- Website UX may expose one product page with size/color attributes.
+- Dolibarr may hold each stock-managed variant as a separate product/SKU.
+- Supplier is a commercial relationship, not a canonical product category.
+- One variant can have multiple SupplierProduct records.
+- SEO/AI optimization is evaluated per Channel x Market using KEEP / ENRICH / REPLACE.
+- Changes require evidence; successful existing pages are not rewritten automatically.
+- Previous versions/baselines must be retained for rollback.
+- Sync ownership: M99=identity/knowledge/SEO workflow; Dolibarr=stock/PMP/ERP; Channel=existing URL/record ID.
+- Migration from old M99-PM/M99-PV IDs is phased through aliases, not destructive renaming.
+
+
+# M99 v0.5.5 — Bultex99 B2B Connector + Pricing + Availability
+
+- Bultex99 B2B is modeled as an authenticated HTML supplier source.
+- Product pages `/pap/minfo.php?i=...` provide supplier product ID, variant code,
+  B2B purchase price, recommended price, warehouse stock, barcode and name.
+- No credentials are stored in GitHub.
+- Live login remains disabled until exact form field names are confirmed.
+- Stenso public gross price is the competitor/reference price.
+- Default target selling price = Stenso public gross price minus 1.5%.
+- Never publish below Dolibarr acquisition cost.
+- Profit floor can force operator review.
+- Bultex B2B current purchase price never silently overwrites historical Dolibarr cost.
+- Own stock master = Dolibarr.
+- Supplier stock source = Bultex99 B2B.
+- Availability is variant-level.
