@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "overrides": [
+    {
+      "override_id": "OVR-000001",
+      "source_type": "moneywork",
+      "external_identifier": "TEST-MW-000001",
+      "automatic_decision": {
+        "status": "REVIEW",
+        "decision_code": "FINAL_REVIEW",
+        "product_id": "M99-PM-000001",
+        "variant_id": null
+      },
+      "operator_decision": {
+        "action": "CONFIRM",
+        "operator": "TEST",
+        "reason": "Operator confirmed the correct M99 identity.",
+        "notes": "Test override."
+      },
+      "final_identity": {
+        "status": "confirmed",
+        "product_id": "M99-PM-000001",
+        "variant_id": "M99-PV-000001"
+      },
+      "status": "active",
+      "created_at": "2026-08-07T19:17:37+00:00",
+      "updated_at": "2026-08-07T19:17:37+00:00"
+    }
+  ]
+}
