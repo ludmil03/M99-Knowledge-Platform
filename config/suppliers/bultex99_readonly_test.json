@@ -1,0 +1,30 @@
+{
+  "version": "0.5.6",
+  "mode": "READ_ONLY",
+  "allowed_network_actions": [
+    "GET /pap/login.php",
+    "POST discovered login form",
+    "GET /pap/minfo.php?i=<numeric_product_id>"
+  ],
+  "forbidden_actions": [
+    "basket writes",
+    "order creation",
+    "document writes",
+    "Dolibarr writes",
+    "website/channel writes"
+  ],
+  "credentials": {
+    "storage": "process_environment_only",
+    "persist_to_file": false,
+    "persist_to_git": false
+  },
+  "control_product": {
+    "product_id": "109168",
+    "supplier_variant_code": "06200368.39",
+    "warehouse_code": "222",
+    "previous_purchase_price_ex_vat": "23.24",
+    "previous_recommended_price_ex_vat": "37.08",
+    "previous_quantity": "45",
+    "barcode": "2006200368030"
+  }
+}
