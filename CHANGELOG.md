@@ -165,3 +165,24 @@ Status
 ---
 
 © M99 Group
+
+---
+
+# [0.5.0] - 2026-08-08
+
+## MoneyWork Migration & Dolibarr Adapter
+
+### Added
+- MoneyWork fixed-width ARTDATA parser
+- MoneyWork customer/supplier CSV wrapper parser
+- Migration quarantine for malformed legacy rows
+- Counterparty normalization and conservative deduplication
+- Unified CUSTOMER/SUPPLIER role clustering
+- Dolibarr 44-column product exporter
+- First nine M99 variants for M99-PM-000001
+
+### Safety decisions
+- MoneyWork IDs remain external mappings.
+- ARTDATA opaque numeric tail is not interpreted as price.
+- Unknown price/VAT/cost values remain blank.
+- Real customer and supplier datasets are not committed to Git.

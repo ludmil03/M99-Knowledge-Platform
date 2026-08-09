@@ -1,0 +1,174 @@
+{
+  "knowledge_id": "KNW-00000001",
+  "product_id": "M99-PM-000001",
+  "variant_schema_version": "1.0.0",
+  "variants": [
+    {
+      "variant_id": "M99-PV-000001",
+      "sku": "M99-PV-000001",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "39",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000002",
+      "sku": "M99-PV-000002",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "40",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000003",
+      "sku": "M99-PV-000003",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "41",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000004",
+      "sku": "M99-PV-000004",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "42",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000005",
+      "sku": "M99-PV-000005",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "43",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000006",
+      "sku": "M99-PV-000006",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "44",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000007",
+      "sku": "M99-PV-000007",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "45",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000008",
+      "sku": "M99-PV-000008",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "46",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    },
+    {
+      "variant_id": "M99-PV-000009",
+      "sku": "M99-PV-000009",
+      "product_id": "M99-PM-000001",
+      "attributes": {
+        "size": "47",
+        "color": "Black"
+      },
+      "ean": null,
+      "status": "active",
+      "mapping_status": "validated",
+      "confidence": 100,
+      "external_ids": {
+        "manufacturer_product_sku": "643870",
+        "supplier_product_sku": "4077",
+        "moneywork": null
+      }
+    }
+  ],
+  "notes": [
+    "Variant IDs are M99-owned identity.",
+    "MoneyWork IDs are external mappings only after confirmed matching.",
+    "EAN remains empty until verified per size."
+  ]
+}

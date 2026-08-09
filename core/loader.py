@@ -74,7 +74,8 @@ class ProductLoader:
             "technologies",
             "standards",
             "applications",
-            "certifications"
+            "certifications",
+            "variants"
 
         ]
 

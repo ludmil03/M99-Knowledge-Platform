@@ -3,7 +3,6 @@
   "product_id": "M99-PM-000001",
   "version": "1.0.0",
   "status": "gold-master",
-
   "identity": "identity.json",
   "specifications": "specifications.json",
   "materials": "materials.json",
@@ -11,23 +10,21 @@
   "standards": "standards.json",
   "applications": "applications.json",
   "certifications": "certifications.json",
-
   "content": {
     "bg": "content.bg.json",
     "en": null,
     "ro": null,
     "de": null
   },
-
   "media": {
     "images": "images.json",
     "documents": null
   },
-
   "metadata": {
     "created_by": "M99 Knowledge Platform",
     "created_at": "2026-08-06T00:00:00Z",
     "updated_at": "2026-08-06T00:00:00Z",
     "schema_version": "1.0.0"
-  }
+  },
+  "variants": "variants.json"
 }
