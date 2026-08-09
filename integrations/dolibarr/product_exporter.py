@@ -145,9 +145,18 @@ class DolibarrProductExporter:
             if variant.get("status", "active") != "active":
                 continue
 
-            ref = variant.get("sku") or variant.get("variant_id")
+            existing_ref = (
+                variant.get("external_ids", {}).get("dolibarr_ref")
+                or variant.get("external_ids", {}).get("moneywork")
+            )
+            ref = (
+                existing_ref
+                or variant.get("m99_id")
+                or variant.get("sku")
+                or variant.get("variant_id")
+            )
             if not ref:
-                raise DolibarrExportError("Variant is missing SKU/ref")
+                raise DolibarrExportError("Variant is missing Dolibarr/M99 reference")
 
             attrs = variant.get("attributes", {})
             size = str(attrs.get("size", "")).strip()

@@ -1,0 +1,31 @@
+{
+  "scope": "CHANNEL_X_MARKET",
+  "decisions": [
+    "KEEP",
+    "ENRICH",
+    "REPLACE"
+  ],
+  "protected_fields": [
+    "canonical_url",
+    "external_product_id",
+    "legacy_reference"
+  ],
+  "audit_dimensions": [
+    "search_engine_visibility",
+    "ai_visibility",
+    "title",
+    "meta_description",
+    "h1_h2_h3",
+    "description",
+    "technical_specifications",
+    "standards",
+    "faq",
+    "structured_data",
+    "images",
+    "alt_text",
+    "internal_links",
+    "indexability",
+    "competitor_comparison"
+  ],
+  "rollback_required": true
+}

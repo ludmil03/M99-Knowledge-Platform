@@ -1,0 +1,9 @@
+{
+  "principle": "Supplier is not a canonical product category.",
+  "supplier_is": "commercial_relationship",
+  "multi_supplier_supported": true,
+  "dynamic_views_examples": [
+    "Работни обувки / Бултекс 99",
+    "Продукти с ниска наличност / Бултекс 99"
+  ]
+}

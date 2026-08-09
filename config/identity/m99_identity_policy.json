@@ -1,0 +1,13 @@
+{
+  "format": "M99 000001",
+  "regex": "^M99 [0-9]{6}$",
+  "immutable": true,
+  "never_reuse": true,
+  "rules": [
+    "entity type is separate data",
+    "legacy IDs preserved",
+    "existing site IDs preserved",
+    "existing URLs protected",
+    "each stock-managed variant gets its own M99 ID"
+  ]
+}
