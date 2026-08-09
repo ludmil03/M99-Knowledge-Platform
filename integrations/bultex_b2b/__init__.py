@@ -2,3 +2,4 @@ from .client import BultexB2BClient
 from .parser import parse_product_page
 from .live_readonly import BultexReadOnlyClient, LoginFieldMap
 from .login_diagnostics import diagnose_login_page, LoginPageDiagnostics
+from .login_js_diagnostics import diagnose_login_javascript
