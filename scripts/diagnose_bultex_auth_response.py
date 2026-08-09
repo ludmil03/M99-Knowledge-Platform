@@ -1,0 +1,31 @@
+from integrations.bultex_b2b.safe_live_auth import BultexSafeReadOnlyClient
+from integrations.bultex_b2b.auth_response_diagnostics import diagnose_authentication_response, diagnostics_as_dict
+
+print("Bultex99 B2B AUTHENTICATION RESPONSE DIAGNOSTICS")
+print("================================================")
+print("Credentials are used locally but NEVER printed.")
+print()
+
+client=BultexSafeReadOnlyClient()
+print("[1/2] Discovering dynamic login fields...")
+client.discover_login_form()
+print("      OK")
+print("[2/2] Submitting native login request and inspecting response...")
+d=diagnostics_as_dict(diagnose_authentication_response(client))
+print("      DONE")
+print()
+
+print("Request method:",d["request_method"])
+print("Submitted parameter NAMES only:")
+for x in d["submitted_parameter_names"]: print(" -",x)
+print("HTTP status:",d["status_code"])
+print("Final path:",d["final_path"])
+print("Final query parameter NAMES only:",d["final_query_parameter_names"] or "(none)")
+print("Response is login page:",d["response_is_login_page"])
+print("Response form names:",d["response_form_names"] or "(none)")
+print("Session cookie NAMES only:",d["cookie_names"] or "(none)")
+print("Visible login/status messages:")
+for x in d["visible_messages"]: print(" -",x)
+if not d["visible_messages"]: print(" (none detected)")
+print()
+print("No credential values, cookie values or session IDs were printed.")
