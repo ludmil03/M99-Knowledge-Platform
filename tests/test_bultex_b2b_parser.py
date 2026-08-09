@@ -12,3 +12,10 @@ class T(unittest.TestCase):
         self.assertEqual(str(o.recommended_price_ex_vat),"37.08")
         self.assertEqual(str(o.warehouse_stock.quantity),"45")
         self.assertEqual(o.barcode,"2006200368030")
+
+
+def test_variant_code_is_never_parsed_as_price(self):
+    html=Path("tests/fixtures/bultex_product_sample.html").read_text(encoding="utf-8")
+    o=parse_product_page(html,"x","222","Радиново")
+    self.assertNotEqual(str(o.purchase_price_ex_vat),"6200368.39")
+    self.assertEqual(str(o.purchase_price_ex_vat),"23.24")
