@@ -11,13 +11,28 @@ def _specs(f,lang):
     return {"Protection class":f["protection_class"],"Toe cap":"Aluminium, 200 J","Anti-puncture":f["anti_puncture"],"Upper":"Cowhide suede and breathable 100% recycled polyester mesh","Lining":"Polyester Air Mesh with non-slip microfibre insert","Insole":"Removable anatomical micro-perforated open-cell PU foam with activated carbon","Midsole":"EVA","Outsole":"Nitrile rubber, FO HRO SR","Width":str(f["width"]),"ESD":"Yes" if f["esd"] else "No","Colour":str(f["colour"]).title(),"EU sizes":s}
 
 def _doc(channel,lang,f,seo_title,h1,short,long,h2,image_alt):
-    return {"channel_profile":get_channel_profile(channel),"seo_title":seo_title,"meta_description":_meta(lang,f),"h1":h1,"short_description":short,"long_description":long,"h2":h2,"faq":build_dynamic_faq(f,lang,get_channel_profile(channel)),"image_alt":image_alt,"specifications":_specs(f,lang)}
+    profile=get_channel_profile(channel)
+    return {"channel_profile":profile,"seo_title":seo_title,"meta_description":_meta(channel,lang,f),"h1":h1,"short_description":short,"long_description":long,"h2":h2,"faq":build_dynamic_faq(f,lang,profile),"image_alt":image_alt,"specifications":_specs(f,lang)}
 
-def _meta(lang,f):
+def _meta(channel,lang,f):
     m,s=f["model_name"],_sizes(f)
-    if lang=="bg": return f"Diadora {m}: {f['protection_class']}, алуминиево бомбе 200 J, {f['anti_puncture']}, ESD, FO HRO SR и размери EU {s}."
-    if lang=="ro": return f"Diadora {m}: {f['protection_class']}, bombeu din aluminiu 200 J, {f['anti_puncture']}, ESD, FO HRO SR și mărimi EU {s}."
-    return f"Diadora {m}: {f['protection_class']}, 200 J aluminium toe cap, {f['anti_puncture']}, ESD, FO HRO SR and EU sizes {s}."
+    if channel=="mela99.com" and lang=="bg":
+        return f"Работни обувки Diadora {m}: {f['protection_class']}, алуминиево бомбе 200 J, {f['anti_puncture']}, ESD и размери EU {s}."
+    if channel=="mela99.com" and lang=="en":
+        return f"Diadora {m} safety shoes with {f['protection_class']}, 200 J aluminium toe cap, {f['anti_puncture']}, ESD and EU sizes {s}."
+    if channel=="m99.eu" and lang=="bg":
+        return f"Професионални обувки Diadora {m} с проверени данни: {f['protection_class']}, ESD, A.Box System, Ariatex и EU {s}."
+    if channel=="m99.eu" and lang=="en":
+        return f"Professional Diadora {m} footwear: verified {f['protection_class']}, ESD, A.Box System, Ariatex and EU sizes {s}."
+    if channel=="rabotni-drehi.com" and lang=="bg":
+        return f"Защитни обувки Diadora {m} за професионална работа: {f['protection_class']}, бомбе 200 J, {f['anti_puncture']}, ESD, EU {s}."
+    if channel=="laviro.ro" and lang=="ro":
+        return f"Pantofi de protecție Diadora {m}: clasa {f['protection_class']}, bombeu 200 J, {f['anti_puncture']}, ESD și mărimi EU {s}."
+    if lang=="bg":
+        return f"Diadora {m}: {f['protection_class']}, ESD и размери EU {s}."
+    if lang=="ro":
+        return f"Diadora {m}: {f['protection_class']}, ESD și mărimi EU {s}."
+    return f"Diadora {m}: {f['protection_class']}, ESD and EU sizes {s}."
 
 def build_diadora_content_preview(f):
     m,s=f["model_name"],_sizes(f); tech=_tech(f)

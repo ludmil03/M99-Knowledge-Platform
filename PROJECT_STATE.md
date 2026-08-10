@@ -283,3 +283,8 @@ Content Quality & Evidence Guard added. Publication remains disabled.
 # v0.6.4.1
 Content Quality Refinement added. Existing Product Discovery remains a publication blocker. Bultex integration unchanged.
 
+
+
+# v0.6.5
+Internal Existing Product Discovery added. v0.6.6 is reserved for a one-product controlled publication test after live read-only discovery and operator approval.
+

@@ -1,0 +1,55 @@
+{
+  "canonical_product": {
+    "brand": "Diadora Utility",
+    "model_name": "GLOVE A.BOX LOW PRO S1PS",
+    "manufacturer_item": "701.183121_80013",
+    "ean": null,
+    "legacy_identifiers": [],
+    "protection_class": "S1PS"
+  },
+  "channels": {
+    "mela99.com": [
+      {
+        "product_id": "2045",
+        "url": "https://mela99.com/existing-diadora",
+        "name": "GLOVE A.BOX LOW PRO S1PS",
+        "brand": "Diadora Utility",
+        "reference": "701.183121_80013",
+        "ean": null,
+        "legacy_identifiers": [],
+        "protection_class": "S1PS",
+        "active": false,
+        "raw_source": "synthetic_internal_catalog"
+      }
+    ],
+    "m99.eu": [],
+    "rabotni-drehi.com": [
+      {
+        "product_id": "77",
+        "url": "https://rabotni-drehi.com/product/glove-abox",
+        "name": "GLOVE A.BOX LOW PRO S1PS",
+        "brand": "Diadora Utility",
+        "reference": "OLD-REF",
+        "ean": null,
+        "legacy_identifiers": [],
+        "protection_class": "S1PS",
+        "active": true,
+        "raw_source": "synthetic_internal_catalog"
+      }
+    ],
+    "laviro.ro": [
+      {
+        "product_id": "88",
+        "url": "https://laviro.ro/glove-abox",
+        "name": "GLOVE A.BOX LOW PRO S1PS",
+        "brand": "Diadora Utility",
+        "reference": "701.183121_80013",
+        "ean": null,
+        "legacy_identifiers": [],
+        "protection_class": "S3S",
+        "active": true,
+        "raw_source": "synthetic_internal_catalog"
+      }
+    ]
+  }
+}

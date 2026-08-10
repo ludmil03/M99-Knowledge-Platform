@@ -1,0 +1,3 @@
+from .base import ReadOnlyAdapterConfig, ReadOnlyCatalogAdapter
+from .prestashop_readonly import PrestaShopReadOnlyAdapter
+from .woocommerce_readonly import WooCommerceReadOnlyAdapter

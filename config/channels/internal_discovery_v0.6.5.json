@@ -1,0 +1,33 @@
+{
+  "version": "0.6.5",
+  "mode": "read_only_internal_discovery",
+  "writes_enabled": false,
+  "channels": {
+    "mela99.com": {
+      "adapter": "prestashop",
+      "platform": "ThirtyBees / PrestaShop-compatible Webservice",
+      "base_url": "https://mela99.com",
+      "api_key_env": "M99_MELA99_API_KEY"
+    },
+    "m99.eu": {
+      "adapter": "woocommerce",
+      "platform": "WordPress / WooCommerce REST",
+      "base_url": "https://m99.eu",
+      "key_env": "M99_M99EU_WC_KEY",
+      "secret_env": "M99_M99EU_WC_SECRET"
+    },
+    "rabotni-drehi.com": {
+      "adapter": "woocommerce",
+      "platform": "WordPress / WooCommerce REST",
+      "base_url": "https://rabotni-drehi.com",
+      "key_env": "M99_RABOTNI_WC_KEY",
+      "secret_env": "M99_RABOTNI_WC_SECRET"
+    },
+    "laviro.ro": {
+      "adapter": "prestashop",
+      "platform": "PrestaShop 1.6 Webservice",
+      "base_url": "https://laviro.ro",
+      "api_key_env": "M99_LAVIRO_API_KEY"
+    }
+  }
+}

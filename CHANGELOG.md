@@ -495,3 +495,13 @@ Rules introduced:
 - stronger channel differentiation
 - publication remains disabled
 
+
+
+# v0.6.5 - Internal Existing Product Discovery
+- owned channel catalog becomes authoritative for existing-product discovery
+- generic EXISTING / NEW / POSSIBLE_DUPLICATE / CONFLICT decisions
+- legacy identifier matching
+- GET-only PrestaShop/ThirtyBees and WooCommerce adapters
+- differentiated SEO meta descriptions and channel-intent FAQ
+- publication remains disabled
+
