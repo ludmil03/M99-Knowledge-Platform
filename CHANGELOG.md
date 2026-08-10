@@ -477,3 +477,12 @@ Rules introduced:
 - BG/EN/RO channel-specific SEO/content preview
 - no publish or Dolibarr write
 
+
+
+# v0.6.4 - Content Quality & Evidence Guard
+- canonical facts
+- language/evidence guards
+- structured specifications
+- claim traceability
+- CONTENT_READY gate
+

@@ -1,0 +1,29 @@
+{
+  "version": "0.6.4",
+  "mode": "content_quality_evidence_guard",
+  "writes": {
+    "dolibarr": false,
+    "channels": false,
+    "supplier": false
+  },
+  "quality_gate": {
+    "publication_enabled": false,
+    "operator_approval_required": true,
+    "fail_on_duplicate_model_qualifier": true,
+    "fail_on_unsupported_claim": true,
+    "fail_on_language_contamination": true,
+    "fail_on_missing_required_seo_field": true,
+    "fail_on_missing_canonical_fact": true
+  },
+  "required_content_fields": [
+    "seo_title",
+    "meta_description",
+    "h1",
+    "short_description",
+    "long_description",
+    "h2",
+    "faq",
+    "image_alt",
+    "specifications"
+  ]
+}

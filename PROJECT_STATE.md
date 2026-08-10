@@ -273,3 +273,8 @@ Identity and supplier-review scopes separated. Existing Product Discovery requir
 # v0.6.3
 Existing Product Discovery and channel-specific Content/SEO Preview added. Publication remains blocked pending operator verification.
 
+
+
+# v0.6.4
+Content Quality & Evidence Guard added. Publication remains disabled.
+
