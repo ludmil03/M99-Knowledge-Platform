@@ -1,0 +1,211 @@
+{
+  "m99_id": "M99 100002",
+  "name": "GLOVE A.BOX LOW PRO S1PS",
+  "brand": "Diadora Utility",
+  "applications": [
+    "workwear",
+    "safety",
+    "industrial"
+  ],
+  "manufacturer_evidence": {
+    "source_type": "manufacturer",
+    "source_name": "Diadora Utility",
+    "source_url": "https://www.diadorautility.com/en/bg/glove_a.box_low_pro_s1ps/701.183121_80013.html",
+    "identity_strength": "authoritative_exact_item",
+    "facts": {
+      "model_name": "GLOVE A.BOX LOW PRO S1PS",
+      "manufacturer_item": "701.183121_80013",
+      "colour": "BLACK",
+      "protection_class": "S1PS",
+      "product_type": "low-top safety shoes",
+      "upper": "cowhide suede and 100% recycled breathable polyester mesh",
+      "toe_cap": "aluminium 200J",
+      "anti_puncture": "K SOLE Ultralite",
+      "width": "11",
+      "technology": [
+        "A.Box System",
+        "Ariatex membrane"
+      ],
+      "lining": "Polyester Air Mesh with non-slip microfibre insert",
+      "insole": "removable micro-perforated anatomical open-cell PU foam with activated carbon",
+      "esd": true,
+      "midsole": "EVA",
+      "outsole": "FO HRO SR nitrile rubber",
+      "eu_sizes": [
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48"
+      ]
+    }
+  },
+  "supplier_candidates": [
+    {
+      "source_type": "supplier_public_site",
+      "source_name": "Stenso",
+      "source_url": "https://stenso.net/en/produkt/low-shoes/5097-work-shoes-diadora-glove-abox-low-pro-s3s-fo-sr-hro-esd-black",
+      "identity_strength": "near_match_only",
+      "facts": {
+        "model_name": "GLOVE A.BOX LOW PRO S3S FO SR HRO ESD BLACK",
+        "manufacturer_item": null,
+        "supplier_reference": "06100768",
+        "protection_class": "S3S",
+        "public_price_eur_inc_vat": 152.4,
+        "public_price_bgn_inc_vat": 298.07,
+        "listed_sizes": [
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45",
+          "46",
+          "47",
+          "48"
+        ]
+      },
+      "notes": "Near-match only. Protection class differs from manufacturer exact item; do not auto-merge."
+    }
+  ],
+  "legacy_identifiers": [],
+  "variants": [
+    {
+      "variant_id": "M99 100002-35",
+      "size": "35",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-36",
+      "size": "36",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-37",
+      "size": "37",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-38",
+      "size": "38",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-39",
+      "size": "39",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-40",
+      "size": "40",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-41",
+      "size": "41",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-42",
+      "size": "42",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-43",
+      "size": "43",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-44",
+      "size": "44",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-45",
+      "size": "45",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-46",
+      "size": "46",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-47",
+      "size": "47",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    },
+    {
+      "variant_id": "M99 100002-48",
+      "size": "48",
+      "color": "BLACK",
+      "supplier_codes": {},
+      "ean": null
+    }
+  ],
+  "supplier_offers": [],
+  "existing_channels": {},
+  "content_by_channel": {
+    "mela99.com": {
+      "bg": {
+        "title": "Работни обувки Diadora GLOVE A.BOX LOW PRO S1PS",
+        "h1": "Diadora GLOVE A.BOX LOW PRO S1PS",
+        "status": "draft_preview"
+      },
+      "en": {
+        "title": "Diadora GLOVE A.BOX LOW PRO S1PS safety shoes",
+        "h1": "Diadora GLOVE A.BOX LOW PRO S1PS",
+        "status": "draft_preview"
+      }
+    },
+    "rabotni-drehi.com": {
+      "bg": {
+        "title": "Защитни обувки Diadora GLOVE A.BOX LOW PRO S1PS",
+        "h1": "Защитни обувки Diadora GLOVE A.BOX LOW PRO S1PS",
+        "status": "draft_preview"
+      }
+    },
+    "laviro.ro": {
+      "ro": {
+        "title": "Pantofi de protecție Diadora GLOVE A.BOX LOW PRO S1PS",
+        "h1": "Diadora GLOVE A.BOX LOW PRO S1PS",
+        "status": "draft_preview"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "version": "0.6.2",
+  "mode": "real_evidence_preview",
+  "publication_enabled": false,
+  "dolibarr_write_enabled": false,
+  "channel_write_enabled": false,
+  "operator_review_required": true,
+  "evidence_policy": {
+    "manufacturer_exact_item": "authoritative",
+    "supplier_exact_item": "commercial_evidence",
+    "supplier_near_match": "candidate_only",
+    "auto_merge_requires_exact_identity": true,
+    "conflicting_protection_class_blocks_auto_merge": true,
+    "existing_url_protected": true
+  }
+}
