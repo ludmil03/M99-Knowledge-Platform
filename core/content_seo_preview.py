@@ -1,142 +1,30 @@
-def _sizes(f):
-    return f"{f['eu_sizes'][0]}–{f['eu_sizes'][-1]}"
+from core.dynamic_faq import build_dynamic_faq
+from core.channel_content_profiles import get_channel_profile
 
-def _specs_bg(f):
-    return {
-        "Клас на защита":f["protection_class"],
-        "Защитно бомбе":"Алуминиево, 200 J",
-        "Защита от пробиване":f["anti_puncture"],
-        "Горна част":"Велурена телешка кожа и дишаща мрежа от 100% рециклиран полиестер",
-        "Подплата":"Polyester Air Mesh с противоплъзгаща вложка от микрофибър",
-        "Стелка":"Подвижна анатомична микроперфорирана стелка от PU пяна с активен въглен",
-        "Междинна подметка":"EVA",
-        "Външна подметка":"Нитрилен каучук, FO HRO SR",
-        "Ширина":str(f["width"]),
-        "ESD":"Да" if f["esd"] else "Не",
-        "Цвят":"Черен" if str(f["colour"]).upper()=="BLACK" else str(f["colour"]),
-        "Размери EU":_sizes(f)
-    }
+def _sizes(f): return f"{f['eu_sizes'][0]}–{f['eu_sizes'][-1]}"
+def _tech(f): return ", ".join(f.get("technology",[]))
 
-def _specs_en(f):
-    return {
-        "Protection class":f["protection_class"],
-        "Toe cap":"Aluminium, 200 J",
-        "Anti-puncture":f["anti_puncture"],
-        "Upper":"Cowhide suede and breathable 100% recycled polyester mesh",
-        "Lining":"Polyester Air Mesh with non-slip microfibre insert",
-        "Insole":"Removable anatomical micro-perforated open-cell PU foam with activated carbon",
-        "Midsole":"EVA",
-        "Outsole":"Nitrile rubber, FO HRO SR",
-        "Width":str(f["width"]),
-        "ESD":"Yes" if f["esd"] else "No",
-        "Colour":str(f["colour"]).title(),
-        "EU sizes":_sizes(f)
-    }
+def _specs(f,lang):
+    s=_sizes(f)
+    if lang=="bg": return {"Клас на защита":f["protection_class"],"Защитно бомбе":"Алуминиево, 200 J","Защита от пробиване":f["anti_puncture"],"Горна част":"Велурена телешка кожа и дишаща мрежа от 100% рециклиран полиестер","Подплата":"Polyester Air Mesh с противоплъзгаща вложка от микрофибър","Стелка":"Подвижна анатомична микроперфорирана стелка от PU пяна с активен въглен","Междинна подметка":"EVA","Външна подметка":"Нитрилен каучук, FO HRO SR","Ширина":str(f["width"]),"ESD":"Да" if f["esd"] else "Не","Цвят":"Черен" if str(f["colour"]).upper()=="BLACK" else str(f["colour"]),"Размери EU":s}
+    if lang=="ro": return {"Clasa de protecție":f["protection_class"],"Bombeu":"Aluminiu, 200 J","Protecție antiperforație":f["anti_puncture"],"Partea superioară":"Piele întoarsă de bovină și plasă respirabilă din poliester 100% reciclat","Căptușeală":"Polyester Air Mesh cu inserție antialunecare din microfibră","Branț":"Anatomic, detașabil, microperforat, din spumă PU cu carbon activ","Talpă intermediară":"EVA","Talpă exterioară":"Cauciuc nitrilic, FO HRO SR","Lățime":str(f["width"]),"ESD":"Da" if f["esd"] else "Nu","Culoare":"Negru" if str(f["colour"]).upper()=="BLACK" else str(f["colour"]),"Mărimi EU":s}
+    return {"Protection class":f["protection_class"],"Toe cap":"Aluminium, 200 J","Anti-puncture":f["anti_puncture"],"Upper":"Cowhide suede and breathable 100% recycled polyester mesh","Lining":"Polyester Air Mesh with non-slip microfibre insert","Insole":"Removable anatomical micro-perforated open-cell PU foam with activated carbon","Midsole":"EVA","Outsole":"Nitrile rubber, FO HRO SR","Width":str(f["width"]),"ESD":"Yes" if f["esd"] else "No","Colour":str(f["colour"]).title(),"EU sizes":s}
 
-def _specs_ro(f):
-    return {
-        "Clasa de protecție":f["protection_class"],
-        "Bombeu":"Aluminiu, 200 J",
-        "Protecție antiperforație":f["anti_puncture"],
-        "Partea superioară":"Piele întoarsă de bovină și plasă respirabilă din poliester 100% reciclat",
-        "Căptușeală":"Polyester Air Mesh cu inserție antialunecare din microfibră",
-        "Branț":"Anatomic, detașabil, microperforat, din spumă PU cu carbon activ",
-        "Talpă intermediară":"EVA",
-        "Talpă exterioară":"Cauciuc nitrilic, FO HRO SR",
-        "Lățime":str(f["width"]),
-        "ESD":"Da" if f["esd"] else "Nu",
-        "Culoare":"Negru" if str(f["colour"]).upper()=="BLACK" else str(f["colour"]),
-        "Mărimi EU":_sizes(f)
-    }
+def _doc(channel,lang,f,seo_title,h1,short,long,h2,image_alt):
+    return {"channel_profile":get_channel_profile(channel),"seo_title":seo_title,"meta_description":_meta(lang,f),"h1":h1,"short_description":short,"long_description":long,"h2":h2,"faq":build_dynamic_faq(f,lang,get_channel_profile(channel)),"image_alt":image_alt,"specifications":_specs(f,lang)}
 
-def _bg_mela(f):
+def _meta(lang,f):
     m,s=f["model_name"],_sizes(f)
-    return {
-      "seo_title":f"Работни обувки Diadora {m} | MELA99",
-      "meta_description":f"Diadora {m}: клас {f['protection_class']}, алуминиево бомбе 200 J, K SOLE Ultralite, ESD и размери EU {s}.",
-      "h1":f"Работни обувки Diadora {m}",
-      "short_description":f"Ниски защитни обувки Diadora Utility, клас {f['protection_class']}, с алуминиево бомбе 200 J, K SOLE Ultralite и ESD.",
-      "long_description":f"Diadora Utility {m} е нисък защитен модел с горна част от велурена телешка кожа и дишаща мрежа от 100% рециклиран полиестер. Защитата включва алуминиево бомбе 200 J и система K SOLE Ultralite. Моделът е с ширина {f['width']}, технологии A.Box System и Ariatex, подплата Air Mesh и подвижна анатомична микроперфорирана стелка от PU пяна с активен въглен. Междинната подметка е EVA, а външната подметка е от нитрилен каучук с характеристики FO HRO SR. Официалният размерен диапазон е EU {s}.",
-      "h2":[f"Защита {f['protection_class']} и ESD","Материали и технологии","Комфорт и конструкция","Размери и технически характеристики"],
-      "faq":[
-        {"q":"Какъв е класът на защита?","a":f"Производителят класифицира модела като {f['protection_class']}."},
-        {"q":"Какво защитно бомбе използва моделът?","a":"Алуминиево защитно бомбе с устойчивост 200 J."},
-        {"q":"Какъв е размерният диапазон?","a":f"Размери EU {s}."}
-      ],
-      "image_alt":[f"Diadora {m} черни защитни обувки",f"Diadora {m} страничен изглед",f"Подметка на Diadora {m} FO HRO SR"],
-      "specifications":_specs_bg(f)
-    }
+    if lang=="bg": return f"Diadora {m}: {f['protection_class']}, алуминиево бомбе 200 J, {f['anti_puncture']}, ESD, FO HRO SR и размери EU {s}."
+    if lang=="ro": return f"Diadora {m}: {f['protection_class']}, bombeu din aluminiu 200 J, {f['anti_puncture']}, ESD, FO HRO SR și mărimi EU {s}."
+    return f"Diadora {m}: {f['protection_class']}, 200 J aluminium toe cap, {f['anti_puncture']}, ESD, FO HRO SR and EU sizes {s}."
 
-def _en_mela(f):
-    m,s=f["model_name"],_sizes(f)
-    return {
-      "seo_title":f"Diadora {m} Safety Shoes | MELA99",
-      "meta_description":f"Diadora {m}: {f['protection_class']}, 200 J aluminium toe cap, K SOLE Ultralite, ESD and EU sizes {s}.",
-      "h1":f"Diadora {m} Safety Shoes",
-      "short_description":f"Low-cut Diadora Utility safety footwear with {f['protection_class']} protection, a 200 J aluminium toe cap, K SOLE Ultralite and ESD.",
-      "long_description":f"Diadora Utility {m} combines a cowhide suede upper with breathable 100% recycled polyester mesh. Protection includes a 200 J aluminium toe cap and K SOLE Ultralite. The design uses width {f['width']}, A.Box System and Ariatex, Air Mesh lining and a removable anatomical micro-perforated PU foam insole with activated carbon. The midsole is EVA and the outsole is nitrile rubber with FO HRO SR properties. Manufacturer-listed EU sizes: {s}.",
-      "h2":[f"{f['protection_class']} and ESD protection","Upper materials and technologies","Comfort and construction","EU sizes and specifications"],
-      "faq":[
-        {"q":"What is the protection class?","a":f"The manufacturer classifies the model as {f['protection_class']}."},
-        {"q":"What toe protection is used?","a":"A 200 J aluminium safety toe cap."},
-        {"q":"What is the EU size range?","a":f"EU {s}."}
-      ],
-      "image_alt":[f"Diadora {m} black safety shoes",f"Diadora {m} side view",f"Diadora {m} FO HRO SR outsole"],
-      "specifications":_specs_en(f)
-    }
-
-def _bg_m99(f):
-    c=_bg_mela(f); m,s=f["model_name"],_sizes(f)
-    c.update({
-      "seo_title":f"Diadora {m} професионални обувки | M99.eu",
-      "h1":f"Diadora {m} – професионални защитни обувки",
-      "short_description":f"Професионални обувки Diadora Utility с клас {f['protection_class']}, ESD, A.Box System и размери EU {s}.",
-      "long_description":f"Diadora Utility {m} е професионален нисък модел за работни среди, в които са необходими защита на пръстите, защита от пробиване и ESD. Горната част съчетава велурена телешка кожа и дишаща мрежа от рециклиран полиестер. Моделът използва алуминиево бомбе 200 J, K SOLE Ultralite, A.Box System и Ariatex. Подметката комбинира EVA междинен слой и нитрилен каучук с FO HRO SR. Размери EU {s}."
-    })
-    return c
-
-def _en_m99(f):
-    c=_en_mela(f); m,s=f["model_name"],_sizes(f)
-    c.update({
-      "seo_title":f"Diadora {m} Professional Footwear | M99.eu",
-      "h1":f"Diadora {m} Professional Safety Footwear",
-      "short_description":f"Professional Diadora Utility footwear with {f['protection_class']}, ESD, A.Box System and EU sizes {s}.",
-      "long_description":f"Diadora Utility {m} is low-cut professional safety footwear with a suede-and-mesh upper, a 200 J aluminium toe cap, K SOLE Ultralite and ESD properties. A.Box System and Ariatex support the upper construction, while the sole package combines EVA and nitrile rubber with FO HRO SR properties. Listed EU sizes: {s}."
-    })
-    return c
-
-def _bg_rabotni(f):
-    c=_bg_mela(f); m,s=f["model_name"],_sizes(f)
-    c.update({
-      "seo_title":f"Защитни обувки Diadora {m} | Работни дрехи",
-      "h1":f"Защитни обувки Diadora {m}",
-      "short_description":f"Diadora {m} за професионална работа: {f['protection_class']}, ESD, алуминиево бомбе 200 J и K SOLE Ultralite.",
-      "long_description":f"За работна среда, в която са важни защитата и дишащата конструкция, Diadora {m} предлага горна част от велурена телешка кожа и рециклирана полиестерна мрежа. Защитният пакет включва алуминиево бомбе 200 J и K SOLE Ultralite. A.Box System и Ariatex допълват конструкцията, а Air Mesh подплатата и анатомичната PU стелка с активен въглен са предназначени за продължително професионално носене. Размери EU {s}."
-    })
-    return c
-
-def _ro_laviro(f):
-    m,s=f["model_name"],_sizes(f)
-    return {
-      "seo_title":f"Pantofi de protecție Diadora {m} | Laviro",
-      "meta_description":f"Diadora {m}: clasa {f['protection_class']}, bombeu din aluminiu 200 J, K SOLE Ultralite, ESD și mărimi EU {s}.",
-      "h1":f"Pantofi de protecție Diadora {m}",
-      "short_description":f"Încălțăminte joasă Diadora Utility, clasa {f['protection_class']}, cu bombeu din aluminiu 200 J, K SOLE Ultralite și ESD.",
-      "long_description":f"Diadora Utility {m} combină pielea întoarsă de bovină cu plasă respirabilă din poliester 100% reciclat. Protecția include un bombeu din aluminiu 200 J și K SOLE Ultralite. Construcția folosește lățimea {f['width']}, A.Box System și Ariatex, căptușeală Air Mesh și un branț anatomic detașabil, microperforat, din spumă PU cu carbon activ. Talpa intermediară este EVA, iar talpa exterioară este din cauciuc nitrilic cu caracteristici FO HRO SR. Mărimi EU: {s}.",
-      "h2":[f"Protecție {f['protection_class']} și ESD","Materiale și tehnologii","Confort și construcție","Mărimi și specificații"],
-      "faq":[
-        {"q":"Care este clasa de protecție?","a":f"Producătorul clasifică modelul ca {f['protection_class']}."},
-        {"q":"Ce tip de bombeu are?","a":"Bombeu de protecție din aluminiu, 200 J."},
-        {"q":"Care este gama de mărimi?","a":f"EU {s}."}
-      ],
-      "image_alt":[f"Pantofi de protecție negri Diadora {m}",f"Diadora {m} vedere laterală",f"Talpă Diadora {m} FO HRO SR"],
-      "specifications":_specs_ro(f)
-    }
-
-def build_diadora_content_preview(product):
-    return {
-      "mela99.com":{"bg":_bg_mela(product),"en":_en_mela(product)},
-      "m99.eu":{"bg":_bg_m99(product),"en":_en_m99(product)},
-      "rabotni-drehi.com":{"bg":_bg_rabotni(product)},
-      "laviro.ro":{"ro":_ro_laviro(product)}
-    }
+def build_diadora_content_preview(f):
+    m,s=f["model_name"],_sizes(f); tech=_tech(f)
+    mela_bg=_doc("mela99.com","bg",f,f"Работни обувки Diadora {m} | MELA99",f"Работни обувки Diadora {m}",f"Ниски защитни обувки Diadora Utility {m} с клас {f['protection_class']}, алуминиево бомбе 200 J, {f['anti_puncture']} и ESD.",f"Diadora Utility {m} е нисък защитен модел, при който проверените характеристики са събрани в ясна техническа конфигурация: клас {f['protection_class']}, алуминиево бомбе 200 J и {f['anti_puncture']}. Горната част съчетава велурена телешка кожа с дишаща мрежа от 100% рециклиран полиестер. Конструкцията включва {tech}, Air Mesh подплата и подвижна анатомична микроперфорирана PU стелка с активен въглен. EVA междинната подметка е комбинирана с външна подметка от нитрилен каучук, обозначена FO, HRO и SR. Моделът е ESD, с ширина {f['width']} и официален размерен диапазон EU {s}.",["Проверена защита и конструкция","Материали и технологии Diadora Utility","Стелка, подметка и ESD","Размери и технически данни"],[f"Diadora {m} черни защитни обувки",f"Diadora {m} страничен изглед",f"Подметка на Diadora {m} FO HRO SR"])
+    mela_en=_doc("mela99.com","en",f,f"Diadora {m} Safety Shoes | MELA99",f"Diadora {m} Safety Shoes",f"Low-cut Diadora Utility {m} safety footwear with {f['protection_class']}, a 200 J aluminium toe cap, {f['anti_puncture']} and ESD.",f"Diadora Utility {m} is low-cut safety footwear built around verified manufacturer specifications: {f['protection_class']}, a 200 J aluminium toe cap and {f['anti_puncture']}. The upper combines cowhide suede with breathable 100% recycled polyester mesh. Construction details include {tech}, Air Mesh lining and a removable anatomical micro-perforated PU foam insole with activated carbon. An EVA midsole is paired with a nitrile-rubber outsole marked FO, HRO and SR. The model is ESD, width {f['width']}, in manufacturer-listed EU sizes {s}.",["Verified protection and construction","Diadora Utility materials and technologies","Insole, outsole and ESD","EU sizes and technical data"],[f"Diadora {m} black safety shoes",f"Diadora {m} side view",f"Diadora {m} FO HRO SR outsole"])
+    m99_bg=_doc("m99.eu","bg",f,f"Diadora {m} професионални обувки | M99.eu",f"Diadora {m} – професионални защитни обувки",f"Професионален нисък модел Diadora Utility с {f['protection_class']}, ESD, {tech} и размери EU {s}.",f"Diadora Utility {m} е професионален нисък защитен модел с ясно проследими технически данни от производителя. Защитната конфигурация включва {f['protection_class']}, алуминиево бомбе 200 J и {f['anti_puncture']}. Горната част е от велурена телешка кожа и дишаща мрежа от 100% рециклиран полиестер, а конструкцията използва {tech}. Air Mesh подплата, подвижна PU стелка с активен въглен, EVA междинна подметка и нитрилна външна подметка FO HRO SR оформят техническия пакет. ESD: да; ширина: {f['width']}; размери EU {s}.",["Професионална защитна конфигурация","Технологии A.Box и Ariatex","Конструкция на ходилото","Технически параметри и размери"],[f"Diadora {m} професионални защитни обувки",f"Конструкция на Diadora {m}",f"Diadora {m} нитрилна подметка FO HRO SR"])
+    m99_en=_doc("m99.eu","en",f,f"Diadora {m} Professional Safety Footwear | M99.eu",f"Diadora {m} Professional Safety Footwear",f"Professional low-cut Diadora Utility footwear with {f['protection_class']}, ESD, {tech} and EU sizes {s}.",f"Diadora Utility {m} is professional low-cut safety footwear documented from manufacturer-verified technical data. Its protection configuration includes {f['protection_class']}, a 200 J aluminium toe cap and {f['anti_puncture']}. The cowhide-suede upper incorporates breathable 100% recycled polyester mesh and the construction uses {tech}. Air Mesh lining, a removable PU insole with activated carbon, an EVA midsole and a nitrile-rubber FO HRO SR outsole complete the technical package. ESD: yes; width: {f['width']}; EU sizes {s}.",["Professional protection configuration","A.Box and Ariatex technologies","Footbed and sole construction","Technical parameters and EU sizes"],[f"Diadora {m} professional safety footwear",f"Diadora {m} construction detail",f"Diadora {m} nitrile FO HRO SR outsole"])
+    rab_bg=_doc("rabotni-drehi.com","bg",f,f"Защитни обувки Diadora {m} | Работни дрехи",f"Защитни обувки Diadora {m}",f"Ниски работни обувки Diadora {m}: {f['protection_class']}, ESD, алуминиево бомбе 200 J, {f['anti_puncture']} и размери EU {s}.",f"Когато търсите ниски защитни обувки с конкретно проверими характеристики, Diadora {m} предлага клас {f['protection_class']}, алуминиево бомбе 200 J и {f['anti_puncture']}. Горната част е комбинация от велурена телешка кожа и дишаща мрежа от 100% рециклиран полиестер. Моделът е ESD и използва {tech}, Air Mesh подплата и подвижна анатомична PU стелка с активен въглен. Подметката комбинира EVA междинен слой с нитрилен каучук FO HRO SR. Наличният по данни на производителя размерен диапазон е EU {s}, при ширина {f['width']}.",["Каква защита предлага моделът","Материали за работна среда","Подметка, ESD и конструкция","Размери и избор на вариант"],[f"Работни обувки Diadora {m} черни",f"Diadora {m} нисък работен модел",f"Подметка FO HRO SR на Diadora {m}"])
+    ro=_doc("laviro.ro","ro",f,f"Pantofi de protecție Diadora {m} | Laviro",f"Pantofi de protecție Diadora {m}",f"Încălțăminte joasă Diadora {m}: {f['protection_class']}, ESD, bombeu din aluminiu 200 J, {f['anti_puncture']} și mărimi EU {s}.",f"Diadora Utility {m} este un model jos de protecție, prezentat pe baza specificațiilor verificate ale producătorului. Configurația include clasa {f['protection_class']}, bombeu din aluminiu 200 J și {f['anti_puncture']}. Partea superioară combină pielea întoarsă de bovină cu plasă respirabilă din poliester 100% reciclat, iar construcția folosește {tech}. Căptușeala Air Mesh, branțul anatomic detașabil din spumă PU cu carbon activ, talpa intermediară EVA și talpa exterioară din cauciuc nitrilic FO HRO SR completează datele tehnice. Modelul are proprietăți ESD, lățime {f['width']} și mărimi EU {s}.",["Protecție verificată pentru model","Materiale și tehnologii Diadora Utility","Branț, talpă și proprietăți ESD","Mărimi și date tehnice"],[f"Pantofi de protecție negri Diadora {m}",f"Diadora {m} vedere laterală",f"Talpă FO HRO SR Diadora {m}"])
+    return {"mela99.com":{"bg":mela_bg,"en":mela_en},"m99.eu":{"bg":m99_bg,"en":m99_en},"rabotni-drehi.com":{"bg":rab_bg},"laviro.ro":{"ro":ro}}

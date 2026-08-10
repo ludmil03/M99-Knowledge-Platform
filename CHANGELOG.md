@@ -486,3 +486,12 @@ Rules introduced:
 - claim traceability
 - CONTENT_READY gate
 
+
+
+# v0.6.4.1 - Content Quality Refinement
+- FACT / DERIVED_SAFE_CLAIM / MARKETING_CLAIM / UNSUPPORTED_CLAIM policy
+- channel-specific content profiles
+- dynamic fact-backed FAQ
+- stronger channel differentiation
+- publication remains disabled
+

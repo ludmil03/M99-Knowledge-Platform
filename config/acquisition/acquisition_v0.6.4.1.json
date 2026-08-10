@@ -1,0 +1,9 @@
+{
+  "version":"0.6.4.1",
+  "mode":"content_quality_refinement",
+  "writes":{"dolibarr":false,"channels":false,"supplier":false},
+  "claim_policy":{"allowed":["FACT","DERIVED_SAFE_CLAIM"],"review":["MARKETING_CLAIM"],"blocked":["UNSUPPORTED_CLAIM"]},
+  "channel_profiles":["mela99.com","m99.eu","rabotni-drehi.com","laviro.ro"],
+  "dynamic_faq":{"enabled":true,"minimum_questions":5,"verified_facts_only":true},
+  "quality_gate":{"publication_enabled":false,"operator_approval_required":true,"fail_on_unverified_marketing_claim":true,"fail_on_unsupported_claim":true,"fail_on_language_contamination":true}
+}

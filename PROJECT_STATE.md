@@ -278,3 +278,8 @@ Existing Product Discovery and channel-specific Content/SEO Preview added. Publi
 # v0.6.4
 Content Quality & Evidence Guard added. Publication remains disabled.
 
+
+
+# v0.6.4.1
+Content Quality Refinement added. Existing Product Discovery remains a publication blocker. Bultex integration unchanged.
+
