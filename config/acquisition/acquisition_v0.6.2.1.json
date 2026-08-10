@@ -1,0 +1,21 @@
+{
+  "version": "0.6.2.1",
+  "identity": {
+    "format": "M99 + single space + six digits",
+    "single_numeric_namespace": true,
+    "productgroup_and_variants_share_namespace": true,
+    "variant_parent_link_required": true
+  },
+  "review_scope": {
+    "supplier_mapping_conflict_blocks_product_identity": false,
+    "supplier_mapping_conflict_blocks_pricing": true,
+    "supplier_mapping_conflict_blocks_supplier_availability": true,
+    "manufacturer_verified_identity_can_continue_to_content_preview": true
+  },
+  "commercial_evidence": {
+    "near_match_price_usable": false,
+    "near_match_stock_usable": false,
+    "exact_identity_required": true
+  },
+  "existing_product_discovery_required_before_first_publish": true
+}

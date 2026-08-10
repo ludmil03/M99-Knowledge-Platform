@@ -1,5 +1,5 @@
 {
-  "m99_id": "M99 100001",
+  "m99_id": "M99 900001",
   "name": "TEST Professional Footwear Model",
   "brand": "TEST BRAND",
   "applications": [
@@ -15,7 +15,8 @@
   ],
   "variants": [
     {
-      "variant_id": "M99 100001-39",
+      "variant_id": "M99 900002",
+      "parent_m99_id": "M99 900001",
       "size": "39",
       "color": "black",
       "supplier_codes": {
@@ -24,7 +25,8 @@
       "ean": "0000000000039"
     },
     {
-      "variant_id": "M99 100001-40",
+      "variant_id": "M99 900003",
+      "parent_m99_id": "M99 900001",
       "size": "40",
       "color": "black",
       "supplier_codes": {

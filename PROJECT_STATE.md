@@ -263,3 +263,8 @@ Rules introduced:
 - conflicting protection class blocks auto-merge;
 - operator review is mandatory for unresolved supplier mapping;
 - no website or Dolibarr write is enabled.
+
+
+# v0.6.2.1
+Identity and supplier-review scopes separated. Existing Product Discovery required before first publish.
+

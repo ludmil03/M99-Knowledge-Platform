@@ -461,3 +461,11 @@ Rules introduced:
 - conflicting protection class blocks auto-merge;
 - operator review is mandatory for unresolved supplier mapping;
 - no website or Dolibarr write is enabled.
+
+
+# v0.6.2.1 - Identity & Review Scope Fix
+- numeric-only M99 variant IDs
+- supplier review scoped separately from product identity
+- near-match commercial values quarantined
+- schema version corrected to 0.6.2.1
+

@@ -74,104 +74,118 @@
           "48"
         ]
       },
-      "notes": "Near-match only. Protection class differs from manufacturer exact item; do not auto-merge."
+      "notes": "Near-match only. Commercial price/availability must not be used for the S1PS product until identity is proven."
     }
   ],
   "legacy_identifiers": [],
   "variants": [
     {
-      "variant_id": "M99 100002-35",
+      "variant_id": "M99 100003",
+      "parent_m99_id": "M99 100002",
       "size": "35",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-36",
+      "variant_id": "M99 100004",
+      "parent_m99_id": "M99 100002",
       "size": "36",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-37",
+      "variant_id": "M99 100005",
+      "parent_m99_id": "M99 100002",
       "size": "37",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-38",
+      "variant_id": "M99 100006",
+      "parent_m99_id": "M99 100002",
       "size": "38",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-39",
+      "variant_id": "M99 100007",
+      "parent_m99_id": "M99 100002",
       "size": "39",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-40",
+      "variant_id": "M99 100008",
+      "parent_m99_id": "M99 100002",
       "size": "40",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-41",
+      "variant_id": "M99 100009",
+      "parent_m99_id": "M99 100002",
       "size": "41",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-42",
+      "variant_id": "M99 100010",
+      "parent_m99_id": "M99 100002",
       "size": "42",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-43",
+      "variant_id": "M99 100011",
+      "parent_m99_id": "M99 100002",
       "size": "43",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-44",
+      "variant_id": "M99 100012",
+      "parent_m99_id": "M99 100002",
       "size": "44",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-45",
+      "variant_id": "M99 100013",
+      "parent_m99_id": "M99 100002",
       "size": "45",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-46",
+      "variant_id": "M99 100014",
+      "parent_m99_id": "M99 100002",
       "size": "46",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-47",
+      "variant_id": "M99 100015",
+      "parent_m99_id": "M99 100002",
       "size": "47",
       "color": "BLACK",
       "supplier_codes": {},
       "ean": null
     },
     {
-      "variant_id": "M99 100002-48",
+      "variant_id": "M99 100016",
+      "parent_m99_id": "M99 100002",
       "size": "48",
       "color": "BLACK",
       "supplier_codes": {},

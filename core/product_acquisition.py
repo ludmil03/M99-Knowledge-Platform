@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Iterable
 
 
 class ProductGroupLifecycle(str, Enum):
@@ -20,6 +19,7 @@ class LegacyIdentifier:
 @dataclass
 class ProductVariant:
     variant_id: str
+    parent_m99_id: str | None = None
     size: str | None = None
     color: str | None = None
     supplier_codes: dict[str, str] = field(default_factory=dict)
@@ -66,10 +66,18 @@ class ProductGroup:
     def transition(self, target: ProductGroupLifecycle) -> None:
         allowed = {
             ProductGroupLifecycle.DRAFT: {ProductGroupLifecycle.ACTIVE},
-            ProductGroupLifecycle.ACTIVE: {ProductGroupLifecycle.PAUSED, ProductGroupLifecycle.RETIRED},
-            ProductGroupLifecycle.PAUSED: {ProductGroupLifecycle.ACTIVE, ProductGroupLifecycle.RETIRED},
+            ProductGroupLifecycle.ACTIVE: {
+                ProductGroupLifecycle.PAUSED,
+                ProductGroupLifecycle.RETIRED,
+            },
+            ProductGroupLifecycle.PAUSED: {
+                ProductGroupLifecycle.ACTIVE,
+                ProductGroupLifecycle.RETIRED,
+            },
             ProductGroupLifecycle.RETIRED: set(),
         }
         if target not in allowed[self.lifecycle]:
-            raise ValueError(f"Invalid lifecycle transition: {self.lifecycle} -> {target}")
+            raise ValueError(
+                f"Invalid lifecycle transition: {self.lifecycle} -> {target}"
+            )
         self.lifecycle = target
