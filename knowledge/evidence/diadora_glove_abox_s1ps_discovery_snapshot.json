@@ -1,0 +1,42 @@
+{
+  "snapshot_date": "2026-08-10",
+  "product": {
+    "model_name": "GLOVE A.BOX LOW PRO S1PS",
+    "manufacturer_item": "701.183121_80013"
+  },
+  "manufacturer": {
+    "source": "Diadora Utility",
+    "url": "https://www.diadorautility.com/en/bg/glove_a.box_low_pro_s1ps/701.183121_80013.html",
+    "status": "EXACT_MANUFACTURER_ITEM_VERIFIED"
+  },
+  "channel_public_search": [
+    {
+      "channel": "mela99.com",
+      "query_type": "manufacturer_item_and_exact_model",
+      "query_value": "701.183121_80013 | GLOVE A.BOX LOW PRO S1PS",
+      "result": "NO_PUBLIC_EXACT_MATCH_FOUND",
+      "notes": "Public search snapshot only; not proof that the product is absent."
+    },
+    {
+      "channel": "m99.eu",
+      "query_type": "manufacturer_item_and_exact_model",
+      "query_value": "701.183121_80013 | GLOVE A.BOX LOW PRO S1PS",
+      "result": "NO_PUBLIC_EXACT_MATCH_FOUND",
+      "notes": "Public search snapshot only; not proof that the product is absent."
+    },
+    {
+      "channel": "rabotni-drehi.com",
+      "query_type": "manufacturer_item_and_exact_model",
+      "query_value": "701.183121_80013 | GLOVE A.BOX LOW PRO S1PS",
+      "result": "NO_PUBLIC_EXACT_MATCH_FOUND",
+      "notes": "Public search snapshot only; not proof that the product is absent."
+    },
+    {
+      "channel": "laviro.ro",
+      "query_type": "manufacturer_item_and_exact_model",
+      "query_value": "701.183121_80013 | GLOVE A.BOX LOW PRO S1PS",
+      "result": "NO_PUBLIC_EXACT_MATCH_FOUND",
+      "notes": "Public search snapshot only; not proof that the product is absent."
+    }
+  ]
+}

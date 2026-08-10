@@ -268,3 +268,8 @@ Rules introduced:
 # v0.6.2.1
 Identity and supplier-review scopes separated. Existing Product Discovery required before first publish.
 
+
+
+# v0.6.3
+Existing Product Discovery and channel-specific Content/SEO Preview added. Publication remains blocked pending operator verification.
+

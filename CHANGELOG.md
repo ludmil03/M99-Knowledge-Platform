@@ -469,3 +469,11 @@ Rules introduced:
 - near-match commercial values quarantined
 - schema version corrected to 0.6.2.1
 
+
+
+# v0.6.3 - Existing Product Discovery + Content/SEO Preview
+- conservative existing-product discovery gate
+- exact-match preservation rules
+- BG/EN/RO channel-specific SEO/content preview
+- no publish or Dolibarr write
+

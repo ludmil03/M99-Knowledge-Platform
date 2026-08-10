@@ -1,0 +1,44 @@
+{
+  "version": "0.6.3",
+  "mode": "discovery_and_content_preview",
+  "writes": {
+    "dolibarr": false,
+    "channels": false,
+    "supplier": false
+  },
+  "existing_product_discovery": {
+    "required_before_first_publish": true,
+    "exact_match_keys": [
+      "manufacturer_item",
+      "ean",
+      "legacy_identifier",
+      "exact_model_name"
+    ],
+    "public_search_no_result_is_not_proof_of_absence": true,
+    "operator_confirmation_required_when_no_exact_match_found": true,
+    "existing_url_must_be_preserved_on_match": true,
+    "existing_channel_id_must_be_preserved_on_match": true
+  },
+  "content_preview": {
+    "operator_approval_required": true,
+    "channel_specific_copy_required": true,
+    "copy_between_own_sites_verbatim": false,
+    "allowed_languages": [
+      "bg",
+      "en",
+      "ro"
+    ],
+    "seo_fields": [
+      "seo_title",
+      "meta_description",
+      "h1",
+      "short_description",
+      "long_description",
+      "h2",
+      "faq",
+      "image_alt"
+    ],
+    "facts_must_be_supported_by_verified_manufacturer_evidence": true,
+    "supplier_near_match_facts_forbidden": true
+  }
+}
