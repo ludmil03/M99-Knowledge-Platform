@@ -516,3 +516,14 @@ Rules introduced:
 - full existing XML snapshot mutation
 - audit and rollback snapshot
 
+
+
+# v0.6.6 - Controlled Single Product Publish
+- first write-capable mela99.com publisher
+- DRY_RUN / WRITE_DRAFT / PUBLISH_LIVE modes
+- one product + one channel scope
+- existing Product ID + name + slug + URL + legacy identity lock
+- name change only with PROVEN_BETTER + operator approval
+- full existing XML snapshot mutation
+- audit and rollback snapshot
+

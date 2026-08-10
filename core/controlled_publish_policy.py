@@ -127,7 +127,6 @@ def validate_publish_gates(gates: dict) -> list[str]:
         "target_channel_is_mela99",
         "content_ready",
         "internal_discovery_complete",
-        "operator_approved",
         "audit_enabled",
         "rollback_enabled",
     )
@@ -135,9 +134,14 @@ def validate_publish_gates(gates: dict) -> list[str]:
         if not gates.get(key):
             failures.append(f"GATE_FAILED:{key}")
 
-    # Pricing is deliberately a separate gate. For WRITE_DRAFT it may be blocked
-    # if no public sale price is being written. LIVE requires an approved price.
     mode = gates.get("publish_mode")
+    # No operator approval for a strictly no-write DRY_RUN.
+    if mode in (PublishMode.WRITE_DRAFT.value, PublishMode.PUBLISH_LIVE.value):
+        if not gates.get("operator_approved"):
+            failures.append("GATE_FAILED:operator_approved")
+
+    # Pricing is deliberately a separate gate. LIVE requires approved
+    # pricing and availability.
     if mode == PublishMode.PUBLISH_LIVE.value:
         if not gates.get("pricing_approved"):
             failures.append("GATE_FAILED:pricing_approved")
