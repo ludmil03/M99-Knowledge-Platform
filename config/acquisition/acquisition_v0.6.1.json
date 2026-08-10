@@ -1,0 +1,35 @@
+{
+  "version": "0.6.1",
+  "mode": "preview_only",
+  "publication_enabled": false,
+  "dolibarr_write_enabled": false,
+  "channel_write_enabled": false,
+  "operator_review_required": true,
+  "m99_id": {
+    "prefix": "M99 ",
+    "digits": 6,
+    "sample_sequence_start": 100001
+  },
+  "content_languages": {
+    "mela99.com": [
+      "bg",
+      "en"
+    ],
+    "m99.eu": [
+      "bg",
+      "en"
+    ],
+    "rabotni-drehi.com": [
+      "bg"
+    ],
+    "medicinski-drehi.com": [
+      "bg"
+    ],
+    "laviro.ro": [
+      "ro"
+    ],
+    "alviro.ro": [
+      "ro"
+    ]
+  }
+}

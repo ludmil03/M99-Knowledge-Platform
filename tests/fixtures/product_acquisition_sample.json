@@ -1,0 +1,74 @@
+{
+  "m99_id": "M99 100001",
+  "name": "TEST Professional Footwear Model",
+  "brand": "TEST BRAND",
+  "applications": [
+    "workwear",
+    "safety",
+    "horeca"
+  ],
+  "legacy_identifiers": [
+    {
+      "system": "moneywork",
+      "value": "TEST-OLD-001"
+    }
+  ],
+  "variants": [
+    {
+      "variant_id": "M99 100001-39",
+      "size": "39",
+      "color": "black",
+      "supplier_codes": {
+        "test_supplier": "TEST.39"
+      },
+      "ean": "0000000000039"
+    },
+    {
+      "variant_id": "M99 100001-40",
+      "size": "40",
+      "color": "black",
+      "supplier_codes": {
+        "test_supplier": "TEST.40"
+      },
+      "ean": "0000000000040"
+    }
+  ],
+  "supplier_offers": [
+    {
+      "supplier": "test_supplier",
+      "supplier_product_id": "TEST-PRODUCT",
+      "purchase_price_ex_vat": 50.0,
+      "recommended_price_ex_vat": 80.0,
+      "stock_qty": 10,
+      "source": "synthetic_test_fixture"
+    }
+  ],
+  "existing_channels": {
+    "mela99.com": {
+      "existing_product_id": "2045",
+      "legacy_identifier": "OLD-MELA-001",
+      "protected_url": "/test-existing-url"
+    }
+  },
+  "content_by_channel": {
+    "mela99.com": {
+      "bg": {
+        "title": "Тестов професионален модел",
+        "h1": "Тестов професионален модел",
+        "status": "preview"
+      },
+      "en": {
+        "title": "Test professional model",
+        "h1": "Test professional model",
+        "status": "preview"
+      }
+    },
+    "rabotni-drehi.com": {
+      "bg": {
+        "title": "Тестов работен модел",
+        "h1": "Тестов работен модел",
+        "status": "preview"
+      }
+    }
+  }
+}
