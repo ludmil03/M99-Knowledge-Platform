@@ -1,0 +1,46 @@
+{
+  "version": "0.6.6",
+  "feature": "controlled_single_product_publish",
+  "target": {
+    "channel": "mela99.com",
+    "m99_id": "M99 100002",
+    "manufacturer_item": "701.183121_80013",
+    "test_category_id": 938
+  },
+  "modes": {
+    "DRY_RUN": {
+      "writes": false
+    },
+    "WRITE_DRAFT": {
+      "writes": true,
+      "active": false,
+      "category_id": 938,
+      "price_write_requires_approval": true
+    },
+    "PUBLISH_LIVE": {
+      "writes": true,
+      "active": true,
+      "pricing_approval_required": true,
+      "availability_approval_required": true
+    }
+  },
+  "existing_channel_identity_lock": {
+    "product_id": "KEEP",
+    "product_name": "KEEP_BY_DEFAULT",
+    "product_name_change": "PROVEN_BETTER_AND_OPERATOR_APPROVED_ONLY",
+    "slug": "KEEP_ALWAYS_ON_UPDATE",
+    "url": "KEEP_ALWAYS_ON_UPDATE",
+    "legacy_identifiers": "KEEP_ALWAYS_ON_UPDATE"
+  },
+  "safety": {
+    "single_product_only": true,
+    "single_channel_only": true,
+    "live_internal_discovery_required": true,
+    "operator_confirmation_required": true,
+    "audit_required": true,
+    "rollback_snapshot_required_for_update": true,
+    "credentials_from_process_environment_only": true,
+    "credentials_in_logs": false,
+    "bulk_publish": false
+  }
+}

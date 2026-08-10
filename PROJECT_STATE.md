@@ -288,3 +288,8 @@ Content Quality Refinement added. Existing Product Discovery remains a publicati
 # v0.6.5
 Internal Existing Product Discovery added. v0.6.6 is reserved for a one-product controlled publication test after live read-only discovery and operator approval.
 
+
+
+# v0.6.6
+Controlled one-product mela99 publish capability added. Installer remains read-only. First real write must use WRITE_DRAFT after successful v0.6.5 LIVE discovery.
+
