@@ -61,6 +61,17 @@ class ControlledMela99Publisher:
         self._check(response, 'GET_PRODUCT')
         return response.text
 
+    def get_resource_xml(self, resource: str, params: dict | None = None) -> str:
+        response = requests.get(
+            self._url(f"/api/{resource}"),
+            params=params or {},
+            auth=(self.api_key(), ""),
+            timeout=self.config.timeout_seconds,
+            headers={"Accept": "application/xml"},
+        )
+        self._raise_for_response(response, "GET")
+        return response.text
+
     def get_product_blank_schema_xml(self) -> str:
         response = requests.get(
             self._url('/api/products'),
