@@ -535,3 +535,14 @@ Rules introduced:
 - adds GET-only mela99.com S3S live test
 - S1PS and S3S remain distinct identities
 
+
+
+# v0.6.6.3 - Duplicate Resolution & Existing Master Selection
+- GET-only full product snapshots for duplicate candidates
+- candidate ranking for operator review
+- explicit operator master selection
+- EXISTING_CONFIRMED master state
+- preserve ID/name/slug/URL/reference identity
+- all non-master candidates become DUPLICATE_REVIEW
+- no automatic delete/merge/retire
+

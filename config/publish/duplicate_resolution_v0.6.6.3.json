@@ -1,0 +1,38 @@
+{
+  "version": "0.6.6.3",
+  "feature": "duplicate_resolution_existing_master_selection",
+  "target": {
+    "channel": "mela99.com",
+    "m99_id": "M99 100017",
+    "manufacturer_item": "701.183119_80013"
+  },
+  "candidate_policy": {
+    "automatic_master_selection": false,
+    "operator_confirmation_required": true,
+    "exact_confirmation_pattern": "CONFIRM MASTER <PRODUCT_ID> M99 100017 MELA99",
+    "full_get_snapshot_required": true
+  },
+  "master_identity_lock": {
+    "product_id": "KEEP",
+    "product_name": "KEEP_BY_DEFAULT",
+    "slug": "KEEP",
+    "url": "KEEP",
+    "reference": "KEEP_AS_LEGACY_UNLESS_OPERATOR_MIGRATES"
+  },
+  "duplicate_policy": {
+    "automatic_delete": false,
+    "automatic_retire": false,
+    "lifecycle_action": "DUPLICATE_REVIEW",
+    "future_options": [
+      "KEEP",
+      "RETIRED_WITH_REDIRECT",
+      "MANUAL_MERGE",
+      "DELETE_ONLY_AFTER_OPERATOR_LITERAL_DELETE"
+    ]
+  },
+  "writes": {
+    "website": false,
+    "dolibarr": false,
+    "supplier": false
+  }
+}
