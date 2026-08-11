@@ -298,3 +298,8 @@ Controlled one-product mela99 publish capability added. Installer remains read-o
 # v0.6.6
 Controlled one-product mela99 publish capability added. Installer remains read-only. First real write must use WRITE_DRAFT after successful v0.6.5 LIVE discovery.
 
+
+
+# v0.6.6.2
+GET-only existing-product validation moved to Diadora GLOVE A.BOX LOW PRO S3S 701.183119_80013 before any WRITE_DRAFT.
+

@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.6.6.2",
+  "productgroup": {
+    "m99_id": "M99 100017",
+    "lifecycle": "draft",
+    "name": "GLOVE A.BOX LOW PRO S3S",
+    "brand": "Diadora Utility"
+  },
+  "manufacturer_evidence": {
+    "source_type": "manufacturer",
+    "source_name": "Diadora Utility",
+    "source_url": "https://www.diadorautility.com/en/bg/glove_a.box_low_pro_s3s/701.183119_80013.html",
+    "identity_strength": "authoritative_exact_item",
+    "facts": {
+      "model_name": "GLOVE A.BOX LOW PRO S3S",
+      "manufacturer_item": "701.183119_80013",
+      "colour": "BLACK",
+      "protection_class": "S3S",
+      "product_type": "low-top safety shoes",
+      "toe_cap": "aluminium 200J",
+      "anti_puncture": "K SOLE Ultralite",
+      "width": "11",
+      "technology": [
+        "A.Box System",
+        "Ariatex membrane"
+      ],
+      "esd": true,
+      "midsole": "EVA",
+      "outsole": "FO HRO SR nitrile rubber",
+      "eu_sizes": [
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48"
+      ]
+    }
+  },
+  "supplier_candidates": [
+    {
+      "supplier": "Stenso",
+      "source_url": "https://stenso.net/en/produkt/low-shoes/5097-work-shoes-diadora-glove-abox-low-pro-s3s-fo-sr-hro-esd-black",
+      "supplier_reference": "06100768",
+      "model_name": "GLOVE A.BOX LOW PRO S3S FO SR HRO ESD BLACK",
+      "protection_class": "S3S",
+      "mapping_strength": "VERY_STRONG_SUPPLIER_MATCH",
+      "exact_manufacturer_item_publicly_proven": false,
+      "operator_review_required": true
+    }
+  ],
+  "known_channel_evidence": {
+    "mela99.com": {
+      "public_url": "https://mela99.com/bg/продукти/работни-обувки-diadora-glove-abox-low-pro-s3s.html",
+      "visible_name": "Работни обувки Diadora Glove A.Box Low Pro S3S",
+      "expected_discovery": [
+        "EXISTING",
+        "POSSIBLE_DUPLICATE"
+      ],
+      "new_is_failure": true
+    }
+  }
+}

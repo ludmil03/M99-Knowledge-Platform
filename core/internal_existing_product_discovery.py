@@ -57,6 +57,18 @@ def _norm_name(value: object) -> str:
     return text
 
 
+def _model_family_match(canonical_model: object, candidate_name: object) -> bool:
+    canonical = _norm_name(canonical_model)
+    candidate = _norm_name(candidate_name)
+    if not canonical or not candidate:
+        return False
+    if canonical == candidate:
+        return True
+    # Conservative containment: the complete canonical model phrase must be
+    # present in the channel title; descriptive prefixes/suffixes are allowed.
+    return f" {canonical} " in f" {candidate} "
+
+
 def _legacy_overlap(identity: CanonicalIdentity, candidate: CatalogCandidate) -> bool:
     wanted = {_norm(x) for x in (identity.legacy_identifiers or []) if _norm(x)}
     found = {_norm(x) for x in (candidate.legacy_identifiers or []) if _norm(x)}
@@ -98,7 +110,7 @@ def compare_candidate(identity: CanonicalIdentity, candidate: CatalogCandidate) 
     model_match = bool(
         identity.model_name
         and candidate.name
-        and _norm_name(identity.model_name) == _norm_name(candidate.name)
+        and _model_family_match(identity.model_name, candidate.name)
     )
     brand_match = bool(
         identity.brand
@@ -125,13 +137,13 @@ def compare_candidate(identity: CanonicalIdentity, candidate: CatalogCandidate) 
         score = 100
     elif model_match and brand_match:
         decision = InternalDiscoveryDecision.POSSIBLE_DUPLICATE
-        reasons.extend(["exact_normalized_model_name", "brand_match"])
+        reasons.extend(["normalized_model_family_match", "brand_match"])
         if protection_conflict:
             reasons.append("PROTECTION_CLASS_CONFLICT")
         score = 75
     elif model_match:
         decision = InternalDiscoveryDecision.POSSIBLE_DUPLICATE
-        reasons.append("exact_normalized_model_name")
+        reasons.append("normalized_model_family_match")
         if protection_conflict:
             reasons.append("PROTECTION_CLASS_CONFLICT")
         score = 60

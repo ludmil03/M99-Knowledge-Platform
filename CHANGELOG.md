@@ -527,3 +527,11 @@ Rules introduced:
 - full existing XML snapshot mutation
 - audit and rollback snapshot
 
+
+
+# v0.6.6.2 - Diadora S3S Existing Product Test
+- adds exact S3S manufacturer fixture 701.183119_80013
+- adds conservative model-family containment for prefixed store titles
+- adds GET-only mela99.com S3S live test
+- S1PS and S3S remain distinct identities
+
