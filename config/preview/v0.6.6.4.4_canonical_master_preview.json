@@ -1,0 +1,19 @@
+{
+  "version": "0.6.6.4.4",
+  "mode": "CANONICAL_MASTER_BUILD_PREVIEW_ONLY",
+  "fresh_live_sources": [
+    "mela99 product 2076",
+    "mela99 product 2100",
+    "languages",
+    "categories"
+  ],
+  "manufacturer_identity": {
+    "brand": "Diadora Utility",
+    "model": "GLOVE A.BOX LOW PRO S3S",
+    "manufacturer_item": "701.183119_80013"
+  },
+  "preselect_container": false,
+  "preselect_price": false,
+  "preselect_tax": false,
+  "write": false
+}
