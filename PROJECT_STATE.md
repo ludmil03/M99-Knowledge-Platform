@@ -308,3 +308,8 @@ GET-only existing-product validation moved to Diadora GLOVE A.BOX LOW PRO S3S 70
 # v0.6.6.3
 Duplicate resolution and operator-selected existing master added for Diadora S3S. WRITE_DRAFT remains blocked until master selection is reviewed.
 
+
+
+# v0.6.6.4
+Controlled WRITE_DRAFT prepared for EXISTING_CONFIRMED master 2076. Central review category 938 becomes the operator queue for new and improved products.
+

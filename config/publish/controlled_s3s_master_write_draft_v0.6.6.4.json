@@ -1,0 +1,41 @@
+{
+  "version": "0.6.6.4",
+  "feature": "controlled_s3s_master_write_draft",
+  "target": {
+    "channel": "mela99.com",
+    "product_id": "2076",
+    "m99_id": "M99 100017",
+    "manufacturer_item": "701.183119_80013"
+  },
+  "central_review_category": {
+    "category_id": 938,
+    "purpose": "single_operator_queue_for_new_and_improved_products",
+    "new_draft": "ONLY_CATEGORY_DURING_REVIEW",
+    "existing_update": "KEEP_ALL_EXISTING_CATEGORIES_PLUS_REVIEW_CATEGORY",
+    "remove_existing_categories": false
+  },
+  "identity_lock": {
+    "product_id": "KEEP",
+    "name": "KEEP_BY_DEFAULT",
+    "name_change": "PROVEN_BETTER_AND_OPERATOR_APPROVED_ONLY",
+    "slug": "KEEP",
+    "url": "KEEP",
+    "reference": "KEEP_AS_LEGACY"
+  },
+  "write": {
+    "mode": "WRITE_DRAFT",
+    "active": false,
+    "single_product_only": true,
+    "master_must_be": "EXISTING_CONFIRMED",
+    "rollback_snapshot_required": true,
+    "audit_required": true,
+    "readback_required": true
+  },
+  "duplicates": {
+    "product_ids": [
+      "2100",
+      "2147"
+    ],
+    "action": "UNTOUCHED"
+  }
+}
