@@ -41,7 +41,7 @@ class ControlledMela99Publisher:
     def _url(self, path: str) -> str:
         return self.config.base_url.rstrip('/') + '/' + path.lstrip('/')
 
-    def _check(self, response, method: str):
+    def _raise_for_response(self, response, method: str):
         if response.ok:
             return
         raise ControlledChannelHttpError(
@@ -51,6 +51,10 @@ class ControlledMela99Publisher:
             response_text=response.text,
         )
 
+    # Backward-compatible alias for older controlled publish code.
+    def _check(self, response, method: str):
+        self._raise_for_response(response, method)
+
     def get_product_xml(self, product_id: str) -> str:
         response = requests.get(
             self._url(f'/api/products/{product_id}'),
@@ -58,7 +62,7 @@ class ControlledMela99Publisher:
             timeout=self.config.timeout_seconds,
             headers={'Accept': 'application/xml'},
         )
-        self._check(response, 'GET_PRODUCT')
+        self._raise_for_response(response, 'GET_PRODUCT')
         return response.text
 
     def get_resource_xml(self, resource: str, params: dict | None = None) -> str:
@@ -80,7 +84,7 @@ class ControlledMela99Publisher:
             timeout=self.config.timeout_seconds,
             headers={'Accept': 'application/xml'},
         )
-        self._check(response, 'GET_BLANK_SCHEMA')
+        self._raise_for_response(response, 'GET_BLANK_SCHEMA')
         return response.text
 
     def create_product_xml(self, xml_body: str) -> str:
@@ -91,7 +95,7 @@ class ControlledMela99Publisher:
             timeout=self.config.timeout_seconds,
             headers={'Content-Type': 'application/xml', 'Accept': 'application/xml'},
         )
-        self._check(response, 'POST_PRODUCT')
+        self._raise_for_response(response, 'POST_PRODUCT')
         return response.text
 
     def update_product_xml(self, product_id: str, xml_body: str) -> str:
@@ -102,7 +106,7 @@ class ControlledMela99Publisher:
             timeout=self.config.timeout_seconds,
             headers={'Content-Type': 'application/xml', 'Accept': 'application/xml'},
         )
-        self._check(response, 'PUT_PRODUCT')
+        self._raise_for_response(response, 'PUT_PRODUCT')
         return response.text
 
     def rollback_product_xml(self, product_id: str, writable_rollback_xml: str) -> str:
@@ -113,7 +117,7 @@ class ControlledMela99Publisher:
             timeout=self.config.timeout_seconds,
             headers={'Content-Type': 'application/xml', 'Accept': 'application/xml'},
         )
-        self._check(response, 'PUT_ROLLBACK')
+        self._raise_for_response(response, 'PUT_ROLLBACK')
         return response.text
 
 

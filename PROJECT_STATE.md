@@ -318,3 +318,8 @@ Controlled WRITE_DRAFT prepared for EXISTING_CONFIRMED master 2076. Central revi
 # v0.6.6.4
 Controlled WRITE_DRAFT prepared for EXISTING_CONFIRMED master 2076. Central review category 938 becomes the operator queue for new and improved products.
 
+
+
+# v0.6.6.4.2.1
+GET-only live language/category analysis hotfix. WRITE_DRAFT remains blocked until live analysis succeeds.
+

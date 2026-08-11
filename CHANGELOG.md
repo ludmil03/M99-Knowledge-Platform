@@ -568,3 +568,12 @@ Rules introduced:
 - URL/slug/reference protected
 - duplicate products untouched
 
+
+
+# v0.6.6.4.2.1 - GET Client Helper Fix
+- restores shared _raise_for_response helper
+- get_resource_xml now uses the same HTTP validation path as product GET/PUT
+- keeps backward-compatible _check alias
+- adds generic GET regression tests
+- no website write
+
