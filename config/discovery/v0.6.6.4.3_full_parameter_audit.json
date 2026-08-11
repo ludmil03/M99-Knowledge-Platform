@@ -1,0 +1,11 @@
+{
+  "version": "0.6.6.4.3",
+  "mode": "LIVE_GET_ONLY_FULL_PARAMETER_AUDIT",
+  "products": [
+    "2076",
+    "2100"
+  ],
+  "fresh_read_each_run": true,
+  "winner_preselected": false,
+  "writes": false
+}
