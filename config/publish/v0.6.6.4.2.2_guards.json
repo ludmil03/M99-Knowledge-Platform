@@ -1,0 +1,23 @@
+{
+  "version": "0.6.6.4.2.2",
+  "review_category": {
+    "discover_by": "LIVE_API_EXACT_NAME",
+    "name": "Test",
+    "inactive_valid": true,
+    "hardcode_id": false
+  },
+  "languages": {
+    "discover_by": "LIVE_API_ISO",
+    "bg_expected_live": "2",
+    "en_expected_live": "1",
+    "hardcode": false
+  },
+  "future_write_success_requires": [
+    "review_category_persisted",
+    "original_categories_preserved",
+    "images_preserved",
+    "combinations_preserved",
+    "correct_language_mapping"
+  ],
+  "installer_write": false
+}

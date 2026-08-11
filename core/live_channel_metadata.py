@@ -17,17 +17,33 @@ def parse_languages_xml(xml_text: str) -> dict:
     if not result['ready']: result['blocking_reason']='BG_EN_LANGUAGE_MAPPING_NOT_UNAMBIGUOUS'
     return result
 
-def parse_categories_xml(xml_text: str, target_name: str='Test') -> dict:
-    root=ET.fromstring(xml_text); target=target_name.casefold().strip(); matches=[]
-    for cat in root.findall('.//category'):
-        cid=_text(cat,'id'); active=_text(cat,'active'); names=[]; name_node=cat.find('name')
+def parse_categories_xml(xml_text: str, target_name: str="Test", *, allow_inactive_review_category: bool=True) -> dict:
+    root=ET.fromstring(xml_text)
+    target=target_name.casefold().strip()
+    matches=[]
+    for cat in root.findall(".//category"):
+        cid=_text(cat,"id"); active=_text(cat,"active")
+        names=[]
+        name_node=cat.find("name")
         if name_node is not None:
-            for lang in name_node.findall('.//language'):
-                txt=(lang.text or '').strip()
-                if txt: names.append({'language_id':str(lang.attrib.get('id','')),'value':txt})
-        if any(x['value'].casefold().strip()==target for x in names):
-            matches.append({'id':cid,'active':active,'names':names})
-    active_matches=[x for x in matches if x['active']!='0']
-    result={'target_name':target_name,'matches':matches,'active_matches':active_matches,'ready':len(active_matches)==1,'selected_category_id':active_matches[0]['id'] if len(active_matches)==1 else None}
-    if not result['ready']: result['blocking_reason']='TEST_CATEGORY_NOT_UNAMBIGUOUS' if active_matches else 'TEST_CATEGORY_NOT_FOUND'
+            for lang in name_node.findall(".//language"):
+                value=(lang.text or "").strip()
+                if value:
+                    names.append({"language_id":str(lang.attrib.get("id","")),"value":value})
+        if any(x["value"].casefold().strip()==target for x in names):
+            matches.append({"id":cid,"active":active,"is_active":active!="0","names":names})
+    selected=matches[0] if len(matches)==1 else None
+    ready=bool(selected and (selected["is_active"] or allow_inactive_review_category))
+    result={
+        "target_name":target_name,
+        "matches":matches,
+        "ready":ready,
+        "selected_category_id":selected["id"] if ready else None,
+        "selected_category_active":selected["is_active"] if selected else None,
+        "review_category_can_be_inactive":allow_inactive_review_category,
+        "discovery_authority":"LIVE_API_NAME_MATCH",
+    }
+    if len(matches)==0: result["blocking_reason"]="TEST_CATEGORY_NOT_FOUND"
+    elif len(matches)>1: result["blocking_reason"]="TEST_CATEGORY_AMBIGUOUS"
+    elif not ready: result["blocking_reason"]="TEST_CATEGORY_NOT_ELIGIBLE"
     return result
