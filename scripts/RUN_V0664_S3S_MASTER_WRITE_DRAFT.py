@@ -9,11 +9,13 @@ import os
 from core.review_category_policy import apply_review_category_policy, REVIEW_CATEGORY_ID
 from core.s3s_master_content import build_s3s_content
 from core.s3s_master_write_draft import mutate_master_to_review_draft
+from core.prestashop_writable_schema import build_writable_product_snapshot, removed_top_level_fields
 from integrations.channel_publish import (
     Mela99ClientConfig,
     ControlledMela99Publisher,
     write_audit_record,
     sha256_text,
+    ControlledChannelHttpError,
 )
 
 ROOT = Path(".")
@@ -74,16 +76,21 @@ client = ControlledMela99Publisher(
     )
 )
 
-# Full current XML snapshot immediately before write.
+# Full current snapshot + live blank schema immediately before write.
 original_xml = client.get_product_xml(TARGET_PRODUCT_ID)
+blank_schema_xml = client.get_product_blank_schema_xml()
+writable_original_xml = build_writable_product_snapshot(original_xml, blank_schema_xml)
+removed_fields = removed_top_level_fields(original_xml, writable_original_xml)
 
 timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 ROLLBACK_DIR.mkdir(parents=True, exist_ok=True)
-rollback_path = ROLLBACK_DIR / f"{timestamp}_mela99_product_2076_before_v0664.xml"
-rollback_path.write_text(original_xml, encoding="utf-8")
+full_snapshot_path = ROLLBACK_DIR / f"{timestamp}_mela99_product_2076_full_before_v06641.xml"
+full_snapshot_path.write_text(original_xml, encoding="utf-8")
+rollback_path = ROLLBACK_DIR / f"{timestamp}_mela99_product_2076_writable_rollback_v06641.xml"
+rollback_path.write_text(writable_original_xml, encoding="utf-8")
 
 updated_xml, mutation = mutate_master_to_review_draft(
-    original_xml,
+    writable_original_xml,
     content=content,
     review_category_id=REVIEW_CATEGORY_ID,
     change_name=name_change,
@@ -112,7 +119,7 @@ if not name_change and mutation["name_changed"]:
 
 audit_path = AUDIT_DIR / f"{timestamp}_M99_100017_mela99_WRITE_DRAFT_UPDATE.json"
 audit = {
-    "schema_version": "0.6.6.4",
+    "schema_version": "0.6.6.4.1",
     "timestamp_utc": timestamp,
     "mode": "WRITE_DRAFT",
     "channel": TARGET_CHANNEL,
@@ -122,7 +129,11 @@ audit = {
     "master_identity_status": master.get("identity_status"),
     "review_category_policy": category_policy,
     "mutation": mutation,
+    "full_original_snapshot": str(full_snapshot_path),
     "rollback_snapshot": str(rollback_path),
+    "blank_schema_sha256": sha256_text(blank_schema_xml),
+    "writable_original_sha256": sha256_text(writable_original_xml),
+    "removed_nonwritable_top_level_fields": removed_fields,
     "request_sha256": sha256_text(updated_xml),
     "write_attempted": True,
     "write_success": False,
@@ -144,7 +155,7 @@ try:
 
     write_audit_record(audit_path, audit)
 
-    print("M99 v0.6.6.4 - Controlled S3S Master WRITE_DRAFT")
+    print("M99 v0.6.6.4.1 - Safe Writable S3S Master WRITE_DRAFT")
     print("==================================================")
     print("Channel: mela99.com")
     print("Product ID: 2076")
@@ -158,14 +169,27 @@ try:
     print("Central review category added:", REVIEW_CATEGORY_ID)
     print("Duplicates untouched:", audit["duplicates_untouched"])
     print("Write success: YES")
-    print("Rollback snapshot:", rollback_path)
+    print("Non-writable top-level fields removed:", removed_fields)
+    print("Full original snapshot:", full_snapshot_path)
+    print("Writable rollback snapshot:", rollback_path)
     print("Audit:", audit_path)
     print("Readback snapshot:", verify_path)
 except Exception as exc:
     audit["error_type"] = type(exc).__name__
-    audit["error"] = str(exc)[:1000]
+    audit["error"] = str(exc)[:1500]
+    if isinstance(exc, ControlledChannelHttpError):
+        audit["http_error"] = {
+            "method": exc.method,
+            "status_code": exc.status_code,
+            "url": exc.url,
+            "response_excerpt": " ".join(exc.response_text.split())[:2000],
+        }
     write_audit_record(audit_path, audit)
     print("WRITE_DRAFT FAILED")
-    print("Rollback snapshot preserved:", rollback_path)
+    if isinstance(exc, ControlledChannelHttpError):
+        print("HTTP status:", exc.status_code)
+        print("Server response excerpt:", " ".join(exc.response_text.split())[:1200])
+    print("Full original snapshot preserved:", full_snapshot_path)
+    print("Writable rollback snapshot preserved:", rollback_path)
     print("Audit:", audit_path)
     raise

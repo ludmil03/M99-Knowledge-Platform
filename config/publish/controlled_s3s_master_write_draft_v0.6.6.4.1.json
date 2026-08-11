@@ -1,0 +1,27 @@
+{
+  "version": "0.6.6.4.1",
+  "feature": "safe_writable_product_payload_error_diagnostics",
+  "target": {
+    "channel": "mela99.com",
+    "product_id": "2076",
+    "m99_id": "M99 100017"
+  },
+  "payload_policy": {
+    "source_values": "CURRENT_PRODUCT_XML",
+    "allowlist_shape": "LIVE_PRODUCTS_BLANK_SCHEMA",
+    "blank_schema_endpoint": "/api/products?schema=blank",
+    "remove_fields_not_in_live_schema": true,
+    "preserve_supported_associations": true
+  },
+  "review_category_id": 938,
+  "error_diagnostics": {
+    "http_status": true,
+    "response_excerpt": true,
+    "credentials_redacted": true
+  },
+  "rollback": {
+    "save_full_original": true,
+    "save_writable_rollback_payload": true
+  },
+  "installer_writes_website": false
+}

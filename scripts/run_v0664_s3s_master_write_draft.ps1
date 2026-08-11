@@ -2,9 +2,9 @@
 $Repo="C:\Users\user\Documents\GitHub\M99-Knowledge-Platform"
 Set-Location $Repo
 
-Write-Host "M99 v0.6.6.4 - CONTROLLED S3S MASTER WRITE_DRAFT" -ForegroundColor Yellow
+Write-Host "M99 v0.6.6.4.1 - SAFE WRITABLE S3S MASTER WRITE_DRAFT" -ForegroundColor Yellow
 Write-Host "REAL API WRITE: mela99.com product ID 2076 ONLY"
-Write-Host "The product will be set inactive and added to central review category 938."
+Write-Host "The live blank product schema will be fetched first; only schema-supported fields will be PUT."
 Write-Host "Existing categories are preserved."
 Write-Host "Existing name and URL are preserved by default."
 Write-Host ""

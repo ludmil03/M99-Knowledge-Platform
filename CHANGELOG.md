@@ -557,3 +557,14 @@ Rules introduced:
 - URL/slug/reference protected
 - duplicate products untouched
 
+
+
+# v0.6.6.4 - Safe Writable Product Payload + Error Diagnostics
+- first real write path locked to mela99 product 2076
+- central operator review category 938
+- new drafts use review category only
+- existing updates keep current categories plus review category
+- full rollback snapshot and immediate readback
+- URL/slug/reference protected
+- duplicate products untouched
+
