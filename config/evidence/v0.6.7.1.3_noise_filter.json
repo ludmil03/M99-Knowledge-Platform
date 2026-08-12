@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.6.7.1.3",
+  "http_policy": "GET_ONLY",
+  "product_page_only_for_commercial": true,
+  "exact_target_colour_required": true,
+  "non_product_pages": "DISCOVERY_ONLY",
+  "title_fallback": [
+    "H1",
+    "OG_TITLE",
+    "TITLE"
+  ],
+  "palltex": "UNRESOLVED_NO_EVIDENCE_INVENTED",
+  "m99_selling_price": null,
+  "writes": false
+}

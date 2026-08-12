@@ -1,0 +1,1 @@
+﻿$ErrorActionPreference="Stop"\nSet-Location "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform"\npy -3 -m scripts.RUN_V067113_SUPPLIER_NOISE_FILTER_PREVIEW\nRead-Host "Press Enter"\n

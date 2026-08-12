@@ -1,0 +1,1 @@
+GET-only canonicalization/noise filter. Only exact Cherokee WWE601 Navy/Dark Blue product pages may provide commercial evidence. Search/category/image pages are discovery-only; Grey/Black are blocked. Palltex remains unresolved until proven. No writes.\n
