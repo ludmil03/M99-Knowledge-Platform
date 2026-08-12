@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.6.7.1.2",
+  "http_policy": "GET_ONLY",
+  "writes": false,
+  "product": {
+    "brand": "Cherokee",
+    "requested": "WWE601",
+    "aliases": [
+      "WWE601",
+      "WW601",
+      "CK-WW601",
+      "CKWW601"
+    ],
+    "target_colour": [
+      "NAVY",
+      "DARK BLUE"
+    ]
+  },
+  "cascade": [
+    "DIRECT_KNOWN_URL",
+    "SUPPLIER_INTERNAL_SEARCH",
+    "SUPPLIER_CATEGORY_SCAN",
+    "OPERATOR_URL"
+  ],
+  "rules": {
+    "commercial_requires_exact_or_very_strong": true,
+    "prices_per_supplier": true,
+    "stock_per_supplier": true,
+    "m99_selling_price": null
+  }
+}

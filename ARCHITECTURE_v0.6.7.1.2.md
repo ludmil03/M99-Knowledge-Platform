@@ -1,0 +1,1 @@
+GET-only robust supplier discovery. Direct Stenso WWE601 Navy URL + supplier internal/category discovery. Palltex Cherokee catalogue scan. Aliases WWE601/WW601/CK-WW601/CKWW601. Commercial observations stay supplier-specific; no M99 selling price or writes.
