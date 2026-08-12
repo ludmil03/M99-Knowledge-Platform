@@ -1,5 +1,14 @@
-﻿$ErrorActionPreference="Stop"
-Set-Location "C:\Users\user\Documents\GitHub\M99-Knowledge-Platform"
-Write-Host "M99 v0.6.7.1.2 - GET ONLY"
-py -3 -m scripts.RUN_V067112_ROBUST_SUPPLIER_DISCOVERY_PREVIEW
+﻿$ErrorActionPreference = "Stop"
+$Repo = "C:\Users\user\Documents\GitHub\M99-Knowledge-Platform"
+Set-Location $Repo
+$env:PYTHONPATH = $Repo
+Write-Host "M99 v0.6.7.1.4 - Repaired Windows launcher"
+Write-Host "GET ONLY - NO WEBSITE WRITE" -ForegroundColor Cyan
+try {
+    py -3 -m scripts.RUN_V067112_ROBUST_SUPPLIER_DISCOVERY_PREVIEW
+    if ($LASTEXITCODE) { throw "Python runner failed with exit code $LASTEXITCODE" }
+}
+finally {
+    Remove-Item Env:PYTHONPATH -ErrorAction SilentlyContinue
+}
 Read-Host "Press Enter"

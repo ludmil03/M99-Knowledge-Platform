@@ -1,0 +1,1 @@
+v0.6.7.1.4 repairs recent Windows BAT/PowerShell launchers, validates no literal newline escapes remain, forces repo-root execution/PYTHONPATH, propagates exit codes, and adds a self-check. Installer performs no website write.
