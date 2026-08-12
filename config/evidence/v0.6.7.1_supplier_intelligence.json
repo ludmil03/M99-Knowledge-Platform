@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.6.7.1",
+  "mode": "GET_ONLY",
+  "suppliers": [
+    "stenso.net",
+    "palltex.bg"
+  ],
+  "authority": {
+    "identity": "manufacturer",
+    "technical": "manufacturer_then_supplier_consensus",
+    "commercial": "supplier_live"
+  },
+  "rules": {
+    "preserve_raw_supplier_price": true,
+    "never_auto_select_selling_price": true,
+    "never_infer_stock": true,
+    "technical_conflict": "OPERATOR_REVIEW",
+    "unsupported_ai_claims": false
+  }
+}
