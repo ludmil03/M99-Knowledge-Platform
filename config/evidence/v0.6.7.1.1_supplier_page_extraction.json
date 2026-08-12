@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.6.7.1.1",
+  "mode": "LIVE_GET_ONLY_SUPPLIER_PAGE_EXTRACTION_EVIDENCE_MERGE",
+  "product": {
+    "brand": "Cherokee",
+    "requested_code": "WWE601",
+    "canonical_family_under_review": "WW601"
+  },
+  "suppliers": {
+    "Stenso": "stenso.net",
+    "Palltex": "palltex.bg"
+  },
+  "identity_scoring": {
+    "EXACT": 100,
+    "VERY_STRONG": 80,
+    "NEAR_MATCH": 50,
+    "REJECT": 0
+  },
+  "extract": [
+    "title",
+    "supplier_reference",
+    "price",
+    "promo_price",
+    "currency",
+    "availability",
+    "size_availability",
+    "description",
+    "technical_facts",
+    "images",
+    "colour",
+    "material",
+    "style_tokens"
+  ],
+  "rules": {
+    "fetch_every_candidate_page": true,
+    "keep_raw_supplier_observations_separate": true,
+    "never_merge_near_match_commercial_data": true,
+    "manufacturer_identity_has_priority": true,
+    "supplier_conflict_requires_operator": true,
+    "never_auto_select_m99_selling_price": true,
+    "never_infer_stock": true,
+    "write_allowed": false
+  }
+}
