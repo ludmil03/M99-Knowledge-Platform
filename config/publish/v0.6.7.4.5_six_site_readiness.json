@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.6.7.4.5",
+  "mode": "SIX_SITE_PLATFORM_CREDENTIAL_READINESS",
+  "http_policy": "GET_ONLY",
+  "write_allowed": false,
+  "sites": {
+    "mela99.com": {
+      "platform": "thirtybees",
+      "api_family": "prestashop_webservice",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "m99.eu": {
+      "platform": "wordpress",
+      "api_family": "wordpress_rest",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "rabotni-drehi.com": {
+      "platform": "wordpress",
+      "api_family": "wordpress_rest",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "medicinski-drehi.com": {
+      "platform": "prestashop",
+      "version_observed": "1.7.8.11",
+      "api_family": "prestashop_webservice",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "laviro.ro": {
+      "platform": "prestashop",
+      "version_observed": "1.6.1.24",
+      "api_family": "prestashop_webservice",
+      "languages": [
+        "ro",
+        "en"
+      ]
+    },
+    "alviro.ro": {
+      "platform": "thirtybees",
+      "version_observed": "1.1.x",
+      "api_family": "prestashop_webservice",
+      "languages": [
+        "ro",
+        "en"
+      ]
+    }
+  },
+  "target_product": {
+    "brand": "Cherokee",
+    "style": "WW601",
+    "supplier_alias": "WWE601",
+    "colour": "Navy",
+    "reference": "M99-CHEROKEE-WW601-NAVY"
+  }
+}
