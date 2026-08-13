@@ -1,0 +1,10 @@
+{
+  "version": "0.6.7.4.2",
+  "preview_only": true,
+  "full_body": true,
+  "faq_min": 8,
+  "alt_min": 5,
+  "localization_guard": true,
+  "provenance": true,
+  "website_write": false
+}
