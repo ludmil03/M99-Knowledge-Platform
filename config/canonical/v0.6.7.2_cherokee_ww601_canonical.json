@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.6.7.2",
+  "mode": "LIVE_GET_ONLY_MANUFACTURER_SUPPLIER_EVIDENCE_MERGE_CANONICAL_BUILD",
+  "product": {
+    "brand": "Cherokee",
+    "manufacturer_style": "WW601",
+    "supplier_aliases": [
+      "WWE601",
+      "WW601",
+      "CK-WW601",
+      "CKWW601"
+    ],
+    "target_colour": "NAVY / DARK BLUE"
+  },
+  "manufacturer": {
+    "name": "Cherokee Uniforms",
+    "url": "https://cherokeeuniforms.com/products/womens-2-pocket-sweetheart-v-neck-scrub-top-ckww601",
+    "authority": [
+      "canonical_identity",
+      "technical_facts",
+      "official_variants",
+      "official_images"
+    ]
+  },
+  "suppliers": {
+    "Stenso": {
+      "url": "https://stenso.net/produkt/medicinski-tuniki/4443-damska-medicinska-tunika-cherokee-v-neck-navy-wwe601",
+      "expected_reference": "08001931",
+      "authority": [
+        "supplier_reference",
+        "local_market_name",
+        "supplier_price",
+        "supplier_stock",
+        "supplier_sizes",
+        "supplier_description"
+      ]
+    },
+    "Palltex": {
+      "authority": [
+        "supplier_reference",
+        "supplier_price",
+        "supplier_stock",
+        "supplier_sizes"
+      ],
+      "status": "USE_ONLY_IF_EXACT_PRODUCT_PROVEN"
+    }
+  },
+  "merge_rules": {
+    "manufacturer_wins_identity_conflict": true,
+    "supplier_alias_preserved": true,
+    "supplier_commercial_data_never_overwrites_manufacturer_identity": true,
+    "commercial_data_preserved_per_supplier": true,
+    "conflicts_require_operator_review": true,
+    "m99_selling_price_auto_select": false,
+    "m99_reference_auto_assign": false
+  },
+  "language_policy": {
+    "bg_sites": [
+      "bg",
+      "en",
+      "ru"
+    ],
+    "ro_sites": [
+      "ro",
+      "en"
+    ]
+  },
+  "writes": {
+    "channels": false,
+    "dolibarr": false,
+    "suppliers": false
+  }
+}
