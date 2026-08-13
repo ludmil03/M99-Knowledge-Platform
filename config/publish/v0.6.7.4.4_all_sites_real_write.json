@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.6.7.4.4",
+  "product": {
+    "brand": "Cherokee",
+    "collection": "WW Revolution",
+    "style": "WW601",
+    "supplier_alias": "WWE601",
+    "manufacturer_item": "CK-WW601--",
+    "colour": "Navy",
+    "reference": "M99-CHEROKEE-WW601-NAVY"
+  },
+  "policy": {
+    "all_sites_required": true,
+    "partial_success_allowed": false,
+    "write_mode": "WRITE_DRAFT",
+    "operator_confirmation": "WRITE_DRAFT ALL_SITES CHEROKEE WW601 NAVY",
+    "rollback_on_any_failure": true,
+    "readback_required": true
+  },
+  "sites": {
+    "mela99.com": {
+      "platform": "prestashop",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ],
+      "review_category_id": "93"
+    },
+    "m99.eu": {
+      "platform": "wordpress",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "rabotni-drehi.com": {
+      "platform": "wordpress",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "medicinski-drehi.com": {
+      "platform": "SET_ME",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ]
+    },
+    "laviro.ro": {
+      "platform": "prestashop",
+      "languages": [
+        "ro",
+        "en"
+      ]
+    },
+    "alviro.ro": {
+      "platform": "SET_ME",
+      "languages": [
+        "ro",
+        "en"
+      ]
+    }
+  },
+  "credentials": {
+    "prestashop": "API key via M99_<SITE>_API_KEY",
+    "wordpress": "application password via M99_<SITE>_USER and M99_<SITE>_APP_PASSWORD"
+  }
+}
