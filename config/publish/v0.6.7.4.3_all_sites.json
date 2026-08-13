@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.6.7.4.3",
+  "all_sites_required": true,
+  "sites": [
+    "mela99.com",
+    "m99.eu",
+    "rabotni-drehi.com",
+    "medicinski-drehi.com",
+    "laviro.ro",
+    "alviro.ro"
+  ],
+  "write_mode": "WRITE_DRAFT",
+  "active_after_write": false,
+  "live_publish": false,
+  "partial_success": "FORBIDDEN",
+  "channel_specific_content": true,
+  "similarity_threshold": 0.9,
+  "requires_adapter_validation_before_real_write": true
+}
