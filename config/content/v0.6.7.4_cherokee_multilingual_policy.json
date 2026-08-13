@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.6.7.4",
+  "preview_only": true,
+  "bg_sites": [
+    "bg",
+    "en",
+    "ru"
+  ],
+  "ro_sites": [
+    "ro",
+    "en"
+  ],
+  "no_website_write": true
+}
