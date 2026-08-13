@@ -1,0 +1,1 @@
+Manufacturer authoritative facts + exact supplier factual/market enrichment. Supplier prose is evidence, not copy. Conflicts and unverified commercial claims are blocked. BG/EN/RU for Bulgarian sites; RO/EN for Romanian sites. GET ONLY.

@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.6.7.3.1",
+  "purpose": "BACKWARD_COMPATIBILITY_AND_FAIL_SAFE_INSTALLER",
+  "restores_api": [
+    "core.cherokee_canonical_merge_v0672.compare_fact",
+    "core.cherokee_canonical_merge_v0672.build_canonical"
+  ],
+  "preserves": [
+    "v0.6.7.3 supplier market enrichment",
+    "claim provenance",
+    "supplier verbatim-copy block",
+    "unverified price/stock block"
+  ],
+  "installer_rules": {
+    "tests_before_commit": true,
+    "commit_only_if_all_tests_pass": true,
+    "console_pause_on_failure": true,
+    "website_write": false
+  }
+}

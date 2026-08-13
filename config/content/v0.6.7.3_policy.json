@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.6.7.3",
+  "supplier_exact_product_description": "FACT_AND_MARKET_ENRICHMENT",
+  "verbatim_copy": false,
+  "languages": {
+    "BG": [
+      "bg",
+      "en",
+      "ru"
+    ],
+    "RO": [
+      "ro",
+      "en"
+    ]
+  },
+  "writes": false
+}
