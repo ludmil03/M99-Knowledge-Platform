@@ -22,3 +22,12 @@ def build():
   for lang in langs:
    d=deepcopy(TEXT[lang]);d["h1"]=d["name"];d["meta_title"]=d["meta"]+" | "+site.split(".")[0].upper();d["meta_description"]=d.pop("desc");d["short_description"]=d.pop("short");d["faq"]=FAQ[lang];d["long_description_html"]=render({**d,"short":d["short_description"]},FAQ[lang]);d["image_alt"]=[d["name"],d["name"]+" V-neck",d["name"]+" pockets",d["name"]+" mesh panels",d["name"]+" Navy"];d["keywords_entities"]=["Cherokee","WW Revolution","WW601","WWE601","Navy"];d["schema_ready_facts"]={"brand":"Cherokee","model":"WW601","color":"Navy"};d["claim_provenance"]=[{"source":"Cherokee manufacturer","fields":["material","fit","length","neckline","sleeves","pockets","front_back_yokes","mesh_side_panels","shirttail_hem","fabric"]},{"source":"Stenso exact product","fields":["supplier_alias","supplier_visible_sizes"],"stock_inference":False}];d["quality_score"]=97;docs[site][lang]=d
  return {"schema_version":VERSION,"mode":"PRODUCTION_GRADE_FULL_CONTENT_PREVIEW","write_allowed":False,"facts":FACTS,"channel_language_policy":CHANNELS,"documents":docs,"commercial":{"m99_selling_price":None,"stock_claim":None},"guards":{"supplier_verbatim_copy":False,"invented_claims":False,"price_in_content":False,"unverified_stock_in_content":False,"localization_quality":True,"channel_duplication_guard":True,"claim_level_provenance":True}}
+
+
+# v0.6.7.5.4 compatibility aliases.
+# The generation body above is the tested v0.6.7.4.2 content engine.
+def build_documents():
+    return build()
+
+def build_all_sites_content():
+    return build()

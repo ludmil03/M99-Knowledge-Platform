@@ -1,0 +1,113 @@
+{
+  "schema_version": "0.6.7.5.4",
+  "mode": "REAL_PRODUCT_PUBLISH",
+  "product": {
+    "brand": "Cherokee",
+    "collection": "WW Revolution",
+    "style": "WW601",
+    "supplier_alias": "WWE601",
+    "supplier_reference": "08001931",
+    "manufacturer_item": "CK-WW601--",
+    "colour": "Navy"
+  },
+  "supplier": {
+    "primary": "stenso.net",
+    "exact_url": "https://stenso.net/produkt/medicinski-tuniki/4443-damska-medicinska-tunika-cherokee-v-neck-navy-wwe601",
+    "expected_price_eur": 25.2,
+    "price_discount_percent": 1.3,
+    "eur_bgn": 1.95583,
+    "expected_m99_bgn": 48.65
+  },
+  "write_policy": {
+    "mode": "WRITE_DRAFT",
+    "active_after_write": false,
+    "readback_required": true,
+    "operator_review_required": true,
+    "stock_claim": null,
+    "partial_success_accepted": false
+  },
+  "channels": {
+    "mela99.com": {
+      "required": true,
+      "action": "WRITE_DRAFT",
+      "platform": "prestashop",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ],
+      "credential_env": [
+        "M99_MELA99_COM_API_KEY"
+      ],
+      "currency_status": "DISCOVER_LIVE_PREWRITE"
+    },
+    "m99.eu": {
+      "required": false,
+      "action": "TASK_ONLY",
+      "platform": "wordpress",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ],
+      "reason": "TEMPORARILY_EXCLUDED_TECHNICAL_PROBLEMS",
+      "write_allowed": false
+    },
+    "rabotni-drehi.com": {
+      "required": true,
+      "action": "WRITE_DRAFT",
+      "platform": "wordpress",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ],
+      "credential_env": [
+        "M99_RABOTNI_DREHI_COM_USERNAME",
+        "M99_RABOTNI_DREHI_COM_APP_PASSWORD"
+      ],
+      "currency_status": "DISCOVER_LIVE_PREWRITE"
+    },
+    "medicinski-drehi.com": {
+      "required": true,
+      "action": "WRITE_DRAFT",
+      "platform": "prestashop",
+      "languages": [
+        "bg",
+        "en",
+        "ru"
+      ],
+      "credential_env": [
+        "M99_MEDICINSKI_DREHI_COM_API_KEY"
+      ],
+      "currency_status": "DISCOVER_LIVE_PREWRITE"
+    },
+    "laviro.ro": {
+      "required": true,
+      "action": "WRITE_DRAFT",
+      "platform": "prestashop",
+      "languages": [
+        "ro",
+        "en"
+      ],
+      "credential_env": [
+        "M99_LAVIRO_RO_API_KEY"
+      ],
+      "currency_status": "DISCOVER_LIVE_PREWRITE"
+    },
+    "alviro.ro": {
+      "required": true,
+      "action": "WRITE_DRAFT",
+      "platform": "prestashop",
+      "languages": [
+        "ro",
+        "en"
+      ],
+      "credential_env": [
+        "M99_ALVIRO_RO_API_KEY"
+      ],
+      "currency_status": "DISCOVER_LIVE_PREWRITE"
+    }
+  },
+  "credential_storage": "WINDOWS_DPAPI_LOCAL_USER_OUTSIDE_REPOSITORY"
+}
