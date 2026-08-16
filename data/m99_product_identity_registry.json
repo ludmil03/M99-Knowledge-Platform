@@ -1,0 +1,46 @@
+{
+  "CHEROKEE|WW601|08001931|NAVY": {
+    "m99_reference": "M99-3423871970",
+    "supplier": "Stenso",
+    "supplier_reference": "08001931",
+    "brand": "Cherokee",
+    "model": "WW601",
+    "variant": "Navy",
+    "created_at": "2026-08-16T11:00:52.446194+00:00",
+    "channels": {
+      "mela99.com": {
+        "product_id": 2458,
+        "last_write_at": "2026-08-16T07:08:27.980581+00:00"
+      },
+      "laviro.ro": {
+        "product_id": 877,
+        "last_write_at": "2026-08-16T07:08:30.733041+00:00"
+      }
+    }
+  },
+  "CHEROKEE|CKE1124A|08001873|BORDEAUX": {
+    "m99_reference": "M99-1274366573",
+    "supplier": "Stenso",
+    "supplier_reference": "08001873",
+    "brand": "Cherokee",
+    "model": "CKE1124A",
+    "variant": "Bordeaux",
+    "source_url": "https://stenso.net/produkt/medicinski-pantaloni/4594-damski-medecinski-pantalon-cherokee-slim-bordeaux-cke1124a",
+    "daily_supplier_monitoring": true,
+    "channels": {
+      "mela99.com": {
+        "product_id": 2459,
+        "status": "QUALITY_PASS"
+      },
+      "laviro.ro": {
+        "product_id": 878,
+        "status": "QUALITY_INCOMPLETE"
+      },
+      "rabotni-drehi.com": {
+        "product_id": 96801,
+        "status": "QUALITY_PASS"
+      }
+    },
+    "last_import_at": "2026-08-16T12:08:15.975851+00:00"
+  }
+}
