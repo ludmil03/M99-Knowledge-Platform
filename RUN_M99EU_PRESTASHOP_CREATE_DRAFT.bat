@@ -8,6 +8,6 @@ echo   WARNING: CAN CREATE ONE INACTIVE PRODUCT ON m99.eu
 echo   active=0 - no public publish action
 echo ================================================================
 echo.
-"admin-platform\.venv\Scripts\python.exe" "scripts\m99eu_prestashop\create_inactive.py"
+"admin-platform\.venv\Scripts\python.exe" -m scripts.m99eu_prestashop.create_inactive
 echo.
 pause
