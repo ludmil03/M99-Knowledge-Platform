@@ -1,11 +1,11 @@
-import unittest
+﻿import unittest
 from pathlib import Path
 from integrations.bultex_b2b.parser import parse_product_page
 
 class T(unittest.TestCase):
     def test_parse(self):
         html=Path("tests/fixtures/bultex_product_sample.html").read_text(encoding="utf-8")
-        o=parse_product_page(html,"x","222","Радиново")
+        o=parse_product_page(html,"x","222","Р Р°РґРёРЅРѕРІРѕ")
         self.assertEqual(o.supplier_product_id,"109168")
         self.assertEqual(o.supplier_variant_code,"06200368.39")
         self.assertEqual(str(o.purchase_price_ex_vat),"23.24")
@@ -14,8 +14,9 @@ class T(unittest.TestCase):
         self.assertEqual(o.barcode,"2006200368030")
 
 
-def test_variant_code_is_never_parsed_as_price(self):
-    html=Path("tests/fixtures/bultex_product_sample.html").read_text(encoding="utf-8")
-    o=parse_product_page(html,"x","222","Радиново")
-    self.assertNotEqual(str(o.purchase_price_ex_vat),"6200368.39")
-    self.assertEqual(str(o.purchase_price_ex_vat),"23.24")
+def test_variant_code_is_never_parsed_as_price():
+    html = Path("tests/fixtures/bultex_product_sample.html").read_text(encoding="utf-8")
+    o = parse_product_page(html, "x", "222", "Радиново")
+    assert str(o.purchase_price_ex_vat) != "6200368.39"
+    assert str(o.purchase_price_ex_vat) == "23.24"
+

@@ -577,3 +577,10 @@ Rules introduced:
 - adds generic GET regression tests
 - no website write
 
+
+
+## v0.7.1 — Platform Consolidation & Test Baseline
+- Added v1 target architecture.
+- Added root/admin development requirements.
+- Added explicit pytest + requests test baseline.
+- Replaced malformed Bultex parser pytest function with native pytest syntax.

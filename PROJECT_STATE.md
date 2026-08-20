@@ -323,3 +323,10 @@ Controlled WRITE_DRAFT prepared for EXISTING_CONFIRMED master 2076. Central revi
 # v0.6.6.4.2.1
 GET-only live language/category analysis hotfix. WRITE_DRAFT remains blocked until live analysis succeeds.
 
+
+
+## v0.7.1 — Platform Consolidation & Test Baseline
+- Reproducible root test environment introduced.
+- Complete malformed Bultex pytest function replaced with native pytest syntax.
+- v1 target architecture documented.
+- Full pytest pass required before further consolidation.
