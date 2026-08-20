@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block page_title %}{{ ui.imports }}{% endblock %}
+{% block content %}
+<div class="page-actions"><a class="button-link primary-link" href="/supplier-browser">+ New Supplier Import Job</a></div>
+<div class="card"><table>
+<thead><tr><th>Job</th><th>Source type</th><th>Status</th><th>Created</th></tr></thead>
+<tbody>{% for j in jobs %}
+<tr><td><a href="/supplier-browser/job/{{j.id}}">{{j.job_code}}</a></td><td>{{j.source_type}}</td><td><span class="badge">{{j.status}}</span></td><td>{{j.created_at}}</td></tr>
+{% else %}<tr><td colspan="4" class="empty">Няма import jobs.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block page_title %}Products{% endblock %}{% block content %}
+<div class="page-actions"><button class="primary" disabled>+ New Product Import</button></div><div class="card"><table><thead><tr><th>M99 Reference</th><th>Supplier ref</th><th>Product</th><th>Lifecycle</th></tr></thead><tbody>
+{% for p in products %}<tr><td><code>{{ p.m99_reference }}</code></td><td>{{ p.supplier_reference }}</td><td>{{ p.name }}</td><td><span class="badge">{{ p.lifecycle }}</span></td></tr>{% else %}<tr><td colspan="4" class="empty">Няма canonical продукти в новата Admin DB.</td></tr>{% endfor %}
+</tbody></table></div>{% endblock %}

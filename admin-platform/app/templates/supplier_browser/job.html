@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block page_title %}Import Job {{job.job_code}}{% endblock %}
+{% block content %}
+<div class="notice"><strong>DRAFT / VERIFY ONLY.</strong> Няма website write, activation, stock write или DELETE.</div>
+<div class="cards"><div class="card metric"><span>Job</span><strong>{{job.job_code}}</strong></div><div class="card metric"><span>Status</span><strong>{{job.status}}</strong></div><div class="card metric"><span>Items</span><strong>{{items|length}}</strong></div></div>
+<div class="grid-two"><div class="card"><h2>Target Scope</h2><p><strong>Requested:</strong> {{requested|join(', ') or 'none'}}</p><p><strong>Authorized:</strong> {{authorized|join(', ') or 'none'}}</p><p><strong>Blocked:</strong> {{blocked|join(', ') or 'none'}}</p></div><div class="card"><h2>Next Gate</h2><p>Exact Supplier Evidence + Identity + Presence + Language + Price/VAT Preflight.</p><form method="post" action="/preflight/job/{{job.id}}/run"><button class="primary">Run v0.7.0.6 Preflight</button></form><p><a href="/preflight/job/{{job.id}}">Open latest Preflight Report</a></p></div></div>
+<div class="card"><h2>Selected products</h2><table><thead><tr><th>Title</th><th>Supplier ref</th><th>Detection</th><th>Source</th></tr></thead><tbody>{% for x in items %}<tr><td>{{x.source_title or '(pending exact read)'}}</td><td>{{x.supplier_reference}}</td><td><span class="badge">{{x.detection_status}}</span>{% if x.matched_product_id %}<br><small>Product ID {{x.matched_product_id}}</small>{% endif %}</td><td><a href="{{x.source_url}}" target="_blank" rel="noopener">Open</a></td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

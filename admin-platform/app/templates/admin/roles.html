@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block page_title %}{{ ui.roles }}{% endblock %}{% block content %}<div class="grid-two">{% for r in roles %}<div class="card"><h2>{{r.name}}</h2><code>{{r.code}}</code><p>{{r.description}}</p>{% for p in r.permissions %}<span class="badge">{{p.code}}</span> {% endfor %}</div>{% endfor %}</div>{% endblock %}

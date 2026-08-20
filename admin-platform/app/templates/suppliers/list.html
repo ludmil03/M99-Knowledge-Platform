@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block page_title %}{{ ui.suppliers }}{% endblock %}
+{% block content %}
+<div class="notice">Direct Supplier Selection: product / products / category / categories. Изборът създава DRAFT Import Job.</div>
+<div class="page-actions"><a class="button-link primary-link" href="/supplier-browser">Open Supplier Browser</a></div>
+<div class="cards supplier-cards">
+{% for s in suppliers %}
+<div class="card">
+  <h2>{{s.name}}</h2>
+  <p>{{s.base_url or "URL pending configuration"}}</p>
+  {% if s.base_url %}<a class="button-link" href="{{s.base_url}}" target="_blank" rel="noopener">Open supplier site</a>{% endif %}
+  <a class="button-link primary-link" href="/supplier-browser">Browse & Select</a>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

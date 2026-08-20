@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Вход · M99{% endblock %}{% block anonymous %}
+<div class="login-page"><div class="login-card"><div class="login-logo">M99</div><h1>M99 Knowledge Platform</h1><p>Admin Platform</p>
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+<form method="post" action="/login"><label>Потребителско име или имейл</label><input name="login" autocomplete="username" required autofocus>
+<label>Парола</label><input name="password" type="password" autocomplete="current-password" required><button class="primary" type="submit">Вход</button></form></div></div>
+{% endblock %}

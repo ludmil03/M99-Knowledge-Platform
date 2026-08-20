@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block page_title %}Product Presence{% endblock %}{% block content %}
+<div class="notice">Presence и Stock са отделни измерения. LIVE VERIFY ще бъде добавен към channel adapters.</div><div class="card presence-wrap"><table><thead><tr><th>Product</th>{% for c in channels %}<th>{{ c.name }}</th>{% endfor %}</tr></thead><tbody>
+{% for p in products %}<tr><td><strong>{{ p.name }}</strong><br><code>{{ p.m99_reference }}</code></td>{% for c in channels %}{% set x=matrix.get((p.id,c.id)) %}<td>{% if x %}<span class="badge">{{ x.presence_status }}</span><br><small>{{ x.stock_status }}</small>{% else %}<span class="muted">UNKNOWN</span>{% endif %}</td>{% endfor %}</tr>
+{% else %}<tr><td colspan="{{ channels|length + 1 }}" class="empty">Няма продукти за presence matrix.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}

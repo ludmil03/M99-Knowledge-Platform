@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block page_title %}Supplier Browser{% endblock %}
+{% block content %}
+<div class="notice">
+<strong>READ ONLY към доставчика.</strong> Тази версия не публикува продукти. Тя създава DRAFT Import Job след selection + authorization.
+</div>
+
+<div class="grid-two">
+  <div class="card">
+    <h2>1. Избери доставчик и URL</h2>
+    <form method="post" action="/supplier-browser/inspect" class="form-grid">
+      <label>Supplier
+        <select name="supplier_id" required>
+          {% for s in suppliers %}
+          <option value="{{s.id}}" {% if selected_supplier and selected_supplier.id==s.id %}selected{% endif %}>{{s.name}}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Product / Category URL
+        <input name="url" placeholder="https://stenso.net/..." required>
+      </label>
+      <button class="primary" type="submit">Inspect</button>
+    </form>
+    {% if error %}<div class="alert error">{{error}}</div>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Supplier Browser Rule</h2>
+    <p>Операторът избира product URL или category URL. M99 прави supplier read, разпознава типа, извлича products и позволява selection.</p>
+    <p><strong>New product target scope:</strong> requested ∩ authorized. Няма website write в v0.7.0.5.</p>
+  </div>
+</div>
+
+{% if result %}
+<div class="card">
+  <h2>2. Supplier inspection</h2>
+  <table>
+    <tr><th>Type</th><td><span class="badge">{{result.type}}</span></td></tr>
+    <tr><th>Title</th><td>{{result.title}}</td></tr>
+    <tr><th>URL</th><td><a href="{{result.url}}" target="_blank" rel="noopener">{{result.url}}</a></td></tr>
+    <tr><th>HTTP</th><td>{{result.http}}</td></tr>
+    <tr><th>Products found</th><td>{{result.products|length}}</td></tr>
+  </table>
+</div>
+
+<form method="post" action="/supplier-browser/create-job">
+<input type="hidden" name="supplier_id" value="{{selected_supplier.id}}">
+<input type="hidden" name="source_type" value="{{result.type}}">
+<input type="hidden" name="source_url" value="{{result.url}}">
+
+<div class="card">
+  <h2>3. Избери продукти</h2>
+  {% if result.products %}
+  <div class="selection-toolbar">
+    <button type="button" onclick="document.querySelectorAll('.product-check').forEach(x=>x.checked=true)">Select all</button>
+    <button type="button" onclick="document.querySelectorAll('.product-check').forEach(x=>x.checked=false)">Clear</button>
+  </div>
+  <table>
+    <thead><tr><th>Select</th><th>Product</th><th>Supplier ref</th><th>Source</th></tr></thead>
+    <tbody>
+    {% for p in result.products %}
+      <tr>
+        <td><input class="product-check" type="checkbox" name="selected_url" value="{{p.url}}" checked></td>
+        <td>{{p.title or "(title pending product read)"}}<input type="hidden" name="selected_title" value="{{p.title or ''}}"></td>
+        <td>{{p.supplier_reference or ""}}<input type="hidden" name="selected_ref" value="{{p.supplier_reference or ''}}"></td>
+        <td><a href="{{p.url}}" target="_blank" rel="noopener">Open</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">Не бяха открити product links. Провери URL или supplier parser.</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>4. Избери target channels за НОВИ продукти</h2>
+  <div class="target-grid">
+    {% for c in channels %}
+    <label class="target-box {% if c.code not in authorized_codes %}disabled-target{% endif %}">
+      <input type="checkbox" name="target" value="{{c.code}}" {% if c.code not in authorized_codes %}disabled{% endif %}>
+      <strong>{{c.name}}</strong>
+      <small>{{"AUTHORIZED" if c.code in authorized_codes else "UNAUTHORIZED"}}</small>
+    </label>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h2>5. Create Draft Import Job</h2>
+  <p>Това действие записва само Import Job и selected supplier URLs в M99 DB.</p>
+  <button class="primary" type="submit">Create DRAFT Import Job</button>
+</div>
+</form>
+{% endif %}
+{% endblock %}

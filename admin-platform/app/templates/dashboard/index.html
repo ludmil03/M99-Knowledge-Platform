@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block page_title %}Dashboard{% endblock %}{% block content %}
+<div class="cards"><div class="card metric"><span>Canonical products</span><strong>{{ metrics.products }}</strong></div><div class="card metric"><span>Suppliers</span><strong>{{ metrics.suppliers }}</strong></div><div class="card metric"><span>Targets</span><strong>{{ metrics.channels }}</strong></div><div class="card metric"><span>Import jobs</span><strong>{{ metrics.import_jobs }}</strong></div></div>
+<div class="grid-two"><div class="card"><h2>Requires attention</h2><div class="empty">Quality Gate alerts ще се появяват тук.</div></div><div class="card"><h2>Daily Existing Product Sync</h2><div class="empty">Framework ready · scheduler идва в следващия vertical slice.</div></div></div>
+<div class="card"><h2>Последни Import Jobs</h2><table><thead><tr><th>Job</th><th>Status</th><th>Created</th></tr></thead><tbody>
+{% for j in latest_jobs %}<tr><td>{{ j.job_code }}</td><td><span class="badge">{{ j.status }}</span></td><td>{{ j.created_at }}</td></tr>{% else %}<tr><td colspan="3" class="empty">Няма import jobs.</td></tr>{% endfor %}
+</tbody></table></div>{% endblock %}

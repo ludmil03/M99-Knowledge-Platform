@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block page_title %}Commerce / VAT Policies{% endblock %}
+{% block content %}
+<div class="notice"><strong>Policy registry.</strong> Не се задават автоматично законови VAT ставки. Super Admin потвърждава стандартната ставка за всеки пазар.</div>
+<div class="card"><h2>Channel Commerce Policies</h2><p>Правило: <strong>publish_price_includes_vat = YES</strong> е задължително за preflight PASS.</p><div class="permission-grid">{% for c in channels %}{% set p=policies.get(c.id) %}<form method="post" action="/admin/commerce/{{c.id}}" class="channel-box"><strong>{{c.name}}</strong><label>Country<input name="country_code" value="{{p.country_code if p else ''}}" placeholder="BG / RO"></label><label>Currency<input name="currency_code" value="{{p.currency_code if p else ''}}" placeholder="EUR / RON"></label><label>Standard VAT %<input name="standard_vat_rate" value="{{p.standard_vat_rate if p else ''}}" placeholder="20"></label><label><input type="checkbox" name="publish_price_includes_vat" {% if not p or p.publish_price_includes_vat %}checked{% endif %}> Published price includes VAT</label><button class="primary">Save policy</button></form>{% endfor %}</div></div>
+{% endblock %}

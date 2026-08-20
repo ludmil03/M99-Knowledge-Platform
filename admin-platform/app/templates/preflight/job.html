@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block page_title %}Preflight · {{job.job_code}}{% endblock %}
+{% block content %}
+<div class="notice"><strong>READ / VERIFY ONLY.</strong> Няма website write, activation, stock write или DELETE.</div>
+{% if not pf %}
+<div class="card"><h2>Preflight not run</h2><form method="post" action="/preflight/job/{{job.id}}/run"><button class="primary">Run Exact Supplier + Identity + Presence + Language + Price/VAT Preflight</button></form></div>
+{% else %}
+<div class="cards">
+<div class="card metric"><span>Status</span><strong>{{pf.status}}</strong></div>
+<div class="card metric"><span>Identity</span><strong>{{pf.identity_gate}}</strong></div>
+<div class="card metric"><span>Presence</span><strong>{{pf.presence_gate}}</strong></div>
+<div class="card metric"><span>Language</span><strong>{{pf.language_gate}}</strong></div>
+<div class="card metric"><span>Price/VAT</span><strong>{{pf.price_vat_gate}}</strong></div>
+</div>
+<div class="grid-two"><div class="card"><h2>Ready targets</h2><p>{{ready|join(', ') or 'none'}}</p></div><div class="card"><h2>Blocked targets</h2><p>{{blocked|join(', ') or 'none'}}</p></div></div>
+<div class="card"><h2>Findings</h2>{% if findings %}<ul>{% for f in findings %}<li>{{f}}</li>{% endfor %}</ul>{% else %}<p>No blockers.</p>{% endif %}</div>
+<div class="card"><h2>Exact supplier evidence / identity</h2><table><thead><tr><th>Item</th><th>Supplier ref</th><th>Model</th><th>Identity</th><th>Price</th><th>Images</th><th>Sizes</th></tr></thead><tbody>{% for x in report.get('items',[]) %}<tr><td>{{x.get('title','')}}</td><td>{{x.get('supplier_reference','')}}</td><td>{{x.get('model_code','')}}</td><td><span class="badge">{{x.get('identity','')}}</span></td><td>{{x.get('price_value','')}} {{x.get('currency_hint','')}}</td><td>{{x.get('images','')}}</td><td>{{x.get('sizes',[])|join(', ')}}</td></tr>{% endfor %}</tbody></table></div>
+<div class="card"><h2>Product Presence</h2><table><thead><tr><th>Item</th><th>Target</th><th>Presence</th><th>Channel ID</th></tr></thead><tbody>{% for x in report.get('presence',[]) %}<tr><td>{{x.get('item_id')}}</td><td>{{x.get('target')}}</td><td>{{x.get('presence')}}</td><td>{{x.get('channel_product_id','')}}</td></tr>{% endfor %}</tbody></table></div>
+<div class="card"><h2>Language Matrix</h2><table><thead><tr><th>Target</th><th>Required</th><th>Active</th><th>Config</th></tr></thead><tbody>{% for x in report.get('languages',[]) %}<tr><td>{{x.target}}</td><td>{{x.required_languages|join(', ')}}</td><td>{{x.active_languages|join(', ')}}</td><td>{{'PASS' if x.configured else 'BLOCKED'}}</td></tr>{% endfor %}</tbody></table><p><small>Content language validation remains PENDING until translated payload generation exists.</small></p></div>
+<div class="card"><h2>Price / VAT Gate</h2><p><strong>Normative rule:</strong> published price must include the configured standard VAT rate.</p><table><thead><tr><th>Target</th><th>Country</th><th>Currency</th><th>VAT</th><th>VAT included</th><th>Result</th><th>Reasons</th></tr></thead><tbody>{% for x in report.get('price_vat',[]) %}<tr><td>{{x.target}}</td><td>{{x.country}}</td><td>{{x.currency}}</td><td>{{x.standard_vat_rate}}</td><td>{{x.publish_price_includes_vat}}</td><td>{{'PASS' if x.pass else 'BLOCKED'}}</td><td>{{x.reasons|join(', ')}}</td></tr>{% endfor %}</tbody></table></div>
+<form method="post" action="/preflight/job/{{job.id}}/run"><button>Run preflight again</button></form>
+{% endif %}
+{% endblock %}
