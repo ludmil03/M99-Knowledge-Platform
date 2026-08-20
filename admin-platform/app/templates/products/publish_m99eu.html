@@ -1,0 +1,110 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="m99-publish-shell">
+  <div class="m99-publish-header">
+    <div>
+      <div class="m99-kicker">M99 KNOWLEDGE PLATFORM / PRODUCTS</div>
+      <h1>{{ title }}</h1>
+      <p class="m99-muted">Контролиран TEST/Draft workflow към <strong>m99.eu</strong>. Няма автоматично активиране.</p>
+    </div>
+    <div class="m99-channel-badge">m99.eu · PrestaShop 9</div>
+  </div>
+
+  {% if error %}
+  <div class="m99-alert m99-alert-error"><strong>Операцията е спряна.</strong><br>{{ error }}</div>
+  {% endif %}
+
+  <div class="m99-stepbar">
+    <div class="m99-step is-active"><span>1</span><b>Канал</b><small>m99.eu</small></div>
+    <div class="m99-step {% if mode in ['preflight','dry_run','create_result'] %}is-active{% endif %}"><span>2</span><b>Проверка</b><small>API + езици</small></div>
+    <div class="m99-step {% if mode in ['dry_run','create_result'] %}is-active{% endif %}"><span>3</span><b>DRY RUN</b><small>без запис</small></div>
+    <div class="m99-step {% if mode == 'create_result' %}is-active{% endif %}"><span>4</span><b>TEST продукт</b><small>inactive + readback</small></div>
+  </div>
+
+  <div class="m99-publish-grid">
+    <section class="m99-card">
+      <h2>Канал и правила</h2>
+      <table class="m99-detail-table">
+        <tr><th>Канал</th><td>m99.eu</td></tr>
+        <tr><th>Платформа</th><td>PrestaShop 9.1.5</td></tr>
+        <tr><th>Езици</th><td>EN / BG / RU — откриват се live</td></tr>
+        <tr><th>Статус при CREATE</th><td><strong>active = 0</strong></td></tr>
+        <tr><th>Readback</th><td>задължителен</td></tr>
+      </table>
+
+      {% if mode == 'start' %}
+      <form method="post" action="/products/publish/m99eu/preflight">
+        <button class="m99-btn m99-btn-primary" type="submit">Провери m99.eu</button>
+      </form>
+      {% endif %}
+
+      {% if mode == 'preflight' and result %}
+      <div class="m99-alert m99-alert-ok">PREFLIGHT PASS — GET: {{ result.products_get }}, POST: {{ result.products_post }}</div>
+      <table class="m99-detail-table">
+        <tr><th>API</th><td>{{ result.api_base }}</td></tr>
+        <tr><th>Language IDs</th><td>{{ result.language_ids|join(', ') }}</td></tr>
+        <tr><th>TEST category</th><td>{{ result.test_category_id }}</td></tr>
+      </table>
+      <form method="post" action="/products/publish/m99eu/dry-run">
+        <button class="m99-btn m99-btn-primary" type="submit">Направи DRY RUN</button>
+      </form>
+      {% endif %}
+    </section>
+
+    <section class="m99-card">
+      <h2>Контрол на операцията</h2>
+      <div class="m99-safety-list">
+        <div><b>✓</b> numeric-only M99 reference</div>
+        <div><b>✓</b> EN / BG / RU contract</div>
+        <div><b>✓</b> minimal Product XML</div>
+        <div><b>✓</b> TEST first</div>
+        <div><b>✓</b> inactive CREATE</div>
+        <div><b>✓</b> mandatory readback</div>
+      </div>
+    </section>
+  </div>
+
+  {% if mode == 'dry_run' and result %}
+  <section class="m99-card m99-card-wide">
+    <h2>DRY RUN резултат</h2>
+    <div class="m99-alert m99-alert-ok">Нищо не е записано в m99.eu.</div>
+    <table class="m99-detail-table">
+      <tr><th>Reference</th><td>{{ result.plan.reference }}</td></tr>
+      <tr><th>Category</th><td>{{ result.category_id }}</td></tr>
+      <tr><th>Languages</th><td>{{ result.language_ids|join(', ') }}</td></tr>
+      <tr><th>Active</th><td>{{ result.plan.active }}</td></tr>
+      <tr><th>Visibility</th><td>{{ result.plan.visibility }}</td></tr>
+    </table>
+    <details class="m99-xml-preview"><summary>Покажи XML payload</summary><pre>{{ result.xml_payload }}</pre></details>
+    <div class="m99-danger-zone">
+      <h3>Създай един неактивен TEST продукт</h3>
+      <form method="post" action="/products/publish/m99eu/create-inactive">
+        <label class="m99-confirm-check">
+          <input type="checkbox" name="operator_approved" value="yes" required>
+          Потвърждавам реален TEST CREATE.
+        </label>
+        <label>Напиши <strong>CREATE_INACTIVE</strong>
+          <input class="m99-input" type="text" name="confirmation" autocomplete="off" required>
+        </label>
+        <button class="m99-btn m99-btn-danger" type="submit">Създай неактивен TEST продукт</button>
+      </form>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if mode == 'create_result' and result %}
+  <section class="m99-card m99-card-wide">
+    {% if result.success %}
+    <div class="m99-alert m99-alert-ok"><strong>CREATE + READBACK PASS</strong><br>PrestaShop Product ID: {{ result.product_id }}</div>
+    {% else %}
+    <div class="m99-alert m99-alert-error"><strong>Readback verification не е PASS.</strong></div>
+    {% endif %}
+    <table class="m99-detail-table">
+      <tr><th>Product ID</th><td>{{ result.product_id }}</td></tr>
+      <tr><th>Reference</th><td>{{ result.plan.reference }}</td></tr>
+      <tr><th>Readback</th><td>{{ result.readback }}</td></tr>
+    </table>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

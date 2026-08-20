@@ -23,3 +23,7 @@ app.include_router(commerce.router)
 
 @app.get('/health')
 def health():return {'status':'ok','app':settings.app_name,'env':settings.env,'version':'0.7.0.6'}
+
+# M99 v0.7.2 Phase 3 - Admin UI -> m99.eu publisher
+from app.routers import product_publish as m99_product_publish
+app.include_router(m99_product_publish.router)
