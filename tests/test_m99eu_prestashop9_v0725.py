@@ -17,68 +17,36 @@ from integrations.m99eu_prestashop.publisher import (
 
 def make_blank_schema() -> str:
     root = ET.Element("prestashop")
-    product = ET.SubElement(root, "product")
-
-    for tag in (
-        "id",
-        "id_category_default",
-        "reference",
-        "price",
-        "active",
-        "state",
-        "available_for_order",
-        "show_price",
-        "visibility",
-        "product_type",
-        "minimal_quantity",
-    ):
-        ET.SubElement(product, tag)
-
-    for tag in ("name", "link_rewrite", "description", "description_short"):
-        node = ET.SubElement(product, tag)
-        ET.SubElement(node, "language", {"id": "1"})
-        ET.SubElement(node, "language", {"id": "2"})
-
-    associations = ET.SubElement(product, "associations")
-    categories = ET.SubElement(associations, "categories")
-    category = ET.SubElement(categories, "category")
-    ET.SubElement(category, "id")
-
+    ET.SubElement(root, "product")
     return ET.tostring(root, encoding="unicode")
 
 
 def make_languages_xml() -> str:
     root = ET.Element("prestashop")
     languages = ET.SubElement(root, "languages")
-
-    for lang_id, iso in (("1", "bg"), ("2", "en")):
+    for lang_id, iso in (("1", "en"), ("2", "bg"), ("3", "ru")):
         language = ET.SubElement(languages, "language")
         ET.SubElement(language, "id").text = lang_id
         ET.SubElement(language, "iso_code").text = iso
         ET.SubElement(language, "active").text = "1"
-
     return ET.tostring(root, encoding="unicode")
 
 
-def make_readback_xml(*, active: str) -> str:
+def make_readback(plan, *, active="0") -> str:
     root = ET.Element("prestashop")
     product = ET.SubElement(root, "product")
-
     ET.SubElement(product, "id").text = "55"
     ET.SubElement(product, "active").text = active
-    ET.SubElement(product, "reference").text = "M99-TEST-1"
-    ET.SubElement(product, "id_category_default").text = "938"
-
+    ET.SubElement(product, "reference").text = plan.reference
+    ET.SubElement(product, "id_category_default").text = str(plan.category_id)
     name = ET.SubElement(product, "name")
-    ET.SubElement(name, "language", {"id": "1"}).text = "Test Product"
-
+    for language_id in plan.language_ids:
+        ET.SubElement(name, "language", {"id": language_id}).text = plan.names[language_id]
     return ET.tostring(root, encoding="unicode")
 
 
 BLANK = make_blank_schema()
 LANGS = make_languages_xml()
-READBACK_INACTIVE = make_readback_xml(active="0")
-READBACK_ACTIVE = make_readback_xml(active="1")
 
 
 class FakeResponse:
@@ -106,11 +74,6 @@ def config():
     )
 
 
-def test_programmatic_xml_fixtures_are_well_formed():
-    for xml_text in (BLANK, LANGS, READBACK_INACTIVE, READBACK_ACTIVE):
-        ET.fromstring(xml_text)
-
-
 def test_config_blocks_wrong_host(config):
     with pytest.raises(ValueError):
         replace(config, base_url="https://example.com").validate()
@@ -122,37 +85,40 @@ def test_config_requires_https(config):
 
 
 def test_active_languages_are_discovered():
-    assert parse_active_language_ids(LANGS) == ["1", "2"]
+    assert parse_active_language_ids(LANGS) == ["1", "2", "3"]
 
 
 def test_builder_forces_inactive_product():
     xml_body, plan = build_inactive_product_xml(
         BLANK,
-        language_ids=["1", "2"],
+        language_ids=["1", "2", "3"],
         category_id=938,
-        sku="M99-TEST-1",
-        name="Test Product",
+        sku="M99-1000001",
     )
     root = ET.fromstring(xml_body)
     assert root.findtext(".//product/active") == "0"
     assert root.findtext(".//product/available_for_order") == "0"
     assert root.findtext(".//product/visibility") == "none"
-    assert root.findtext(".//product/reference") == "M99-TEST-1"
+    assert root.findtext(".//product/reference") == "M99-1000001"
     assert root.findtext(".//product/id_category_default") == "938"
     assert plan.category_id == 938
 
 
 def test_builder_sets_all_language_names():
-    xml_body, _ = build_inactive_product_xml(
+    xml_body, plan = build_inactive_product_xml(
         BLANK,
-        language_ids=["1", "2"],
+        language_ids=["1", "2", "3"],
         category_id=938,
-        sku="M99-TEST-1",
-        name="Test Product",
+        sku="M99-1000001",
     )
     root = ET.fromstring(xml_body)
-    names = [n.text for n in root.findall(".//product/name/language")]
-    assert names == ["Test Product", "Test Product"]
+    names = {
+        n.attrib["id"]: n.text
+        for n in root.findall(".//product/name/language")
+    }
+    assert names == plan.names
+    assert len(names) == 3
+    assert len(set(names.values())) == 3
 
 
 def test_client_uses_api_key_as_basic_auth_username(config):
@@ -170,8 +136,9 @@ def test_client_blocks_redirect(config):
 
 
 def test_create_uses_post_xml(config):
-    response_xml = make_readback_xml(active="0")
-    session = FakeSession([FakeResponse(201, response_xml)])
+    session = FakeSession([
+        FakeResponse(201, "<prestashop><product><id>55</id></product></prestashop>")
+    ])
     client = PrestaShopWebserviceClient(config, session=session)
     client.create_product("<prestashop><product/></prestashop>")
     method, _, kwargs = session.calls[0]
@@ -180,28 +147,38 @@ def test_create_uses_post_xml(config):
 
 
 def test_extract_created_product_id():
-    assert extract_created_product_id(READBACK_INACTIVE) == 55
+    assert extract_created_product_id(
+        "<prestashop><product><id>55</id></product></prestashop>"
+    ) == 55
 
 
 def test_readback_requires_inactive_and_matching_identity():
     _, plan = build_inactive_product_xml(
         BLANK,
-        language_ids=["1", "2"],
+        language_ids=["1", "2", "3"],
         category_id=938,
-        sku="M99-TEST-1",
-        name="Test Product",
+        sku="M99-1000001",
     )
-    assert verify_product_readback(plan, READBACK_INACTIVE)["pass"] is True
+    assert verify_product_readback(plan, make_readback(plan, active="0"))["pass"] is True
 
 
 def test_readback_fails_if_product_is_active():
     _, plan = build_inactive_product_xml(
         BLANK,
-        language_ids=["1"],
+        language_ids=["1", "2", "3"],
         category_id=938,
-        sku="M99-TEST-1",
-        name="Test Product",
+        sku="M99-1000001",
     )
-    checks = verify_product_readback(plan, READBACK_ACTIVE)
+    checks = verify_product_readback(plan, make_readback(plan, active="1"))
     assert checks["pass"] is False
     assert checks["active_zero"] is False
+
+
+def test_legacy_alphanumeric_test_reference_is_rejected():
+    with pytest.raises(ValueError):
+        build_inactive_product_xml(
+            BLANK,
+            language_ids=["1", "2", "3"],
+            category_id=938,
+            sku="M99-TEST-1",
+        )
