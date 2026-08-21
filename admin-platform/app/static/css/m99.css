@@ -34,3 +34,26 @@
 .m99-danger-zone{margin-top:20px;padding:18px;border:2px solid #d6a0a0;background:#fff8f8;border-radius:5px}
 .m99-confirm-check{display:block;margin:12px 0}.m99-input{display:block;width:100%;max-width:420px;padding:9px;margin:7px 0 12px;border:1px solid #b9c1ca;border-radius:4px}
 @media(max-width:900px){.m99-publish-grid,.m99-stepbar{grid-template-columns:1fr}.m99-publish-header{display:block}.m99-channel-badge{display:inline-block;margin-top:10px}}
+
+/* M99 v0.7.3 - Operator Product Import Wizard */
+.m99-wizard-shell{max-width:1180px;margin:0 auto;padding:22px}
+.m99-wizard-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px}
+.m99-wizard-status{padding:8px 12px;border:1px solid #b7c2cf;background:#fff;border-radius:6px;font-weight:700}
+.m99-wizard-steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0}
+.m99-wizard-step{padding:10px;border:1px solid #d9dee5;border-radius:6px;background:#f5f7f9;display:flex;gap:8px;align-items:center}
+.m99-wizard-step span{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#d3d9e0;font-weight:700}
+.m99-wizard-step.is-current{background:#fff;border-color:#7f9bb8}.m99-wizard-step.is-current span{background:#315d8a;color:#fff}
+.m99-choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0 18px}
+.m99-choice-card{border:1px solid #d6dce4;border-radius:6px;padding:14px;background:#fff;cursor:pointer}
+.m99-choice-card input{margin-right:8px}.m99-choice-card strong,.m99-choice-card small{display:block;margin-left:24px}
+.m99-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.m99-textarea{width:100%;padding:9px;border:1px solid #b9c1ca;border-radius:5px;box-sizing:border-box}
+.m99-target-list{display:grid;gap:8px;margin:14px 0 18px}
+.m99-target-row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid #d8dde4;padding:12px;border-radius:6px;background:#fff}
+.m99-target-row small{display:block;opacity:.7}.m99-target-row.is-disabled{opacity:.5;background:#f4f4f4}
+.m99-pill{font-style:normal;font-size:11px;font-weight:700;padding:5px 8px;border-radius:999px}
+.m99-pill.is-ready{background:#e7f5eb;border:1px solid #86be93}.m99-pill.is-blocked{background:#fff0f0;border:1px solid #d5a0a0}
+.m99-review-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.m99-review-grid>div,.m99-summary-box{border:1px solid #dbe0e6;border-radius:6px;padding:12px;background:#fafbfc}
+.m99-review-grid small,.m99-review-grid strong{display:block}.m99-note{padding:12px;background:#fff9e8;border:1px solid #ddc57e;border-radius:6px;margin:14px 0}
+@media(max-width:900px){.m99-wizard-steps{grid-template-columns:repeat(2,1fr)}.m99-form-grid,.m99-review-grid{grid-template-columns:1fr}.m99-wizard-top{display:block}}

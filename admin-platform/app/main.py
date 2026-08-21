@@ -27,3 +27,7 @@ def health():return {'status':'ok','app':settings.app_name,'env':settings.env,'v
 # M99 v0.7.2 Phase 3 - Admin UI -> m99.eu publisher
 from app.routers import product_publish as m99_product_publish
 app.include_router(m99_product_publish.router)
+
+# M99 v0.7.3 - Operator Product Import Wizard Foundation
+from app.routers import product_import_wizard as m99_product_import_wizard
+app.include_router(m99_product_import_wizard.router)

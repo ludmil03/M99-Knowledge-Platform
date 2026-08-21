@@ -1,0 +1,214 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="m99-wizard-shell">
+  <div class="m99-wizard-top">
+    <div>
+      <div class="m99-kicker">M99 / OPERATOR</div>
+      <h1>Добави продукти</h1>
+      <p class="m99-muted">Стъпка по стъпка. Без API, XML, скриптове и технически настройки.</p>
+    </div>
+    <div class="m99-wizard-status">TEST / Draft first</div>
+  </div>
+
+  <div class="m99-wizard-steps">
+    {% set steps = [
+      ('source','1','Доставчик'),
+      ('selection','2','Продукти'),
+      ('identity','3','Проверка'),
+      ('targets','4','Къде'),
+      ('review','5','Преглед'),
+      ('ready','6','Готово')
+    ] %}
+    {% for key, num, label in steps %}
+      <div class="m99-wizard-step {% if step == key %}is-current{% endif %}">
+        <span>{{ num }}</span><b>{{ label }}</b>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if error %}
+  <div class="m99-alert m99-alert-error">{{ error }}</div>
+  {% endif %}
+  {% if message %}
+  <div class="m99-alert m99-alert-ok">{{ message }}</div>
+  {% endif %}
+
+  {% if step == 'source' %}
+  <section class="m99-card">
+    <h2>1. Избери доставчик или производител</h2>
+    <p class="m99-muted">Показват се само вече одобрени организации.</p>
+
+    <form method="post" action="/operator/add-products/source">
+      <div class="m99-choice-grid">
+        {% for org in organizations %}
+        <label class="m99-choice-card">
+          <input type="radio" name="organization_id" value="{{ org.organization_id }}" required>
+          <strong>{{ org.name }}</strong>
+          <small>{{ org.roles|join(' / ') }}</small>
+        </label>
+        {% endfor %}
+      </div>
+      <button class="m99-btn m99-btn-primary" type="submit">Продължи</button>
+    </form>
+  </section>
+
+  <section class="m99-card m99-card-wide">
+    <details>
+      <summary><strong>Не намираш доставчика или производителя?</strong></summary>
+      <p>Можеш да го предложиш. Той няма да стане видим за другите оператори, докато Super Admin не го одобри.</p>
+      <form method="post" action="/operator/add-products/organization-proposal">
+        <label>Име
+          <input class="m99-input" name="organization_name" required>
+        </label>
+        <label><input type="checkbox" name="supplier_role" value="yes"> Доставчик</label>
+        <label><input type="checkbox" name="manufacturer_role" value="yes"> Производител</label>
+        <br><br>
+        <button class="m99-btn" type="submit">Изпрати за одобрение</button>
+      </form>
+      {% if proposal %}
+      <div class="m99-alert m99-alert-ok">
+        {{ proposal.message }}<br>
+        Статус: {{ proposal.status }}
+      </div>
+      {% endif %}
+    </details>
+  </section>
+  {% endif %}
+
+  {% if step == 'selection' %}
+  <section class="m99-card">
+    <h2>2. Какво искаш да добавиш?</h2>
+    <p><strong>Източник:</strong> {{ draft.source_name }}</p>
+    <form method="post" action="/operator/add-products/selection">
+      <div class="m99-choice-grid">
+        {% for mode in selection_modes %}
+        <label class="m99-choice-card">
+          <input type="radio" name="selection_mode" value="{{ mode.value }}" required>
+          <strong>{{ mode.label }}</strong>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="m99-form-grid">
+        <label>
+          Продуктови референции / избори
+          <textarea class="m99-textarea" name="product_refs" rows="5" placeholder="По един продукт на ред"></textarea>
+        </label>
+        <label>
+          Категории
+          <textarea class="m99-textarea" name="category_refs" rows="5" placeholder="По една категория на ред"></textarea>
+        </label>
+        <label>
+          Първите N продукта
+          <input class="m99-input" type="number" min="1" name="first_n">
+        </label>
+      </div>
+      <button class="m99-btn m99-btn-primary" type="submit">Продължи към проверка</button>
+    </form>
+  </section>
+  {% endif %}
+
+  {% if step == 'identity' %}
+  <section class="m99-card">
+    <h2>3. Проверка за съществуващи продукти</h2>
+    <p>M99 винаги проверява identity преди съдържание и публикуване.</p>
+
+    <div class="m99-summary-box">
+      <div><b>Доставчик:</b> {{ draft.source_name }}</div>
+      <div><b>Продукти:</b> {{ draft.selected_product_refs|length }}</div>
+      <div><b>Категории:</b> {{ draft.selected_category_refs|length }}</div>
+      <div><b>Статус:</b> {{ draft.identity_summary }}</div>
+    </div>
+
+    <div class="m99-note">
+      Foundation версия: реалният Resolver/Matcher ще бъде свързан в следващата стъпка.
+      Няма да се създава M99 identity автоматично без тази проверка.
+    </div>
+
+    <form method="post" action="/operator/add-products/identity">
+      <button class="m99-btn m99-btn-primary" type="submit">Продължи към сайтовете</button>
+    </form>
+  </section>
+  {% endif %}
+
+  {% if step == 'targets' %}
+  <section class="m99-card">
+    <h2>4. Къде да се добавят?</h2>
+    <p class="m99-muted">Можеш да избереш един, няколко или всички разрешени targets.</p>
+
+    <form method="post" action="/operator/add-products/targets">
+      <div class="m99-target-list">
+        {% for target in targets %}
+        <label class="m99-target-row {% if not target.authorized %}is-disabled{% endif %}">
+          <input type="checkbox" name="targets" value="{{ target.key }}" {% if not target.authorized %}disabled{% endif %}>
+          <span>
+            <strong>{{ target.label }}</strong>
+            <small>{{ target.kind }}{% if target.note %} · {{ target.note }}{% endif %}</small>
+          </span>
+          {% if target.authorized and target.ready %}
+            <em class="m99-pill is-ready">READY</em>
+          {% elif target.authorized %}
+            <em class="m99-pill is-blocked">NEEDS REVIEW</em>
+          {% else %}
+            <em class="m99-pill is-blocked">NO ACCESS</em>
+          {% endif %}
+        </label>
+        {% endfor %}
+      </div>
+
+      <button class="m99-btn m99-btn-primary" type="submit">Преглед</button>
+    </form>
+  </section>
+  {% endif %}
+
+  {% if step == 'review' %}
+  <section class="m99-card">
+    <h2>5. Преглед</h2>
+    <div class="m99-review-grid">
+      <div><small>Доставчик</small><strong>{{ review.source }}</strong></div>
+      <div><small>Избор</small><strong>{{ review.selection }}</strong></div>
+      <div><small>Продукти</small><strong>{{ review.products_count }}</strong></div>
+      <div><small>Категории</small><strong>{{ review.categories_count }}</strong></div>
+    </div>
+
+    <h3>Targets</h3>
+    {% if review.ready_targets %}
+      <div class="m99-alert m99-alert-ok">
+        READY: {{ review.ready_targets|join(', ') }}
+      </div>
+    {% endif %}
+    {% if review.blocked_targets %}
+      <div class="m99-alert m99-alert-error">
+        Нуждаят се от проверка / блокирани: {{ review.blocked_targets|join(', ') }}
+      </div>
+    {% endif %}
+
+    <p class="m99-muted">
+      В тази Foundation версия няма публикуване. Следващата версия ще направи live preflight
+      по всеки READY target и ще създаде ImportJob преди write.
+    </p>
+
+    <form method="post" action="/operator/add-products/prepare-preflight">
+      <button class="m99-btn m99-btn-primary" type="submit" {% if not review.can_continue %}disabled{% endif %}>
+        Подготви за Preflight
+      </button>
+    </form>
+  </section>
+  {% endif %}
+
+  {% if step == 'ready' %}
+  <section class="m99-card">
+    <h2>6. Foundation workflow е готов</h2>
+    <div class="m99-alert m99-alert-ok">
+      Няма извършен write. Изборът е подготвен за следващия milestone.
+    </div>
+    <div class="m99-summary-box">
+      <div><b>Доставчик:</b> {{ review.source }}</div>
+      <div><b>READY targets:</b> {{ review.ready_targets|join(', ') }}</div>
+      <div><b>Blocked/Review:</b> {{ review.blocked_targets|join(', ') }}</div>
+    </div>
+    <a class="m99-btn" href="/operator/add-products">Нов Import</a>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,5 +1,7 @@
 ﻿{% extends "base.html" %}{% block page_title %}Products{% endblock %}{% block content %}
+<div style="margin:0 0 14px"><a class="m99-btn m99-btn-primary" href="/operator/add-products">Добави продукти</a></div>
 <div style="margin:0 0 14px"><a class="m99-btn m99-btn-primary" href="/products/publish/m99eu">Добави продукт в m99.eu</a></div>
 <div class="page-actions"><button class="primary" disabled>+ New Product Import</button></div><div class="card"><table><thead><tr><th>M99 Reference</th><th>Supplier ref</th><th>Product</th><th>Lifecycle</th></tr></thead><tbody>
 {% for p in products %}<tr><td><code>{{ p.m99_reference }}</code></td><td>{{ p.supplier_reference }}</td><td>{{ p.name }}</td><td><span class="badge">{{ p.lifecycle }}</span></td></tr>{% else %}<tr><td colspan="4" class="empty">РќСЏРјР° canonical РїСЂРѕРґСѓРєС‚Рё РІ РЅРѕРІР°С‚Р° Admin DB.</td></tr>{% endfor %}
 </tbody></table></div>{% endblock %}
+
