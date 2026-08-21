@@ -1,0 +1,145 @@
+﻿schema_version: 1
+context: M99_CURRENT_CONTEXT
+generated_at: "2026-08-21T10:30:41+03:00"
+
+repository:
+  name: M99-Knowledge-Platform
+  branch: main
+  head: "a8a4983245d232c95746566de83dd5978941a016"
+  origin_main: "a8a4983245d232c95746566de83dd5978941a016"
+  synchronized: true
+  master_readme: README_v8.md
+
+development:
+  stable_recovery_baseline:
+    version: v0.7.1
+    commit: 8c3d2d7fc729f22001c320d1fa033528272eb21e
+    tests: 234
+  current_line: v0.7.2
+  next_target: "v0.7.3 - Operator Product Import Wizard Foundation"
+  active_priority: "Governance consolidation, then generalized operator Add Products workflow"
+
+known_milestones:
+  - name: v0.7.2_phase1_canonical_data_model
+    status: COMMITTED
+    commit: 193b6bcc6c8f4b13439102a99f00d1b542b1851f
+
+  - name: v0.7.2_phase2_sqlalchemy_alembic
+    status: GATES_PASSED
+    note: "Temporary migration PASS; real Admin DB not migrated by installer."
+
+  - name: v0.7.2_rev52_fix1_multilingual_publisher
+    status: COMMITTED
+    commit: 5705bff675224748f95f58cbf5860b0bb761f972
+
+  - name: v0.7.2_phase3_fix1_admin_bridge
+    status: COMMITTED
+    commit: ec0cc276bdf235868f74df52aaf62c6421d3b32d
+    note: "Dedicated m99.eu Admin screen is technical prototype, not final operator workflow."
+
+roles:
+  operator:
+    programming_knowledge_required: false
+    target_ux: operator_first
+    one_decision_per_screen: true
+  super_admin:
+    manages:
+      - users_roles
+      - organizations
+      - suppliers_manufacturers
+      - brands
+      - b2b_connectors
+      - knowledge_sources
+      - channels_erp
+      - languages
+      - pricing_vat_fx
+      - identity_registry
+      - import_presets
+      - sync_rules
+      - quality_gates
+      - credentials_status
+      - audit_logs_diagnostics
+      - feature_gap_registry
+
+channels:
+  - mela99.com
+  - rabotni-drehi.com
+  - m99.eu
+  - medicinski-drehi.com
+  - toplinka.com
+  - laviro.ro
+  - alviro.ro
+
+m99eu:
+  platform: "PrestaShop 9.1.5"
+  api_base: "https://m99.eu/api"
+  languages:
+    "1": EN
+    "2": BG
+    "3": RU
+  test_category_id: 26
+  products_get: VERIFIED_TRUE
+  products_post: VERIFIED_TRUE
+  dry_run: PASS
+  write_status: "adapter ready; generalized operator workflow required before normal operator use"
+
+operator_add_products:
+  target_model: GENERALIZED_MULTI_CHANNEL_WIZARD
+  source_selection:
+    - one_product
+    - multiple_products
+    - one_category
+    - multiple_categories
+    - all_products_where_supported
+    - first_n
+    - only_new_to_m99
+    - manual_selection
+  target_selection:
+    mode: one_or_many_authorized_channels_and_or_erp
+    formula: "REQUESTED intersect AUTHORIZED intersect READY"
+  required_stages:
+    - choose_supplier
+    - direct_supplier_selection
+    - identity_duplicate_review
+    - permanent_m99_id_or_existing_match
+    - target_channels_erp
+    - prepare_product
+    - pricing_vat
+    - content_seo_languages
+    - images_alt
+    - variants_default_combination
+    - preflight
+    - operator_confirmation
+    - test_draft_import
+    - readback
+    - quality_report
+    - activation_by_permission
+
+governance_order:
+  - governance/DECISION_REGISTRY.yaml
+  - governance/M99_CURRENT_CONTEXT.yaml
+  - PROJECT_STATE.md
+  - README_v8.md
+  - docs/ADR
+  - relevant_tests_and_history
+
+fixed_rules:
+  - "DECIDED != IMPLEMENTED"
+  - "Failed implementation does not reopen DECIDED rule"
+  - "m99.eu is one target channel, not the central Add Product workflow"
+  - "New Supplier/Manufacturer/Brand requires Super Admin approval before general operator availability"
+  - "Operator can select one/many products/categories and one/many authorized targets"
+  - "New products publish TEST/Draft first"
+  - "Mandatory readback"
+  - "No automatic Git push from SAFE installers"
+
+open_or_deferred:
+  - universal_productgroup_vs_colour_variant_boundary
+  - universal_variant_sku_standard
+  - exact_dolibarr_parent_variant_implementation
+  - exact_image_rights_contract_per_source
+  - production_vault
+  - exact_wordpress_commerce_adapter_details_per_site
+  - 2fa_rollout_timing
+  - supplier_specific_direct_browser_technical_mechanisms
+  - generalized_operator_wizard_final_implementation

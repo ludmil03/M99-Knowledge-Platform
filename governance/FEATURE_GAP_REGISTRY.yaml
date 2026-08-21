@@ -1,0 +1,156 @@
+﻿schema_version: 1
+registry: M99_FEATURE_GAP_REGISTRY
+rule: "normative_status and implementation_status are independent"
+
+features:
+  - id: FEAT-GOV-001
+    feature: machine_readable_governance
+    normative_status: DECIDED
+    implementation_status: IMPLEMENTED
+    evidence:
+      - governance/DECISION_REGISTRY.yaml
+      - governance/FEATURE_GAP_REGISTRY.yaml
+      - governance/M99_CURRENT_CONTEXT.yaml
+
+  - id: FEAT-UX-001
+    feature: operator_first_ui
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+    notes: "Existing Admin UI exists; generalized operator wizard remains to be implemented."
+
+  - id: FEAT-UX-002
+    feature: generalized_add_products_wizard
+    normative_status: DECIDED
+    implementation_status: PLANNED
+    target_version: v0.7.3
+
+  - id: FEAT-UX-003
+    feature: direct_supplier_selection
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-IMP-001
+    feature: one_many_all_product_selection
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-IMP-002
+    feature: one_many_category_selection
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-IMP-003
+    feature: import_job
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-CH-001
+    feature: operator_selectable_multi_channel_targets
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+    notes: "Architecture/legacy importer exists; final generalized Admin UX remains planned."
+
+  - id: FEAT-ORG-001
+    feature: organization_registry
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-ORG-002
+    feature: supplier_manufacturer_super_admin_approval
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-BRAND-001
+    feature: brand_registry_and_approval
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-B2B-001
+    feature: organization_b2b_connectors
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-ID-001
+    feature: canonical_product_model
+    normative_status: DECIDED
+    implementation_status: IMPLEMENTED
+    target_version: v0.7.2_phase1
+
+  - id: FEAT-DB-001
+    feature: sqlalchemy_persistence
+    normative_status: DECIDED
+    implementation_status: IMPLEMENTED
+
+  - id: FEAT-DB-002
+    feature: alembic_migration_baseline
+    normative_status: DECIDED
+    implementation_status: TESTED
+    notes: "Temporary migration gate passed; real Admin DB not migrated by installer."
+
+  - id: FEAT-M99EU-001
+    feature: m99eu_prestashop9_preflight
+    normative_status: DECIDED
+    implementation_status: TESTED
+    notes: "Live API preflight PASS; products GET/POST verified."
+
+  - id: FEAT-M99EU-002
+    feature: m99eu_multilingual_minimal_payload
+    normative_status: DECIDED
+    implementation_status: TESTED
+    notes: "EN/BG/RU dry run PASS; category 26; active 0; minimal associations."
+
+  - id: FEAT-M99EU-003
+    feature: m99eu_dedicated_admin_screen
+    normative_status: SUPERSEDED
+    implementation_status: PROTOTYPE
+    notes: "Technical adapter proof only; superseded as primary UX by generalized Add Products wizard."
+
+  - id: FEAT-PUB-001
+    feature: test_first_publishing
+    normative_status: DECIDED
+    implementation_status: TESTED
+
+  - id: FEAT-PUB-002
+    feature: mandatory_readback
+    normative_status: DECIDED
+    implementation_status: TESTED
+
+  - id: FEAT-CONTENT-001
+    feature: multilingual_content_review
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-IMG-001
+    feature: image_pipeline
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-SYNC-001
+    feature: daily_existing_product_sync
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-PRES-001
+    feature: product_presence_ui
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-REV-001
+    feature: existing_product_content_revision
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-REV-002
+    feature: existing_category_content_revision
+    normative_status: DECIDED
+    implementation_status: PLANNED
+
+  - id: FEAT-ERP-001
+    feature: dolibarr_mapping_and_sync
+    normative_status: DECIDED
+    implementation_status: FOUNDATION
+
+  - id: FEAT-LOG-001
+    feature: central_logs_super_admin
+    normative_status: DECIDED
+    implementation_status: PLANNED
