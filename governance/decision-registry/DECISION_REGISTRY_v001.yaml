@@ -1,0 +1,301 @@
+﻿schema_version: 1
+registry: M99_DECISION_REGISTRY
+source_of_truth: README_v8.md
+anti_loop_rule: "DECIDED != IMPLEMENTED"
+status_values:
+  - DECIDED
+  - DECIDED_TESTED
+  - IMPLEMENTED
+  - TESTED
+  - PLANNED
+  - OPEN
+  - DEFERRED
+  - SUPERSEDED
+
+decisions:
+  - id: GOV-001
+    area: governance
+    status: DECIDED
+    statement: "M99 is the Single Source of Truth for canonical identity and verified knowledge."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: GOV-002
+    area: governance
+    status: DECIDED
+    statement: "Knowledge First: verified knowledge precedes content, publishing and downstream automation."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: GOV-003
+    area: governance
+    status: DECIDED
+    statement: "AI Native, not AI Invented: AI must not invent technical or commercial facts."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: GOV-004
+    area: governance
+    status: DECIDED
+    statement: "Before new architecture proposals, consult Decision Registry, Current Context, Project State, latest README, relevant ADR and tests/history."
+    source: README_v8.md
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: GOV-005
+    area: governance
+    status: DECIDED
+    statement: "A failed implementation attempt does not reopen a DECIDED rule."
+    source: README_v8.md
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: UX-001
+    area: operator_ux
+    status: DECIDED
+    statement: "Operator-first UX."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: UX-002
+    area: operator_ux
+    status: DECIDED
+    statement: "One-decision-per-screen is the target operator UX."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: UX-003
+    area: operator_ux
+    status: DECIDED
+    statement: "Operators must not need Python, PowerShell, API, HTTP, JSON, XML, SQL, credentials or platform internals."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: UX-004
+    area: operator_ux
+    status: DECIDED
+    statement: "The primary operator workflow is generalized Add Products, not a dedicated Add to m99.eu screen."
+    source: README_v8.md
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ID-001
+    area: identity
+    status: DECIDED_TESTED
+    statement: "M99 canonical identity is independent from external IDs."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ID-002
+    area: identity
+    status: DECIDED_TESTED
+    statement: "M99 Reference format is M99- followed by digits only."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ID-003
+    area: identity
+    status: DECIDED
+    statement: "Assigned M99 identity is never reused for another ProductGroup."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ID-004
+    area: identity
+    status: DECIDED
+    statement: "Identity Before Content."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PG-001
+    area: product_group
+    status: DECIDED
+    statement: "ProductGroup lifecycle is draft -> active -> paused -> retired."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PG-002
+    area: product_group
+    status: DECIDED
+    statement: "Hard DELETE requires explicit human approval and typed DELETE confirmation."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ORG-001
+    area: organization
+    status: DECIDED
+    statement: "Supplier and Manufacturer are Organization roles; one Organization may hold both roles."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ORG-002
+    area: organization
+    status: DECIDED
+    statement: "New Supplier, Manufacturer and Brand proposals require Super Admin approval before general operator availability."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: B2B-001
+    area: b2b
+    status: DECIDED
+    statement: "B2B portals belong to Organizations and declare connector capabilities."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: IMP-001
+    area: import
+    status: DECIDED
+    statement: "Direct Supplier Selection is the target UX."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: IMP-002
+    area: import
+    status: DECIDED
+    statement: "Selection supports one or many products, one or many categories, and all products where the source supports it."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: IMP-003
+    area: import
+    status: DECIDED
+    statement: "Every new-product import is an auditable ImportJob."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: IMP-004
+    area: import
+    status: DECIDED
+    statement: "WRITE_TARGETS = REQUESTED intersect AUTHORIZED intersect READY."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: CH-001
+    area: channels
+    status: DECIDED
+    statement: "Operators may choose one or more authorized target channels/ERP destinations."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: CH-002
+    area: channels
+    status: DECIDED
+    statement: "m99.eu is one target channel, not the central Add Product workflow."
+    source: README_v8.md
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-001
+    area: publishing
+    status: DECIDED
+    statement: "New products publish TEST/Draft first."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-002
+    area: publishing
+    status: DECIDED
+    statement: "TEST category is resolved live."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-003
+    area: publishing
+    status: DECIDED
+    statement: "Final category is operator-owned."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-004
+    area: publishing
+    status: DECIDED
+    statement: "CREATE and UPDATE are separate contracts."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-005
+    area: publishing
+    status: DECIDED
+    statement: "Duplicate guard runs before CREATE."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-006
+    area: publishing
+    status: DECIDED
+    statement: "Readback is mandatory after write."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-007
+    area: publishing
+    status: DECIDED
+    statement: "HTTP 200/201 does not equal Product Quality PASS."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PUB-008
+    area: publishing
+    status: DECIDED
+    statement: "Activation requires authorization."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: CNT-001
+    area: content
+    status: DECIDED
+    statement: "Content is channel/market/language aware and based on verified facts."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: CNT-002
+    area: content
+    status: DECIDED
+    statement: "Every required content field is reviewed per language; Image and ALT are reviewed together."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: IMG-001
+    area: images
+    status: DECIDED
+    statement: "Image source priority is official manufacturer, then verified supplier; another M99 channel is not the master image source by default."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: VAR-001
+    area: variants
+    status: DECIDED
+    statement: "A variational product must have exactly one default combination."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PRC-001
+    area: pricing
+    status: DECIDED
+    statement: "Target selling price is gross VAT-included customer price."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: SYNC-001
+    area: sync
+    status: DECIDED
+    statement: "Existing products sync daily and NO_CHANGE means NO_WRITE."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: PRES-001
+    area: product_presence
+    status: DECIDED
+    statement: "Presence is not Stock."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: ERP-001
+    area: erp
+    status: DECIDED
+    statement: "M99 owns canonical identity/knowledge; Dolibarr is the operational ERP/CRM/warehouse representation."
+    reopen_policy: explicit_superseding_decision_only
+
+  - id: DEV-001
+    area: development
+    status: DECIDED_TESTED
+    statement: "SAFE development uses clean baseline, controlled patch, compile, dedicated tests, full regression, exact scope review, explicit COMMIT and no automatic Push."
+    reopen_policy: explicit_superseding_decision_only
+
+open_decisions:
+  - id: OPEN-001
+    statement: "Universal ProductGroup versus colour-variant boundary."
+    status: OPEN
+
+  - id: OPEN-002
+    statement: "Universal Variant SKU standard."
+    status: OPEN
+
+  - id: OPEN-003
+    statement: "Exact Dolibarr parent/variant implementation."
+    status: OPEN
+
+  - id: OPEN-004
+    statement: "Exact image-rights contract per external source."
+    status: DEFERRED
+
+  - id: OPEN-005
+    statement: "Production Vault deployment."
+    status: DEFERRED
+
+  - id: OPEN-006
+    statement: "Exact WordPress commerce adapter details per site."
+    status: OPEN
+
+  - id: OPEN-007
+    statement: "2FA rollout timing."
+    status: DEFERRED
+
+  - id: OPEN-008
+    statement: "Final technical implementation of direct supplier browser selection for every supplier."
+    status: OPEN
+
+  - id: OPEN-009
+    statement: "Final production implementation of generalized multi-channel Operator Add Products wizard."
+    status: OPEN
