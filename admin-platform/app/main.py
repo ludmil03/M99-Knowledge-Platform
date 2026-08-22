@@ -35,3 +35,7 @@ app.include_router(m99_product_import_wizard.router)
 # M99 v0.7.3 Phase 2 Revision 1 - Live Supplier Browser
 from app.routers import live_supplier_browser as m99_live_supplier_browser
 app.include_router(m99_live_supplier_browser.router)
+
+# M99 v0.7.3 Phase 3 - Product Presence
+from app.routers import product_presence as m99_product_presence
+app.include_router(m99_product_presence.router)

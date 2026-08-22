@@ -1,0 +1,66 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="m99-wizard-shell">
+  <div class="m99-wizard-top">
+    <div>
+      <div class="m99-kicker">M99 / OPERATOR</div>
+      <h1>Product Presence</h1>
+      <p class="m99-muted">Къде е въведен продуктът и кои продукти са въведени в избран сайт.</p>
+    </div>
+  </div>
+
+  <section class="m99-card">
+    <form method="get" action="/operator/presence">
+      <label>M99 Product ID</label>
+      <input name="product_id" value="{{ product_id or '' }}" placeholder="M99-...">
+      <button class="m99-btn m99-btn-primary" type="submit">Продукт → сайтове</button>
+    </form>
+
+    <form method="get" action="/operator/presence" style="margin-top:16px;">
+      <label>Channel / ERP</label>
+      <input name="target" value="{{ target or '' }}" placeholder="m99.eu">
+      <button class="m99-btn" type="submit">Сайт → продукти</button>
+    </form>
+  </section>
+
+  {% if rows %}
+  <section class="m99-card m99-card-wide">
+    <table class="m99-detail-table">
+      <thead>
+        <tr>
+          <th>M99 Product</th>
+          <th>Target</th>
+          <th>Presence</th>
+          <th>External ID</th>
+          <th>Price</th>
+          <th>Last verified</th>
+          <th>Last sync</th>
+          <th>Error</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in rows %}
+        <tr>
+          <td>{{ row.m99_product_id }}</td>
+          <td>{{ row.target_key }}</td>
+          <td>{{ row.presence_status }}</td>
+          <td>{{ row.external_product_id or '' }}</td>
+          <td>{{ row.price or '' }} {{ row.currency or '' }}</td>
+          <td>{{ row.last_verified_at or '' }}</td>
+          <td>{{ row.last_sync_at or '' }}</td>
+          <td>{{ row.last_error or '' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+
+  <section class="m99-card">
+    <div class="m99-note">
+      FAST режимът използва последното verified състояние.
+      LIVE VERIFY ще бъде свързан в следващия runtime milestone към target adapters.
+    </div>
+  </section>
+</div>
+{% endblock %}
