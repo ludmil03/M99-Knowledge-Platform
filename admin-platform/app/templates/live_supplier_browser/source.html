@@ -1,0 +1,26 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="m99-wizard-shell">
+  <div class="m99-wizard-top">
+    <div>
+      <div class="m99-kicker">M99 / LIVE SUPPLIER BROWSER</div>
+      <h1>Категории</h1>
+      <p class="m99-muted">Категориите са конфигурирани от Super Admin/connector, не чрез operator URL paste.</p>
+    </div>
+    <a class="m99-btn" href="/operator/supplier-browser">Назад</a>
+  </div>
+
+  <section class="m99-card">
+    <div class="m99-choice-grid">
+    {% for category in categories %}
+      <a class="m99-choice-card" href="/operator/supplier-browser/{{ source_id }}/category/{{ category.key }}">
+        <strong>{{ category.name }}</strong>
+        {% if category.product_count is not none %}<small>{{ category.product_count }} продукта</small>{% endif %}
+      </a>
+    {% else %}
+      <p>Няма конфигурирани категории за този source.</p>
+    {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

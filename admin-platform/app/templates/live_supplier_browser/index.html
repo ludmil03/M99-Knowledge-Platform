@@ -1,0 +1,36 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="m99-wizard-shell">
+  <div class="m99-wizard-top">
+    <div>
+      <div class="m99-kicker">M99 / OPERATOR</div>
+      <h1>Доставчици и производители</h1>
+      <p class="m99-muted">Само одобрени организации и READY read-only sources.</p>
+    </div>
+    <a class="m99-btn m99-btn-primary" href="/operator/add-products">Добави продукти</a>
+  </div>
+
+  {% for org in organizations %}
+  <section class="m99-card">
+    <h2>{{ org.name }}</h2>
+    <p class="m99-muted">{{ org.roles|join(' / ') }}</p>
+    <div class="m99-target-list">
+      {% for source in org.sources %}
+        {% if source.operator_browsable and source.status == 'READY' and source.read_only %}
+        <a class="m99-target-row" href="/operator/supplier-browser/{{ source.source_id }}">
+          <span></span>
+          <span>
+            <strong>{{ source.label }}</strong>
+            <small>{{ source.source_type }} · {{ source.connector_key }}</small>
+          </span>
+          <em class="m99-pill is-ready">LIVE READ</em>
+        </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+  {% else %}
+  <section class="m99-card"><p>Няма одобрени доставчици.</p></section>
+  {% endfor %}
+</div>
+{% endblock %}
