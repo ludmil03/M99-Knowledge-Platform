@@ -39,3 +39,9 @@ app.include_router(m99_live_supplier_browser.router)
 # M99 v0.7.3 Phase 3 - Product Presence
 from app.routers import product_presence as m99_product_presence
 app.include_router(m99_product_presence.router)
+
+# M99 v0.7.3 Phase 4
+from app.routers import superadmin_organizations as m99_superadmin_organizations
+app.include_router(m99_superadmin_organizations.router)
+from app.routers import identity_review as m99_identity_review
+app.include_router(m99_identity_review.router)

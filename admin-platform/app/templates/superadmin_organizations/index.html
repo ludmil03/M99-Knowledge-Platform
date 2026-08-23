@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block content %}
+<div class="m99-wizard-shell"><h1>Organizations & Supplier Sources</h1>
+{% for org in organizations %}<section class="m99-card"><h2>{{org.name}}</h2>
+<p>{{org.status}} · {{org.roles|join(' / ')}} · Operator visible: {{org.visible_to_operators}}</p>
+{% if org.status == 'PENDING_SUPER_ADMIN_APPROVAL' %}
+<form method="post" action="/superadmin/organizations/{{org.organization_id}}/decision"><input type="hidden" name="action" value="APPROVE"><input name="reason" placeholder="Причина"><button class="m99-btn m99-btn-primary">APPROVE</button></form>
+<form method="post" action="/superadmin/organizations/{{org.organization_id}}/decision"><input type="hidden" name="action" value="REJECT"><input name="reason" placeholder="Причина"><button class="m99-btn">REJECT</button></form>{% endif %}
+{% for s in org.sources %}<div class="m99-target-row"><span><strong>{{s.label}}</strong><small>{{s.source_type}} · {{s.connector_key}} · {{s.base_url}}</small></span>
+<form method="post" action="/superadmin/organizations/{{org.organization_id}}/sources/{{s.source_id}}/configure"><select name="status">
+{% for st in ['NOT_CONFIGURED','CREDENTIALS_REQUIRED','CONNECTED','READY','AUTH_FAILED','SESSION_EXPIRED','BLOCKED','VERIFICATION_FAILED'] %}
+<option value="{{st}}" {% if st==s.status %}selected{% endif %}>{{st}}</option>{% endfor %}</select>
+<label><input type="checkbox" name="operator_browsable" {% if s.operator_browsable %}checked{% endif %}>Operator browse</label><button class="m99-btn">Запази</button></form></div>{% endfor %}
+</section>{% endfor %}</div>{% endblock %}

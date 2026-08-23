@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block content %}
+<div class="m99-wizard-shell"><h1>Identity Review</h1><p>Identity Before Content</p>
+{% for i in items %}<section class="m99-card"><h2>{{i.name or i.source_record_key}}</h2>
+<p><strong>{{i.state}}</strong> · Supplier ref {{i.supplier_reference or '-'}} · Manufacturer ref {{i.manufacturer_reference or '-'}} · EAN {{i.ean_gtin or '-'}}</p>
+<form method="post" action="/operator/identity-review/{{i.resolution_id}}/decide"><input type="hidden" name="decision" value="LINK_EXISTING"><input name="matched_m99_product_id" placeholder="M99-..."><button class="m99-btn m99-btn-primary">Свържи със съществуващ</button></form>
+<form method="post" action="/operator/identity-review/{{i.resolution_id}}/decide"><input type="hidden" name="decision" value="CONFIRM_NEW"><button class="m99-btn">Потвърди NEW</button></form>
+<form method="post" action="/operator/identity-review/{{i.resolution_id}}/decide"><input type="hidden" name="decision" value="KEEP_UNRESOLVED"><button class="m99-btn">Остави UNRESOLVED</button></form>
+</section>{% else %}<section class="m99-card">Няма identity cases за review.</section>{% endfor %}</div>{% endblock %}
