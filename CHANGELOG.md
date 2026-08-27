@@ -13,3 +13,7 @@
 - Recorded next additive target: Manufacturer Evidence + Canonical Content Foundation.
 - No runtime code, website write, migration or publication is part of this checkpoint.
 
+
+## 2026-08-27 — Governance Checkpoint v11
+Governance-only: source proposal/approval, Super Admin-only approved-source administration, audited Manufacturer <-> Supplier Product mapping, Canonical Category approval/mapping, category browsing/product search, explicit bulk discovery/selection, and Revision 31 operator-first priority. No runtime/migration/website/channel/DB change.
+

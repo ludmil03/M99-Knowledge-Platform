@@ -1,6 +1,6 @@
 schema_version: 1
 registry: M99_FEATURE_GAP_REGISTRY
-updated_at: '2026-08-26'
+updated_at: '2026-08-27'
 master_readme: README_v10.md
 frozen_runtime_baseline: Revision 29R3.2R2
 features:
@@ -75,3 +75,24 @@ features:
   normative_status: DECIDED_TESTED
   implementation_status: IMPLEMENTED
   action: KEEP_CURRENT
+- id: GAP-SOURCE-PROPOSAL-APPROVAL
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31
+- id: GAP-APPROVED-SOURCE-SUPERADMIN-EDIT
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31
+- id: GAP-MANUFACTURER-SUPPLIER-PRODUCT-AUDIT-MAPPING
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31
+- id: GAP-CANONICAL-CATEGORY-PROPOSAL-APPROVAL
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31
+- id: GAP-SUPPLIER-CATEGORY-BROWSER
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31
+- id: GAP-SUPPLIER-PRODUCT-SEARCH
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31
+- id: GAP-CATEGORY-ALL-PRODUCT-DISCOVERY
+  normative_status: DECIDED
+  implementation_status: PLANNED_REV31

@@ -41,3 +41,7 @@ Build **Manufacturer Evidence + Canonical Content Foundation** additively, witho
 Known baseline -> controlled docs patch -> schema/format validation -> exact changed-file review -> explicit COMMIT -> report review -> explicit PUSH -> sync verification.
 
 No runtime file is changed by the README v10 Governance Checkpoint.
+
+## Governance Checkpoint v11 — 2026-08-27
+Rev29R3.2R2 remains frozen tested baseline. Revision 30 passed automated gates but is not promoted here. Governance-only checkpoint. Next milestone is Revision 31 Supplier & Manufacturer Registry + Category/Search Browser Foundation. New v11 rules are DECIDED/PLANNED, not falsely IMPLEMENTED or TESTED.
+

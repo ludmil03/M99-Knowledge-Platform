@@ -77,3 +77,17 @@ governance_rules:
 - failed implementation does not reopen a DECIDED rule
 - no automatic push
 - runtime and governance commits remain separate in this checkpoint
+governance_v11:
+  master_readme: README_v11.md
+  frozen_tested_runtime_baseline: Rev29R3.2R2
+  revision_30_status: GATES_PASSED_NOT_FROZEN_BASELINE
+  active_next_milestone: M99 v0.7.3 Phase 4.5 Revision 31 ? Supplier & Manufacturer Registry + Category/Search Browser Foundation
+  runtime_changed_by_checkpoint: false
+  fixed_decisions:
+  - SRC-APPROVAL-001
+  - SRC-ADMIN-001
+  - MAP-MFG-001
+  - CAT-GOV-001
+  - DISCOVERY-001
+  - BULK-001
+  - GOV-V11-001

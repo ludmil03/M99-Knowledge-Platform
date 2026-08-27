@@ -1,7 +1,7 @@
 schema_version: 3
 registry: M99_DECISION_REGISTRY
-source_of_truth: README_v10.md
-updated_at: '2026-08-26'
+source_of_truth: README_v11.md
+updated_at: '2026-08-27'
 anti_loop_rule: DECIDED != IMPLEMENTED
 status_values:
 - DECIDED
@@ -750,6 +750,63 @@ decisions:
   source: README_v10.md#40
   implementation_status: IMPLEMENTED_BY_GOVERNANCE_CHECKPOINT_V10
   reopen_policy: explicit_superseding_decision_only
+- id: SRC-APPROVAL-001
+  area: source_governance
+  status: DECIDED
+  statement: Operators may propose Suppliers and Manufacturers; no proposed source is operational until explicit Super Admin
+    approval. Rejected proposals are hidden from normal operator lists, retained in audit/history, and may be proposed again
+    as a new proposal.
+  source: README_v11.md
+  implementation_status: PLANNED_REV31
+  reopen_policy: explicit_superseding_decision_only
+- id: SRC-ADMIN-001
+  area: source_governance
+  status: DECIDED
+  statement: Only Super Admin may edit APPROVED Suppliers/Manufacturers, change domains, or activate/deactivate them. Deactivation
+    preserves history and does not automatically deactivate channel products.
+  source: README_v11.md
+  implementation_status: PLANNED_REV31
+  reopen_policy: explicit_superseding_decision_only
+- id: MAP-MFG-001
+  area: mapping
+  status: DECIDED
+  statement: Every Operator may create, correct or remove Manufacturer to Supplier Product links; every change is audited.
+    Ambiguous manufacturer matches remain REVIEW_REQUIRED.
+  source: README_v11.md
+  implementation_status: PLANNED_REV31
+  reopen_policy: explicit_superseding_decision_only
+- id: CAT-GOV-001
+  area: category_governance
+  status: DECIDED
+  statement: Operators may map Supplier Categories only to APPROVED M99 Canonical Categories and may propose new Canonical
+    Categories; only Super Admin approves/creates them for general use.
+  source: README_v11.md
+  implementation_status: PLANNED_REV31
+  reopen_policy: explicit_superseding_decision_only
+- id: DISCOVERY-001
+  area: supplier_browser
+  status: DECIDED
+  statement: Approved supplier workflow supports category/subcategory browsing, product search by supported identity/search
+    keys, and discovery of one, many or all category products.
+  source: README_v11.md
+  implementation_status: PLANNED_REV31
+  reopen_policy: explicit_superseding_decision_only
+- id: BULK-001
+  area: supplier_browser
+  status: DECIDED
+  statement: All-products-in-category is explicit discovery/selection after hydration and operator confirmation. Default selection
+    remains zero and Select All never means direct publish.
+  source: README_v11.md
+  implementation_status: PLANNED_REV31
+  reopen_policy: explicit_superseding_decision_only
+- id: GOV-V11-001
+  area: governance
+  status: DECIDED
+  statement: Revision 31 Supplier & Manufacturer Registry + Category/Search Browser Foundation is the next operator-first
+    implementation priority; isolated manual-URL screens must not replace the normal operator workflow.
+  source: README_v11.md
+  implementation_status: NEXT_MILESTONE
+  reopen_policy: explicit_superseding_decision_only
 open_decisions:
 - id: OPEN-001
   statement: Universal ProductGroup versus colour-variant boundary.
@@ -790,4 +847,4 @@ open_decisions:
 - id: OPEN-013
   statement: Exact production Dolibarr stock-decrease configuration per deployment.
   status: OPEN
-frozen_tested_runtime_baseline: M99 v0.7.3 Phase 4.5 Revision 29R3.2R2
+frozen_tested_runtime_baseline: Rev29R3.2R2
