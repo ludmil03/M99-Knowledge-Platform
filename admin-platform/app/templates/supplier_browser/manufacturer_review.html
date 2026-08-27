@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block page_title %}Multi-Source Product Review{% endblock %}
+{% block content %}
+<div class="notice">
+  <strong>Multi-Source Evidence Review.</strong>
+  Supplier price/availability and manufacturer technical data remain separate truths.
+  Operator confirmation is required before these sources can be treated as the same product.
+</div>
+
+<div class="card">
+  <h2>Identity comparison</h2>
+  <table>
+    <tr><th>Status</th><td><span class="badge">{{identity.identity_status}}</span></td></tr>
+    <tr><th>Supplier title</th><td>{{identity.supplier_title}}</td></tr>
+    <tr><th>Supplier reference</th><td>{{identity.supplier_reference or "—"}}</td></tr>
+    <tr><th>Manufacturer model</th><td>{{identity.manufacturer_model or "—"}}</td></tr>
+    <tr><th>Manufacturer code</th><td>{{identity.manufacturer_code or "—"}}</td></tr>
+    <tr><th>Model match</th><td>{{"YES" if identity.model_match else "NO / REVIEW"}}</td></tr>
+  </table>
+  <p><strong>Важно:</strong> supplier reference и manufacturer code са отделни идентификатори и не се презаписват един друг.</p>
+</div>
+
+<div class="grid-two">
+  <div class="card">
+    <h2>Supplier truth — {{supplier.name}}</h2>
+    <p><a href="{{supplier_product.url}}" target="_blank" rel="noopener">{{supplier_product.url}}</a></p>
+    <table>
+      <tr><th>Name</th><td>{{supplier_product.title}}</td></tr>
+      <tr><th>Supplier ref</th><td>{{supplier_product.supplier_reference or "—"}}</td></tr>
+      <tr><th>Price</th><td>{{supplier_product.price_text or "—"}}</td></tr>
+      <tr><th>Availability</th><td>{{supplier_product.availability_text}}</td></tr>
+    </table>
+
+    {% if supplier_product.variants %}
+    <h3>Supplier size availability</h3>
+    <div>
+      {% for v in supplier_product.variants %}
+      <span class="badge" style="margin:2px;{% if v.availability=='OUT_OF_STOCK' %}opacity:.45{% endif %}">
+        {{v.value}} — {{v.availability}}
+      </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if supplier_product.specifications %}
+    <h3>Supplier specifications</h3>
+    <table>
+      {% for s in supplier_product.specifications[:25] %}
+      <tr><th>{{s.name}}</th><td>{{s.value}}</td></tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Manufacturer truth — {{manufacturer_product.manufacturer}}</h2>
+    <p><a href="{{manufacturer_product.url}}" target="_blank" rel="noopener">{{manufacturer_product.url}}</a></p>
+    <table>
+      <tr><th>Model</th><td>{{manufacturer_product.model or "—"}}</td></tr>
+      <tr><th>Manufacturer code</th><td>{{manufacturer_product.manufacturer_code or "—"}}</td></tr>
+      <tr><th>EN ISO</th><td>{{manufacturer_product.en_iso or "—"}}</td></tr>
+      <tr><th>Protection</th><td>{{manufacturer_product.protection_class or "—"}}</td></tr>
+      <tr><th>Slip resistance</th><td>{{manufacturer_product.slip_resistance or "—"}}</td></tr>
+      <tr><th>Size range</th><td>{{manufacturer_product.size_range or "—"}}</td></tr>
+      <tr><th>Weight</th><td>{{manufacturer_product.weight or "—"}}</td></tr>
+      <tr><th>TDS</th><td>{% if manufacturer_product.tds_url %}<a href="{{manufacturer_product.tds_url}}" target="_blank">Technical Data Sheet ↗</a>{% else %}—{% endif %}</td></tr>
+    </table>
+
+    {% if manufacturer_product.technical_sections %}
+    <h3>Official technical details</h3>
+    {% for k,v in manufacturer_product.technical_sections.items() %}
+    <details><summary>{{k}}</summary><p>{{v}}</p></details>
+    {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <h2>Merged evidence policy</h2>
+  <table>
+    <tr><th>Price</th><td>SUPPLIER authority</td></tr>
+    <tr><th>Current availability / sizes</th><td>SUPPLIER authority</td></tr>
+    <tr><th>Official model/code</th><td>MANUFACTURER evidence</td></tr>
+    <tr><th>Standards / protection / materials</th><td>MANUFACTURER authority</td></tr>
+    <tr><th>Technical Data Sheet</th><td>MANUFACTURER authority</td></tr>
+    <tr><th>Images</th><td>MANUFACTURER preferred, supplier verified fallback</td></tr>
+    <tr><th>Descriptions/SEO</th><td>M99 generated/reviewed content; source facts only</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Operator decision</h2>
+  {% if identity.identity_status == "PROBABLE_MATCH" %}
+    <p>Автоматичният match е вероятен, но операторът трябва да потвърди, че това е един и същ продукт.</p>
+  {% else %}
+    <div class="alert error">Identity не е доказана. Не създавай DRAFT, докато не бъде разрешено съвпадението.</div>
+  {% endif %}
+  <label>
+    <input type="checkbox" disabled>
+    Confirm same product — persistence на това решение ще бъде включена в следващия gate.
+  </label>
+  <p><strong>DRAFT остава блокиран на този екран.</strong> Първо валидираме multi-source извличането.</p>
+</div>
+{% endblock %}

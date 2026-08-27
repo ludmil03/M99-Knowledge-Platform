@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="m99-wizard-shell">
+  <h1>Реални тестове</h1>
+  <p>Графичен център за реална проверка на интеграциите. Операторът не работи със скриптове.</p>
+
+  {% if error %}
+  <section class="m99-card" style="border-left:4px solid #b42318">
+    <h2>Грешка</h2><p>{{ error }}</p>
+  </section>
+  {% endif %}
+  {% if message %}
+  <section class="m99-card" style="border-left:4px solid #067647">
+    <p><strong>{{ message }}</strong></p>
+  </section>
+  {% endif %}
+
+  <section class="m99-card">
+    <h2>1. Admin Persistence</h2>
+    <p>Реален disk-backed create → close/reopen → readback тест.</p>
+    <form method="post" action="/operator/real-tests/persistence">
+      <button class="m99-btn m99-btn-primary">Стартирай Persistence тест</button>
+    </form>
+  </section>
+
+  <section class="m99-card">
+    <h2>2. STENSO — Live Read-Only</h2>
+    <p>Проверява реалния продукт и наличността по размери. Не записва нищо в STENSO.</p>
+    <p><small>{{ stenso_url }}</small></p>
+    <form method="post" action="/operator/real-tests/stenso">
+      <button class="m99-btn m99-btn-primary">Провери STENSO на живо</button>
+    </form>
+  </section>
+
+  <section class="m99-card">
+    <h2>3. m99.eu — Реален продукт за операторска проверка</h2>
+    <p>Създава inactive / hidden / not orderable продукт. Успешният продукт остава.</p>
+    <form method="post" action="/operator/real-tests/m99eu">
+      <label>m99.eu URL</label>
+      <input name="base_url" value="{{ m99eu_default_url }}" style="width:100%">
+      <label>TEST category ID</label>
+      <input name="category_id" value="{{ m99eu_default_category }}">
+      <label>API key</label>
+      <input name="api_key" type="password" autocomplete="off" required style="width:100%">
+      <p><small>Ключът се използва само за тази заявка и не се показва обратно в интерфейса.</small></p>
+      <button class="m99-btn m99-btn-primary">Създай и провери продукт</button>
+    </form>
+  </section>
+
+  <section class="m99-card">
+    <h2>4. Dolibarr TEST</h2>
+    <p>Реален CRUD тест в тестовата Dolibarr среда: CREATE → READBACK → UPDATE → READBACK → DELETE.</p>
+    <form method="post" action="/operator/real-tests/dolibarr">
+      <label>Dolibarr TEST URL</label>
+      <input name="base_url" value="{{ dolibarr_default_url }}" required style="width:100%">
+      <label>API key</label>
+      <input name="api_key" type="password" autocomplete="off" required style="width:100%">
+      <button class="m99-btn m99-btn-primary">Стартирай Dolibarr TEST</button>
+    </form>
+  </section>
+
+  {% if results %}
+  <section class="m99-card">
+    <h2>Резултати</h2>
+    <table style="width:100%">
+      <thead><tr><th>Проверка</th><th>Статус</th><th>Детайл</th></tr></thead>
+      <tbody>
+      {% for r in results %}
+        <tr>
+          <td>{{ r.name }}</td>
+          <td><strong>{{ r.status }}</strong></td>
+          <td>{{ r.detail }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+
+  {% if state %}
+  <section class="m99-card">
+    <h2>5. Операторска проверка на реалния продукт</h2>
+    <p><strong>ID:</strong> {{ state.product_id }} · <strong>Reference:</strong> {{ state.reference }}</p>
+    <p><strong>Статус:</strong> {{ state.operator_status }}</p>
+    <p><strong>Daily Sync:</strong> {{ state.daily_sync_status }}</p>
+
+    <h3>Провери преди решение</h3>
+    <ul>
+      {% for item in state.required_operator_checks %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+
+    {% if state.operator_status == "PENDING_REVIEW" %}
+    <form method="post" action="/operator/real-tests/operator-decision">
+      <label>Бележки от оператора</label>
+      <textarea name="notes" rows="5" style="width:100%"></textarea>
+      <p>
+        <button class="m99-btn m99-btn-primary" name="decision" value="APPROVE">APPROVE — продуктът остава</button>
+        <button class="m99-btn" name="decision" value="REJECT">REJECT — FIX / RETEST</button>
+      </p>
+    </form>
+    {% elif state.operator_status == "APPROVED" %}
+      <p><strong>APPROVED → KEEP PRODUCT → READY FOR DAILY SYNC BASELINE</strong></p>
+    {% elif state.operator_status == "REJECTED" %}
+      <p><strong>REJECTED → продуктът остава за анализ. Няма автоматично DELETE.</strong></p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <section class="m99-card">
+    <h2>6. Daily Sync</h2>
+    {% if state and state.operator_status == "APPROVED" %}
+      <p>Продуктът е одобрен. Следващият live milestone е baseline и ежедневно наблюдение на цена, наличност и размери.</p>
+      <button class="m99-btn" disabled>Daily Sync Live — следваща стъпка</button>
+    {% else %}
+      <p>Daily Sync е заключен, докато реалният продукт не бъде APPROVED.</p>
+      <button class="m99-btn" disabled>Daily Sync заключен</button>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

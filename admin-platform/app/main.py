@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from app.core.config import settings
 from app.core.db import Base,engine
-from app.routers import auth,pages,admin,supplier_browser,preflight,commerce
+from app.routers import auth,pages,admin,supplier_browser,preflight,commerce,canonical_preview_runtime
 
 if not settings.session_secret or settings.session_secret=='CHANGE_ME_GENERATE_LOCALLY':
     raise RuntimeError('M99_SESSION_SECRET is not configured.')
@@ -17,7 +17,8 @@ app.mount('/static',StaticFiles(directory='app/static'),name='static')
 app.include_router(auth.router)
 app.include_router(pages.router)
 app.include_router(admin.router)
-app.include_router(supplier_browser.router)
+app.include_router(supplier_browser.router)
+app.include_router(canonical_preview_runtime.router)
 app.include_router(preflight.router)
 app.include_router(commerce.router)
 
@@ -45,3 +46,7 @@ from app.routers import superadmin_organizations as m99_superadmin_organizations
 app.include_router(m99_superadmin_organizations.router)
 from app.routers import identity_review as m99_identity_review
 app.include_router(m99_identity_review.router)
+
+# M99 v0.7.3 Phase 4.5 Revision 4 - Graphical Real Test Center
+from app.routers.real_test_center import router as real_test_center_router
+app.include_router(real_test_center_router)

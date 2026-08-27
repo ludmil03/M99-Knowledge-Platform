@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block page_title %}Добави производител{% endblock %}
+{% block content %}
+<div class="notice">
+  <strong>Официален manufacturer source.</strong>
+  Този екран е отделен от DRAFT selection form, за да няма nested HTML forms.
+</div>
+
+<div class="card">
+  <h2>Supplier product</h2>
+  <table>
+    <tr><th>Name</th><td>{{supplier_product.title}}</td></tr>
+    <tr><th>Supplier</th><td>{{supplier.name}}</td></tr>
+    <tr><th>Supplier ref</th><td>{{supplier_product.supplier_reference or "—"}}</td></tr>
+    <tr><th>Price</th><td>{{supplier_product.price_text or "—"}}</td></tr>
+    <tr><th>Availability</th><td>{{supplier_product.availability_text or "UNKNOWN"}}</td></tr>
+    <tr><th>Source</th><td><a href="{{supplier_product.url}}" target="_blank" rel="noopener">{{supplier_product.url}}</a></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Официален сайт на производителя</h2>
+  <form method="post" action="/supplier-browser/manufacturer-review">
+    <input type="hidden" name="supplier_id" value="{{supplier.id}}">
+    <input type="hidden" name="supplier_url" value="{{supplier_product.url}}">
+    <label>Official manufacturer product URL
+      <input type="url" name="manufacturer_url"
+             placeholder="https://manufacturer.com/product/..."
+             required style="width:100%">
+    </label>
+    <p style="margin-top:12px">
+      <button class="primary" type="submit">Добави производител + сравни</button>
+      <a href="/supplier-browser">Отказ</a>
+    </p>
+  </form>
+</div>
+{% endblock %}

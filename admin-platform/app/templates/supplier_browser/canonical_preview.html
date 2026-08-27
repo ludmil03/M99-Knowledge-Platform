@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block page_title %}Canonical Product Preview{% endblock %}
+{% block content %}
+
+<div class="notice">
+  <strong>PREVIEW ONLY — NO WEBSITE WRITE.</strong>
+  Това е операторски преглед на supplier evidence и M99 canonical draft.
+  Няма publish, activation, stock write, migration или DELETE.
+</div>
+
+<div class="grid-two">
+  <div class="card">
+    <h2>Supplier Evidence</h2>
+    <table>
+      <tr><th>Supplier</th><td>{{supplier.name}}</td></tr>
+      <tr><th>Original title</th><td>{{preview.supplier_evidence.title}}</td></tr>
+      <tr><th>Supplier ref / SKU</th><td>{{preview.supplier_evidence.supplier_reference}}</td></tr>
+      <tr><th>Price</th><td>{{preview.supplier_evidence.price}}</td></tr>
+      <tr><th>Availability</th><td>{{preview.supplier_evidence.availability}}</td></tr>
+      <tr><th>Images</th><td>{{preview.supplier_evidence.image_count}}</td></tr>
+      <tr><th>Source URL</th><td><a href="{{preview.supplier_evidence.url}}" target="_blank">Open supplier ↗</a></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>M99 Canonical Draft</h2>
+    <table>
+      <tr><th>Status</th><td><strong>{{preview.status}}</strong></td></tr>
+      <tr><th>Target</th><td>{{preview.target}}</td></tr>
+      <tr><th>Canonical name</th><td>{{preview.canonical_identity.name}}</td></tr>
+      <tr><th>Supplier ref</th><td>{{preview.canonical_identity.supplier_reference}}</td></tr>
+      <tr><th>Publishable</th><td><strong>NO</strong></td></tr>
+      <tr><th>Website write allowed</th><td><strong>NO</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Description / Source Evidence</h2>
+  <p style="white-space:pre-wrap">{{preview.supplier_evidence.description or "No description extracted."}}</p>
+</div>
+
+<div class="grid-two">
+  <div class="card">
+    <h2>Specifications</h2>
+    <table>
+      {% for s in preview.supplier_evidence.specifications %}
+      <tr><th>{{s.name}}</th><td>{{s.value}}</td></tr>
+      {% else %}
+      <tr><td>No structured specifications extracted.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Sizes / Variants / Availability</h2>
+    <table>
+      <tr><th>Variant</th><th>Availability</th></tr>
+      {% for v in preview.supplier_evidence.variants %}
+      <tr><td>{{v.value}}</td><td>{{v.availability}}</td></tr>
+      {% else %}
+      <tr><td colspan="2">No variants extracted.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Images</h2>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    {% for image in preview.supplier_evidence.images %}
+    <a href="{{image}}" target="_blank">
+      <img src="{{image}}" alt="{{preview.canonical_identity.name}}" style="width:120px;height:120px;object-fit:contain;border:1px solid #ddd">
+    </a>
+    {% else %}
+    <p>No images extracted.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h2>m99.eu Content / SEO Preparation</h2>
+  <table>
+    <tr><th>Language</th><td>{{preview.m99_draft.language}}</td></tr>
+    <tr><th>Translation status</th><td><strong>{{preview.m99_draft.translation_status}}</strong></td></tr>
+    <tr><th>Title source</th><td>{{preview.m99_draft.title_source}}</td></tr>
+    <tr><th>H1 source</th><td>{{preview.m99_draft.h1_source}}</td></tr>
+    <tr><th>Slug source</th><td>{{preview.m99_draft.slug_source}}</td></tr>
+    <tr><th>Meta title source</th><td>{{preview.m99_draft.meta_title_source}}</td></tr>
+    <tr><th>Meta description source</th><td>{{preview.m99_draft.meta_description_source}}</td></tr>
+  </table>
+
+  <h3>Heading plan</h3>
+  <table>
+    {% for h in preview.m99_draft.heading_plan %}
+    <tr><th>{{h.level}}</th><td>{{h.text}}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h2>Quality Gate</h2>
+  <p><strong>Operator review required:</strong> YES</p>
+  <p><strong>Website write allowed:</strong> NO</p>
+
+  <h3>Blockers</h3>
+  <ul>
+    {% for x in preview.quality_gate.blockers %}<li>{{x}}</li>
+    {% else %}<li>none</li>{% endfor %}
+  </ul>
+
+  <h3>Warnings</h3>
+  <ul>
+    {% for x in preview.quality_gate.warnings %}<li>{{x}}</li>
+    {% else %}<li>none</li>{% endfor %}
+  </ul>
+</div>
+
+<p><a href="/supplier-browser">← Back to Supplier Browser</a></p>
+{% endblock %}
