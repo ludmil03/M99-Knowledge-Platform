@@ -1,0 +1,77 @@
+schema_version: 1
+registry: M99_FEATURE_GAP_REGISTRY
+updated_at: '2026-08-26'
+master_readme: README_v10.md
+frozen_runtime_baseline: Revision 29R3.2R2
+features:
+- id: FG-V10-001
+  feature: Frozen Rev29R3.2R2 runtime baseline
+  normative_status: DECIDED_TESTED
+  implementation_status: TESTED
+  action: PRESERVE
+  notes: Do not modify during Governance Checkpoint.
+- id: FG-V10-002
+  feature: Supplier Browser zero default selection
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED
+  action: PRESERVE
+- id: FG-V10-003
+  feature: One-product first live validation
+  normative_status: DECIDED
+  implementation_status: OPERATIONAL_RULE
+  action: ENFORCE_IN_RELEASE_PROCESS
+- id: FG-V10-004
+  feature: Hydration-before-selection minimum evidence gate
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED_STENSO
+  action: PRESERVE_AND_GENERALIZE_PER_CONNECTOR
+- id: FG-V10-005
+  feature: STENSO size availability semantics
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED
+  action: PRESERVE_CONNECTOR_SPECIFIC
+- id: FG-V10-006
+  feature: Supplier / manufacturer source-role separation
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED
+  action: PRESERVE
+- id: FG-V10-007
+  feature: Supplier-only Canonical Preview
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED
+  action: PRESERVE
+- id: FG-V10-008
+  feature: Canonical Preview read-only gate
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED
+  action: PRESERVE
+- id: FG-V10-009
+  feature: Supplier Evidence / M99 Canonical Draft separation
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED_TESTED_AT_PREVIEW_LAYER
+  action: PRESERVE_AND_EXTEND_WITH_FACT_PROVENANCE
+- id: FG-V10-010
+  feature: Multi-source manufacturer enrichment with provenance/conflict handling
+  normative_status: DECIDED
+  implementation_status: NOT_IMPLEMENTED
+  action: NEXT_FOUNDATION
+- id: FG-V10-011
+  feature: Canonical image dedupe / broken / empty / non-product rejection
+  normative_status: DECIDED
+  implementation_status: PARTIAL
+  action: IMPLEMENT_BEFORE_CONTENT_APPROVAL
+- id: FG-V10-012
+  feature: Final EN/channel content after evidence gate
+  normative_status: DECIDED_TESTED
+  implementation_status: GATE_IMPLEMENTED_GENERATION_NOT_IMPLEMENTED
+  action: IMPLEMENT_AFTER_EVIDENCE_FOUNDATION
+- id: FG-V10-013
+  feature: Daily Sync reuse of verified mappings with separate operational contract
+  normative_status: DECIDED
+  implementation_status: PARTIAL_FOUNDATION
+  action: COMPLETE_PRODUCTION_DAILY_SYNC_LATER
+- id: FG-V10-014
+  feature: Machine-readable governance checkpoint
+  normative_status: DECIDED_TESTED
+  implementation_status: IMPLEMENTED
+  action: KEEP_CURRENT

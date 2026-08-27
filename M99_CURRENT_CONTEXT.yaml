@@ -1,0 +1,79 @@
+schema_version: 1
+context: M99_CURRENT_CONTEXT
+updated_at: '2026-08-26'
+development_line: v0.7.3 Phase 4.5
+master_readme: README_v10.md
+runtime:
+  frozen_tested_baseline: Revision 29R3.2R2
+  policy: FROZEN
+  supersede_only_by_explicit_decision: true
+  proven_path:
+  - Supplier Browser
+  - Live Hydration
+  - Operator Selection
+  - DRAFT ImportJob
+  - Preflight
+  - Canonical Product Preview
+  website_write_from_canonical_preview: false
+  publishable_from_canonical_preview: false
+verified_contracts:
+  supplier_browser_default_selected_products: 0
+  first_live_validation_product_count: 1
+  hydration_before_selection: true
+  stenso_size_rule:
+    disabled_or_faded_grey: OUT_OF_STOCK
+    active: IN_STOCK
+    scope: STENSO_ONLY
+  stenso_role: SUPPLIER_ONLY
+  manufacturer_source_role: SEPARATE_APPROVED_OFFICIAL_SOURCE
+  canonical_preview_supplier_only_capable: true
+  supplier_evidence_is_not_automatic_canonical_truth: true
+  daily_sync_separate_from_new_product_import: true
+current_quality_warnings:
+- MANUFACTURER_EVIDENCE_NOT_ATTACHED
+- FINAL_EN_CONTENT_NOT_GENERATED
+next_target:
+  name: Manufacturer Evidence + Canonical Content Foundation
+  runtime_change_policy: ADDITIVE_ONLY
+  must_preserve:
+  - Hydration
+  - DRAFT
+  - Preflight
+  - Canonical Preview routing
+  - Rev29R3.2R2 stable contracts
+channels:
+  m99.eu:
+    platform: PrestaShop 9.1.5
+    languages:
+    - EN
+    - BG
+    - RU
+    role: target_channel
+  mela99.com:
+    platform: ThirtyBees / PrestaShop 1.7 family
+    languages:
+    - BG
+    - EN
+    role: target_channel
+  laviro.ro:
+    platform: PrestaShop 1.6.1.24
+    languages:
+    - RO
+    role: target_channel
+  rabotni-drehi.com:
+    platform: WordPress
+    languages:
+    - BG
+    role: target_channel
+  medicinski-drehi.com:
+    role: target_channel
+  alviro.ro:
+    role: target_channel
+  Dolibarr:
+    role: operational_erp_crm_warehouse
+governance_rules:
+- DECIDED + NOT_IMPLEMENTED => implement, do not redesign
+- TESTED => preserve until explicitly superseded
+- failed implementation does not reopen a DECIDED rule
+- no automatic push
+- runtime and governance commits remain separate in this checkpoint
