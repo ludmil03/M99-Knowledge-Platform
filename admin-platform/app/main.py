@@ -1,3 +1,4 @@
+﻿from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -50,3 +51,7 @@ app.include_router(m99_identity_review.router)
 # M99 v0.7.3 Phase 4.5 Revision 4 - Graphical Real Test Center
 from app.routers.real_test_center import router as real_test_center_router
 app.include_router(real_test_center_router)
+
+# Revision 31 Phase 3 - additive governance GUI
+app.include_router(rev31_source_category_governance_router)
+

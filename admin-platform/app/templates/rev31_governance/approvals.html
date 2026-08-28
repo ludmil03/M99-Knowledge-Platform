@@ -1,0 +1,16 @@
+{% extends "rev31_governance/base.html" %}
+{% block title %}M99 Approval Queue{% endblock %}
+{% block content %}
+<h1>Super Admin Approval Queue</h1>
+<div class="card"><h2>Source proposals</h2>
+<table><tr><th>Тип</th><th>Име</th><th>Domain</th><th>Оператор</th><th>Решение</th></tr>
+{% for x in source_proposals %}<tr><td>{{x.source_kind}}</td><td>{{x.proposed_name}}</td><td>{{x.proposed_domain}}</td><td>{{x.proposed_by_display}}</td>
+<td class="actions"><form method="post" action="/rev31-governance/approvals/source/{{x.proposal_uuid}}/approve"><button>Approve</button></form>
+<form method="post" action="/rev31-governance/approvals/source/{{x.proposal_uuid}}/reject"><button>Reject</button></form></td></tr>
+{% else %}<tr><td colspan="5">Няма чакащи source proposals.</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Category proposals</h2>
+<table><tr><th>Име</th><th>Оператор</th><th>Решение</th></tr>
+{% for x in category_proposals %}<tr><td>{{x.proposed_name}}</td><td>{{x.proposed_by_display}}</td><td>
+<form method="post" action="/rev31-governance/approvals/category/{{x.proposal_uuid}}/approve"><button>Approve</button></form></td></tr>
+{% else %}<tr><td colspan="3">Няма чакащи category proposals.</td></tr>{% endfor %}</table></div>
+{% endblock %}

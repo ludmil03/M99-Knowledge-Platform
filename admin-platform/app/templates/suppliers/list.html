@@ -2,7 +2,12 @@
 {% block page_title %}{{ ui.suppliers }}{% endblock %}
 {% block content %}
 <div class="notice">Direct Supplier Selection: product / products / category / categories. Изборът създава DRAFT Import Job.</div>
-<div class="page-actions"><a class="button-link primary-link" href="/supplier-browser">Open Supplier Browser</a></div>
+<div class="page-actions"><div class="rev31-governance-entry" style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap;">
+  <a href="/rev31-governance/sources" style="display:inline-block;padding:10px 14px;border:1px solid #18b6d9;border-radius:4px;text-decoration:none;">Add / Propose Supplier or Manufacturer</a>
+  <a href="/rev31-governance/categories" style="display:inline-block;padding:10px 14px;border:1px solid #bbb;border-radius:4px;text-decoration:none;">Canonical Categories</a>
+</div>
+
+<a class="button-link primary-link" href="/supplier-browser">Open Supplier Browser</a></div>
 <div class="cards supplier-cards">
 {% for s in suppliers %}
 <div class="card">

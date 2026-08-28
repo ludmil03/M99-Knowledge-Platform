@@ -1,0 +1,11 @@
+{% extends "rev31_governance/base.html" %}
+{% block title %}M99 Governance{% endblock %}
+{% block content %}
+<h1>Управление на източници и категории</h1>
+<p>Operator-first интерфейс за предложения и Super Admin одобрение.</p>
+<div class="grid">
+<div class="card"><h2>Доставчици / Производители</h2><p>Използвай одобрени източници или предложи нов.</p><a href="/rev31-governance/sources">Отвори</a></div>
+<div class="card"><h2>Canonical Categories</h2><p>Прегледай одобрени категории или предложи нова.</p><a href="/rev31-governance/categories">Отвори</a></div>
+{% if user.is_superuser %}<div class="card"><h2>Approval Queue</h2><p>Одобри или отхвърли чакащи предложения.</p><a href="/rev31-governance/approvals">Отвори</a></div>{% endif %}
+</div>
+{% endblock %}

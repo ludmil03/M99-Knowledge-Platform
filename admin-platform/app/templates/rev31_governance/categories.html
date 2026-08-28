@@ -1,0 +1,19 @@
+{% extends "rev31_governance/base.html" %}
+{% block title %}M99 Categories{% endblock %}
+{% block content %}
+<h1>Canonical Categories</h1>
+<div class="card"><h2>Предложи нова категория</h2>
+<form method="post" action="/rev31-governance/categories/propose">
+<label>Име</label><input name="name" required>
+<label>Parent UUID (по избор)</label><input name="parent_uuid">
+<button type="submit">Предложи за одобрение</button>
+</form></div>
+<div class="card"><h2>Одобрени категории</h2>
+<table><tr><th>Име</th><th>UUID</th><th>Active</th></tr>
+{% for x in categories %}<tr><td>{{x.name}}</td><td>{{x.category_uuid}}</td><td>{{x.active}}</td></tr>
+{% else %}<tr><td colspan="3">Няма одобрени категории.</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Моите предложения</h2>
+<table><tr><th>Име</th><th>Статус</th></tr>
+{% for x in proposals %}<tr><td>{{x.proposed_name}}</td><td class="status">{{x.status}}</td></tr>
+{% else %}<tr><td colspan="2">Няма предложения.</td></tr>{% endfor %}</table></div>
+{% endblock %}

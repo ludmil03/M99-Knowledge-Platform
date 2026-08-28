@@ -1,0 +1,24 @@
+{% extends "rev31_governance/base.html" %}
+{% block title %}M99 Sources{% endblock %}
+{% block content %}
+<h1>Доставчици и производители</h1>
+<div class="card">
+<h2>Предложи нов източник</h2>
+<form method="post" action="/rev31-governance/sources/propose">
+<label>Тип</label><select name="source_kind"><option value="SUPPLIER">Supplier</option><option value="MANUFACTURER">Manufacturer</option></select>
+<label>Име</label><input name="name" required>
+<label>Domain</label><input name="domain" placeholder="example.com" required>
+<label>Base URL</label><input name="base_url" placeholder="https://example.com/" required>
+<button type="submit">Предложи за одобрение</button>
+</form>
+<p class="muted">Предложението не може да се използва, докато Super Admin не го одобри.</p>
+</div>
+<div class="card"><h2>Одобрени източници</h2>
+<table><tr><th>Тип</th><th>Име</th><th>Domain</th><th>Статус</th></tr>
+{% for x in approved_sources %}<tr><td>{{x.source_kind}}</td><td>{{x.name}}</td><td>{{x.domain}}</td><td class="status">{{x.activation_status}}</td></tr>
+{% else %}<tr><td colspan="4">Няма одобрени източници.</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Моите предложения</h2>
+<table><tr><th>Тип</th><th>Име</th><th>Domain</th><th>Статус</th></tr>
+{% for x in proposals %}<tr><td>{{x.source_kind}}</td><td>{{x.proposed_name}}</td><td>{{x.proposed_domain}}</td><td class="status">{{x.status}}</td></tr>
+{% else %}<tr><td colspan="4">Няма предложения.</td></tr>{% endfor %}</table></div>
+{% endblock %}

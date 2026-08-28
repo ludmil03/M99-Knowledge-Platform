@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}M99 Governance{% endblock %}</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f5f6f8;color:#20242a}
+header{background:#fff;border-bottom:1px solid #ddd;padding:16px 24px}
+main{max-width:1180px;margin:24px auto;padding:0 18px}
+nav{margin-top:8px} nav a{margin-right:18px}
+.card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:18px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+label{display:block;font-weight:600;margin-top:10px}
+input,select{box-sizing:border-box;width:100%;padding:9px;margin-top:5px}
+button{padding:9px 14px;margin-top:12px;cursor:pointer}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;border-bottom:1px solid #ddd;padding:9px}
+.muted{color:#666}.status{font-weight:700}.actions form{display:inline-block;margin-right:6px}
+</style>
+</head>
+<body>
+<header>
+<strong>M99 Admin - Source &amp; Category Governance</strong>
+<nav>
+<a href="/">Dashboard</a>
+<a href="/suppliers">Suppliers / Browse</a>
+<a href="/rev31-governance">Governance Home</a>
+<a href="/rev31-governance/sources">Suppliers / Manufacturers</a>
+<a href="/rev31-governance/categories">Canonical Categories</a>
+{% if user.is_superuser %}<a href="/rev31-governance/approvals">Super Admin Approval Queue</a>{% endif %}
+</nav>
+</header>
+<main>{% block content %}{% endblock %}</main>
+</body></html>
