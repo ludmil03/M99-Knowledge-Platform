@@ -1,0 +1,293 @@
+{
+  "literal_label_hits": [
+    {
+      "path": "admin-platform\\app\\services\\i18n.py",
+      "matches": [
+        "Suppliers / Browse",
+        "Import Jobs",
+        "Daily Existing Product Sync",
+        "Product Presence",
+        "Audit Log"
+      ],
+      "score": 5
+    },
+    {
+      "path": "admin-platform\\app\\templates\\dashboard\\index.html",
+      "matches": [
+        "Import Jobs",
+        "Daily Existing Product Sync"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\main.py",
+      "matches": [
+        "Product Presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\routers\\product_presence.py",
+      "matches": [
+        "Product Presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\admin\\commerce.html",
+      "matches": [
+        "Commerce / VAT"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\audit\\list.html",
+      "matches": [
+        "Audit Log"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\base.html",
+      "matches": [
+        "Commerce / VAT"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\imports\\list.html",
+      "matches": [
+        "Import Jobs"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\operator_publish\\m99eu_single.html",
+      "matches": [
+        "Audit Log"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\preflight\\job.html",
+      "matches": [
+        "Product Presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\product_presence\\index.html",
+      "matches": [
+        "Product Presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\products\\presence.html",
+      "matches": [
+        "Product Presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\rev31_governance\\base.html",
+      "matches": [
+        "Suppliers / Browse"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\sync\\index.html",
+      "matches": [
+        "Daily Existing Product Sync"
+      ],
+      "score": 1
+    }
+  ],
+  "navigation_symbol_hits": [
+    {
+      "path": "admin-platform\\app\\main.py",
+      "patterns": [
+        "supplier[_-]?browser",
+        "product[_-]?presence"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\models\\entities.py",
+      "patterns": [
+        "import[_-]?jobs",
+        "product[_-]?presence"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\routers\\pages.py",
+      "patterns": [
+        "import[_-]?jobs",
+        "product[_-]?presence"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\routers\\supplier_browser.py",
+      "patterns": [
+        "supplier[_-]?browser",
+        "import[_-]?jobs"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\templates\\base.html",
+      "patterns": [
+        "sidebar",
+        "\\bnav\\b"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\templates\\operator_publish\\m99eu_single.html",
+      "patterns": [
+        "supplier[_-]?browser",
+        "\\bnav\\b"
+      ],
+      "score": 2
+    },
+    {
+      "path": "admin-platform\\app\\connectors\\suppliers\\http_client.py",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\models\\preflight.py",
+      "patterns": [
+        "import[_-]?jobs"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\persistence\\v073_phase2\\models.py",
+      "patterns": [
+        "import[_-]?jobs"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\persistence\\v073_phase3\\models.py",
+      "patterns": [
+        "product[_-]?presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\routers\\canonical_preview_runtime.py",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\routers\\live_supplier_browser.py",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\routers\\product_presence.py",
+      "patterns": [
+        "product[_-]?presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\services\\preflight.py",
+      "patterns": [
+        "product[_-]?presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\services\\v073_phase3\\product_presence.py",
+      "patterns": [
+        "product[_-]?presence"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\dashboard\\index.html",
+      "patterns": [
+        "import[_-]?jobs"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\imports\\list.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\live_supplier_browser\\category.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\live_supplier_browser\\index.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\live_supplier_browser\\source.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\rev31_governance\\base.html",
+      "patterns": [
+        "\\bnav\\b"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\supplier_browser\\canonical_preview.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\supplier_browser\\index.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\supplier_browser\\manufacturer_start.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    },
+    {
+      "path": "admin-platform\\app\\templates\\suppliers\\list.html",
+      "patterns": [
+        "supplier[_-]?browser"
+      ],
+      "score": 1
+    }
+  ],
+  "patched": false,
+  "patch_target": null,
+  "patch_strategy": null
+}

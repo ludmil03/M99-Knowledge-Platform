@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R3.7 — DRAFT ImportJob създаден</h1>
+<div class="pass">
+  DRAFT е създаден успешно. Няма channel publish.
+</div>
+<table>
+<tr><th>Job ID</th><td>{{ job.id }}</td></tr>
+<tr><th>Job code</th><td>{{ job.job_code }}</td></tr>
+<tr><th>Status</th><td>{{ job.status }}</td></tr>
+<tr><th>Target</th><td>{{ "m99.eu" if target == "m99eu" else target }}</td></tr>
+</table>
+<div style="margin-top:16px">
+  <a class="btn" href="/add-products/r37/canonical-preview?job_id={{ job.id }}&source_uuid={{ source_uuid|urlencode }}&product_url={{ product_url|urlencode }}&target={{ target|urlencode }}">
+    Отвори Canonical Preview
+  </a>
+  <a class="btn btn2" href="/supplier-browser/job/{{ job.id }}">Отвори DRAFT ImportJob</a>
+</div>
+<div class="warn" style="margin-top:16px">
+Canonical Preview е read-only. Няма автоматично публикуване към m99.eu.
+</div>
+{% endblock %}

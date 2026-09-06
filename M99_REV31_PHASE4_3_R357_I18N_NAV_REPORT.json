@@ -1,0 +1,6 @@
+{
+  "key": "suppliers",
+  "strategy": "line",
+  "block": "<div class=\"app-shell\"><aside class=\"sidebar\"><div class=\"brand\">M99 <span>Knowledge Platform</span></div><nav><a href=\"/\">▦ {{ ui.dashboard }}</a><div class=\"nav-title\">{{ ui.catalog }}</div><a href=\"/products\">▤ {{ ui.products }}</a><a href=\"/presence\">◎ {{ ui.presence }}</a><div class=\"nav-title\">IMPORTS</div><a href=\"/suppliers\">◉ {{ ui.suppliers }}</a><a href=\"/imports\">⇩ {{ ui.imports }}</a><div class=\"nav-title\">SYNC</div><a href=\"/sync\">↻ {{ ui.sync }}</a><div class=\"nav-title\">{{ ui.system }}</div>{% if user.is_superuser %}<a href=\"/admin/users\">♟ {{ ui.users }}</a><a href=\"/admin/roles\">⚿ {{ ui.roles }}</a><a href=\"/admin/languages\">文 {{ ui.languages }}</a><a href=\"/admin/commerce\">% Commerce / VAT</a>{% endif %}<a href=\"/audit\">☷ {{ ui.audit }}</a></nav><form method=\"post\" action=\"/logout\" class=\"logout\"><button>{{ ui.logout }}</button></form></aside>",
+  "error": "route_not_replaced"
+}

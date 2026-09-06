@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R3.7 — Identity изисква човешко решение</h1>
+<div class="warn">
+  <b>DRAFT ImportJob НЕ е създаден.</b>
+  <p>Identity state: {{ result.identity.state }}</p>
+  <p>Resolution ID: {{ result.identity.resolution_id }}</p>
+  <p>Requires human review: {{ result.identity.requires_human_review }}</p>
+  {% if result.identity.conflicts %}
+    <p>Conflicts: {{ result.identity.conflicts }}</p>
+  {% endif %}
+</div>
+<a class="btn" href="/add-products">Назад към Add Products</a>
+{% endblock %}

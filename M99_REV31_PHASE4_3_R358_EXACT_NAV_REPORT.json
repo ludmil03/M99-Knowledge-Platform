@@ -1,0 +1,6 @@
+{
+  "patched": true,
+  "target": "admin-platform/app/templates/base.html",
+  "strategy": "exact_known_nav_item",
+  "inserted": "<a href=\"/add-products\">⊕ Add Products</a>"
+}

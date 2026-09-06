@@ -18,7 +18,9 @@ app.mount('/static',StaticFiles(directory='app/static'),name='static')
 app.include_router(auth.router)
 app.include_router(pages.router)
 app.include_router(admin.router)
-app.include_router(supplier_browser.router)
+app.include_router(supplier_browser.router)
+
+
 app.include_router(canonical_preview_runtime.router)
 app.include_router(preflight.router)
 app.include_router(commerce.router)
@@ -54,4 +56,19 @@ app.include_router(real_test_center_router)
 
 # Revision 31 Phase 3 - additive governance GUI
 app.include_router(rev31_source_category_governance_router)
+
+
+# REV31_PHASE4_2_OPERATOR_SINGLE_PRODUCT_M99EU
+from app.routers.operator_single_product_publish import router as operator_single_product_publish_router
+app.include_router(operator_single_product_publish_router)
+
+
+# REV31_PHASE4_3_UNIFIED_ADD_PRODUCTS
+from app.routers.unified_add_products import router as unified_add_products_router
+app.include_router(unified_add_products_router)
+
+
+# REV31_PHASE4_3_R3_7_IMPORT_FLOW
+from app.routers.r37_add_products_flow import router as r37_add_products_flow_router
+app.include_router(r37_add_products_flow_router)
 

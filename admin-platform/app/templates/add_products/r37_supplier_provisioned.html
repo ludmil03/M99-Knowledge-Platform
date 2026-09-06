@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R3.7R5 — Operational Supplier Provisioning</h1>
+<div class="pass">{{ result.message }}</div>
+<table>
+<tr><th>Created</th><td>{{ result.created }}</td></tr>
+<tr><th>Supplier ID</th><td>{{ result.supplier_id or "—" }}</td></tr>
+<tr><th>Supplier</th><td>{{ result.supplier_name or "—" }}</td></tr>
+</table>
+<form method="post" action="/add-products/r37/prepare" style="margin-top:16px">
+  <input type="hidden" name="source_uuid" value="{{ source_uuid }}">
+  <input type="hidden" name="product_url" value="{{ product_url }}">
+  <button class="btn" type="submit">Върни се към PREPARE / VERIFY</button>
+</form>
+<div class="warn" style="margin-top:16px">
+Provisioning не създава DRAFT и не публикува към m99.eu.
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>M99 — Избор на 1 продукт за m99.eu</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#f5f7fa;margin:0;color:#1e293b}
+    .wrap{max-width:1180px;margin:24px auto;padding:0 18px}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+    .nav a{background:white;border:1px solid #cbd5e1;padding:8px 12px;border-radius:8px;text-decoration:none;color:#0f172a}
+    .card{background:white;border:1px solid #dbe3ee;border-radius:12px;padding:18px;margin-bottom:16px}
+    h1{margin:0 0 8px}.muted{color:#64748b}.safe{background:#ecfdf5;border-color:#a7f3d0}.err{background:#fef2f2;border-color:#fecaca}
+    table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #e2e8f0;text-align:left;padding:9px;vertical-align:top}
+    th{background:#f8fafc}.block{color:#b91c1c;font-size:12px}.ok{color:#047857;font-weight:700}
+    input[type=text],input[type=password],input[type=number]{padding:9px;border:1px solid #cbd5e1;border-radius:8px;width:100%;box-sizing:border-box}
+    button{padding:11px 16px;border:0;border-radius:8px;background:#0f172a;color:white;font-weight:700;cursor:pointer}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .warn{background:#fff7ed;border:1px solid #fed7aa;padding:12px;border-radius:8px}
+    .small{font-size:12px}.nowrap{white-space:nowrap}
+  </style>
+</head>
+<body><div class="wrap">
+  <div class="nav">
+    <a href="/">Dashboard</a>
+    <a href="/suppliers">Suppliers</a>
+    <a href="/supplier-browser">Supplier Browser</a>
+    <a href="/rev31-governance/sources">Governance</a>
+  </div>
+
+  <div class="card">
+    <h1>Добави 1 избран продукт в m99.eu</h1>
+    <p class="muted">Избираш продукт от текущите M99 ImportJob items. Публикуването е ограничено до точно един продукт, винаги неактивен, без stock, без images и без batch.</p>
+    <div class="warn"><b>Контролирана реална операция.</b> API ключът се използва само за текущата заявка и не се записва в audit log. Преди POST има проверка за езиците, target категорията и duplicate reference.</div>
+  </div>
+
+  {% if error %}
+  <div class="card err"><b>STOP:</b> {{ error }}</div>
+  {% endif %}
+
+  {% if result %}
+  <div class="card safe">
+    <h2>PASS — m99.eu read-back</h2>
+    <p><b>{% if result.created %}Създаден е 1 нов неактивен продукт.{% else %}Продуктът вече съществува; не е създаден дубликат.{% endif %}</b></p>
+    <p>Product ID: <b>{{ result.product_id }}</b> · Reference: <b>{{ result.reference }}</b> · active={{ result.active }} · category={{ result.category_id }}</p>
+    <p class="small">Correlation ID: {{ result.correlation_id }}<br>Audit: {{ result.audit_path }}</p>
+  </div>
+  {% endif %}
+
+  <form method="post" action="/operator-publish/m99eu" onsubmit="return confirm('Ще се изпълни максимум ЕДИН CREATE към m99.eu и продуктът ще остане неактивен. Продължаваме ли?');">
+    <div class="card">
+      <h2>1. Избери точно един M99 продукт</h2>
+      <table>
+        <thead><tr><th></th><th>M99 item</th><th>Продукт</th><th>Supplier ref</th><th>Цена</th><th>M99 ref</th><th>Статус</th></tr></thead>
+        <tbody>
+        {% for c in candidates %}
+          <tr>
+            <td><input type="radio" name="item_id" value="{{ c.item_id }}" {% if not c.publishable %}disabled{% endif %} required></td>
+            <td class="nowrap">#{{ c.item_id }}</td>
+            <td><b>{{ c.title }}</b>{% if c.source_url %}<div class="small">{{ c.source_url }}</div>{% endif %}</td>
+            <td>{{ c.supplier_reference or "—" }}</td>
+            <td>{{ c.price or "—" }}</td>
+            <td>{{ c.provisional_m99_reference }}</td>
+            <td>{% if c.publishable %}<span class="ok">READY</span>{% else %}<span class="block">{{ c.blockers|join("; ") }}</span>{% endif %}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7">Няма ImportJob items в M99. Първо избери продукт през Supplier Browser и създай DRAFT ImportJob.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>2. Контролирана публикация</h2>
+      <div class="grid">
+        <div><label>m99.eu категория ID</label><input type="number" name="category_id" min="1" value="{{ default_category_id }}" required></div>
+        <div><label>PrestaShop API key</label><input type="password" name="api_key" autocomplete="off" minlength="32" maxlength="32" required></div>
+      </div>
+      <p><label>Напиши точно <b>CREATE ONE PRODUCT</b></label><input type="text" name="confirmation" autocomplete="off" required></p>
+      <p><button type="submit">Create 1 inactive product + read-back</button></p>
+    </div>
+  </form>
+</div></body></html>

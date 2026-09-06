@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R3.7 — Identity → DRAFT → Targets</h1>
+<div class="card">
+  <h2>1. PREPARE / VERIFY</h2>
+  <p><b>{{ hydrated.name }}</b></p>
+  <p>Supplier ref: {{ hydrated.supplier_reference or "—" }}</p>
+  <p>Source: {{ source.name }} · {{ source.domain }}</p>
+  <p>Variants: {{ hydrated.variants|length }}</p>
+  {% if hydrated.variants %}
+  <h3>Variant image evidence</h3>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    {% for v in hydrated.variants %}
+      <div style="width:150px">
+        {% if v.image_url %}
+          <img src="{{ v.image_url }}" alt="{{ v.value or v.label or v.code }}"
+               style="width:140px;height:140px;object-fit:contain;border:1px solid #ddd">
+        {% else %}<div class="warn">Няма снимка</div>{% endif %}
+        <div><b>{{ v.value or v.label or ("Color " ~ v.code) }}</b></div>
+        <div><small>code {{ v.code }}</small></div>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %>
+  <p class="{% if bridge.bridge_ready %}pass{% else %}fail{% endif %}">
+    Operational bridge: {{ bridge.message }}
+  </p>
+</div>
+
+<div class="card">
+  <h2>2. Target</h2>
+  {% if targets %}
+  <form method="post" action="/add-products/r37/create-draft">
+    <input type="hidden" name="source_uuid" value="{{ source.source_uuid }}">
+    <input type="hidden" name="product_url" value="{{ hydrated.url }}">
+    <div class="card" style="margin:12px 0">
+      <h3>Manufacturer Evidence</h3>
+      <label>Производител / Brand
+        <input type="text" name="manufacturer_name" value="{{ hydrated.brand or '' }}"
+               placeholder="напр. PROMO STARS" style="width:100%;max-width:520px;padding:8px;margin-top:6px">
+      </label>
+      <p><small>Предложено от supplier evidence. Операторът може да потвърди или коригира.
+      Това не създава автоматично approved Manufacturer.</small></p>
+    </div>
+    {% for t in targets %}
+      <label style="display:block;margin:8px 0">
+        <input type="radio" name="target" value="{{ t }}" {% if loop.first %}checked{% endif %}>
+        {{ "m99.eu" if t == "m99eu" else t }}
+      </label>
+    {% endfor %}
+    {% if bridge.bridge_ready %}
+      <button class="btn" type="submit">Потвърди Identity и създай DRAFT</button>
+    {% else %}
+      <span class="btn btn-disabled">DRAFT blocked — липсва operational bridge</span>
+    {% endif %}
+  </form>
+
+  {% if not bridge.bridge_ready and user.is_superuser %}
+  <div class="card" style="margin-top:16px">
+    <h3>Super Admin — Controlled Operational Supplier Provisioning</h3>
+    <p>Няма operational Supplier за този approved source.</p>
+    <form method="post" action="/add-products/r37/provision-operational-supplier">
+      <input type="hidden" name="source_uuid" value="{{ source.source_uuid }}">
+      <input type="hidden" name="product_url" value="{{ hydrated.url }}">
+      <button class="btn" type="submit">Създай operational Supplier за {{ source.name }}</button>
+    </form>
+    <p><small>Audit-logged. Не създава DRAFT и не публикува към channel.</small></p>
+  </div>
+  {% endif %}
+
+  {% else %}
+    <div class="warn">Няма разрешен R3.7 target за текущия оператор. Нищо не е записано.</div>
+  {% endif %}
+</div>
+
+<div class="warn">
+<b>Важно:</b> този екран не създава DRAFT. Write се извършва само след натискане на
+„Потвърди Identity и създай DRAFT“. Identity се изпълнява първо; AMBIGUOUS/UNRESOLVED блокира DRAFT.
+</div>
+{% endblock %}

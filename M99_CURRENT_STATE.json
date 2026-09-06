@@ -1,0 +1,82 @@
+{
+  "schema": "m99_resume_state/v1",
+  "resume_marker": "M99_RESUME_R31_P43_R37_R7A1_2026-09-05",
+  "date": "2026-09-05",
+  "project": "M99 Knowledge Platform",
+  "repo": "https://github.com/ludmil03/M99-Knowledge-Platform",
+  "local_repo": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+  "branch": "main",
+  "last_pushed_baseline": {
+    "sha": "cf2007cd1c6973dbc63c54dcfe83fca5b8a021b8",
+    "description": "Revision 31 Phase 3 R5 R5 - source and category governance GUI accepted"
+  },
+  "current_milestone": "Revision 31 Phase 4.3 R3.7R7A1",
+  "accepted": {
+    "r7a1": true,
+    "dedicated_tests_passed": 10,
+    "regression_tests_passed": 560,
+    "identity_required_tables": [
+      "m99_v073_identity_external_mappings",
+      "m99_v073_identity_resolutions"
+    ],
+    "identity_schema_ready": true,
+    "backup": "admin-platform/data/backups/m99_admin_before_r37r7a_identity_20260904T210737Z.db"
+  },
+  "control_product": {
+    "supplier": "Calenda",
+    "name": "МЪЖКА РИЗА RIVER",
+    "supplier_reference": "93100",
+    "source_product_id": "31809",
+    "supplier_brand_evidence": "PROMO STARS",
+    "colors": 4,
+    "sizes_per_color": 6,
+    "variant_rows": 24,
+    "available_rows": 20,
+    "out_of_stock_rows": 4,
+    "variant_images_expected": 4,
+    "variant_images_visible_in_latest_gui": 1
+  },
+  "open_defects": [
+    {
+      "id": "R37-IMG-001",
+      "title": "Variant image evidence collapses to one image in GUI",
+      "status": "OPEN",
+      "severity": "BLOCKS_REAL_PUBLISH"
+    },
+    {
+      "id": "R37-PREPARE-500",
+      "title": "POST /add-products/r37/prepare returns Internal Server Error",
+      "status": "OPEN",
+      "severity": "BLOCKS_LIVE_IDENTITY_DRAFT"
+    }
+  ],
+  "open_requirements": [
+    {
+      "id": "R37-MFG-URL-001",
+      "title": "Manufacturer official website URL field",
+      "status": "OPEN",
+      "rules": [
+        "operator may enter/select official manufacturer URL",
+        "must not silently approve manufacturer",
+        "preserve provenance",
+        "support official product URL later"
+      ]
+    }
+  ],
+  "next_revision": {
+    "name": "R3.7R8 — Prepare 500 Diagnostic + Manufacturer Official URL + Variant Image Trace",
+    "must_do": [
+      "diagnose traceback for POST /add-products/r37/prepare",
+      "verify failed request did not create partial Identity/DRAFT writes",
+      "add manufacturer official website URL without silent approval",
+      "trace 4 Calenda variant images end-to-end",
+      "prove RIVER 4 colors / 24 rows / 4 images before publish"
+    ],
+    "must_not_do": [
+      "publish to m99.eu",
+      "write Dolibarr",
+      "write M99-owned stock",
+      "automatic Git commit/push"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R3.7 — Canonical Preview</h1>
+<div class="pass">READ / VERIFY ONLY — DRAFT Job {{ job.job_code }}</div>
+<table>
+<tr><th>Target</th><td>{{ "m99.eu" if target == "m99eu" else target }}</td></tr>
+<tr><th>Supplier product</th><td>{{ supplier_product.title }}</td></tr>
+<tr><th>Supplier reference</th><td>{{ supplier_product.supplier_reference }}</td></tr>
+<tr><th>Identity / canonical state</th><td>{{ preview.identity_state if preview.identity_state is defined else "see preview below" }}</td></tr>
+</table>
+
+<h2>Manufacturer evidence</h2>
+<p><b>{{ supplier_product.manufacturer_name or "—" }}</b></p>
+<p><small>{{ supplier_product.manufacturer_evidence_scope }}</small></p>
+<h2>Variant image evidence</h2>
+{% if supplier_product.variant_image_evidence %}
+<div style="display:flex;gap:14px;flex-wrap:wrap">
+{% for img in supplier_product.variant_image_evidence %}
+  <div style="width:160px">
+    <img src="{{ img.image_url }}" alt="{{ img.value or img.code }}"
+         style="width:150px;height:150px;object-fit:contain;border:1px solid #ddd">
+    <div><b>{{ img.value or ("Color " ~ img.code) }}</b></div>
+  </div>
+{% endfor %}
+</div>
+{% else %}<div class="warn">Няма variant image evidence.</div>{% endif %}
+<h2>Canonical payload preview</h2>
+<pre style="white-space:pre-wrap">{{ preview }}</pre>
+
+<div class="warn">
+Няма Publish бутон в R3.7. Следващата отделна ревизия трябва да реализира explicit Preflight/Publish към m99.eu.
+</div>
+{% endblock %}
