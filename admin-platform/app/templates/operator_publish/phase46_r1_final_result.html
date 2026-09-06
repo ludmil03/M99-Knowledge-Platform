@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Phase 4.6 R1 FINAL — Result</h1>
+{% if publish_error %}
+<div class="warn">
+  <h2>STOP — live write blocked safely</h2>
+  <p>{{ publish_error }}</p>
+  <p>DRAFT остава запазен. Няма automatic retry и няма provisional identity fallback.</p>
+</div>
+{% else %}
+<div class="pass" style="padding:16px">
+  <h2>PASS — m99.eu write + read-back verified</h2>
+  <p>Product ID: <b>{{ publish_result.product_id }}</b></p>
+  <p>Reference: <b>{{ publish_result.reference }}</b></p>
+  <p>active={{ publish_result.active }} · available_for_order={{ publish_result.available_for_order }} · visibility={{ publish_result.visibility }} · category={{ publish_result.category_id }}</p>
+  <p><small>Correlation ID: {{ publish_result.correlation_id }}</small></p>
+</div>
+{% endif %}
+<p><a class="btn" href="/operator-publish/m99eu/r1-final?job_id={{ job.id }}">Назад към R1 FINAL</a></p>
+{% endblock %}

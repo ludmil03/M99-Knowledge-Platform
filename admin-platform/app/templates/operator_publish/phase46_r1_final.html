@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Phase 4.6 R1 FINAL — Post-DRAFT m99.eu Control Plane</h1>
+
+<div class="card">
+  <p><b>R37 е запазен:</b> Identity → DRAFT → Canonical Preview. Този екран е отделната Phase 4.6 publish стъпка.</p>
+  <p>Първият реален продукт е Super Admin only и остава скрит/non-orderable до отделна QA приемка.</p>
+</div>
+
+<div class="card">
+  <h2>1. Избери DRAFT ImportJob</h2>
+  {% if jobs %}
+  <form method="get" action="/operator-publish/m99eu/r1-final">
+    <select name="job_id" style="min-width:520px;padding:8px">
+      {% for job in jobs %}
+      <option value="{{ job.id }}" {% if selected_job and selected_job.id == job.id %}selected{% endif %}>
+        #{{ job.id }} · {{ job.job_code }} · {{ job.status }}
+      </option>
+      {% endfor %}
+    </select>
+    <button class="btn" type="submit">Зареди DRAFT</button>
+  </form>
+  {% else %}
+    <div class="warn">Няма DRAFT ImportJob за показване.</div>
+  {% endif %}
+</div>
+
+{% if selected_job %}
+<div class="card">
+  <h2>2. Проверка преди write</h2>
+  <table>
+    <tr><th>Job</th><td>#{{ selected_job.id }} · {{ selected_job.job_code }}</td></tr>
+    <tr><th>Status</th><td>{{ selected_job.status }}</td></tr>
+    <tr><th>Items</th><td>{{ items|length }}</td></tr>
+    <tr><th>Selected items</th><td>{{ selected_items|length }}</td></tr>
+    <tr><th>Title snapshot</th><td>{{ product.title or "—" }}</td></tr>
+    <tr><th>Supplier ref</th><td>{{ product.supplier_reference or "—" }}</td></tr>
+    <tr><th>Price evidence</th><td>{{ product.price_text or "—" }}</td></tr>
+  </table>
+  <p><small>Permanent canonical M99 reference се извлича само от доказания DRAFT/Identity context. Няма M99-900... fallback.</small></p>
+</div>
+
+<div class="card" style="background:#fff8df">
+  <h2>3. Controlled live write</h2>
+  <p>Target state: <code>active=1</code>, <code>visibility=none</code>, <code>available_for_order=0</code>.</p>
+  <form method="post" action="/operator-publish/m99eu/r1-final/publish"
+        onsubmit="return confirm('Това е реален write към m99.eu за точно един DRAFT продукт. Продължаваме ли?');">
+    <input type="hidden" name="job_id" value="{{ selected_job.id }}">
+    <label>m99.eu category ID
+      <input type="number" name="category_id" min="1" value="{{ default_category_id }}" style="width:140px;padding:8px">
+    </label>
+    <div style="margin-top:12px">
+      <label>Напиши точно <code>{{ confirmation }}</code><br>
+        <input type="text" name="confirmation" autocomplete="off" style="width:360px;padding:8px;margin-top:6px">
+      </label>
+    </div>
+    <button class="btn" type="submit" style="margin-top:14px">PUBLISH ONE CONTROLLED PRODUCT</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}
