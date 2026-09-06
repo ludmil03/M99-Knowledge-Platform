@@ -1,0 +1,262 @@
+{
+  "schema_version": "m99-project-state-v13",
+  "generated_at": "2026-09-06T18:50:00+03:00",
+  "project": {
+    "name": "M99 Knowledge Platform",
+    "repo": "ludmil03/M99-Knowledge-Platform",
+    "local_path": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+    "branch": "main",
+    "canonical_role": "identity_verified_knowledge_governance_orchestration"
+  },
+  "source_checkpoint": {
+    "readme_v12_preserved_byte_for_byte": true,
+    "v12_checkpoint_date": "2026-09-06",
+    "v12_accepted_revision": "Revision 31 Phase 4.3 R3.7R7A1",
+    "v12_open_defects_preserved_as_historical": [
+      "PREPARE_HTTP_500",
+      "VARIANT_IMAGES_ONE_VISIBLE",
+      "MANUFACTURER_OFFICIAL_URL_MISSING",
+      "CANONICAL_MANUFACTURER_MAPPING_INCOMPLETE"
+    ]
+  },
+  "current_green_git_baseline": {
+    "commit": "732fd33fbc45eeed7150bf02d61c579430dbf0c1",
+    "origin": "origin/main",
+    "pushed": true,
+    "head_equals_upstream": true,
+    "worktree_clean_after_checkpoint": true,
+    "maintained_regression_initial": {
+      "passed": 560,
+      "warnings": 6
+    },
+    "maintained_regression_final": {
+      "passed": 560,
+      "warnings": 6
+    },
+    "quarantined_runtime_or_temp_artifacts": 27
+  },
+  "governance": {
+    "anti_loop": "DECIDED != IMPLEMENTED",
+    "context_order": [
+      "DECISION_REGISTRY",
+      "M99_CURRENT_CONTEXT",
+      "PROJECT_STATE",
+      "latest_master_README",
+      "relevant_ADR",
+      "relevant_tests_and_implementation_history",
+      "new_proposal"
+    ],
+    "fixed_principles": [
+      "SINGLE_SOURCE_OF_TRUTH",
+      "KNOWLEDGE_FIRST",
+      "NO_DUPLICATE_DATA",
+      "EVIDENCE_BASED",
+      "AI_NATIVE_NOT_AI_INVENTED",
+      "HISTORICAL_OBSERVATIONS_PRESERVED",
+      "MARKET_NE_CHANNEL",
+      "IDENTITY_BEFORE_CONTENT",
+      "NO_ID_REUSE",
+      "PRODUCTGROUP_LIFECYCLE",
+      "EXPLICIT_DELETE",
+      "SUPPLIER_MANUFACTURER_SEPARATION",
+      "BRAND_SEPARATE_OBJECT",
+      "MULTI_SUPPLIER_MAPPING",
+      "OPERATOR_FIRST_UX",
+      "CREATE_NE_UPDATE",
+      "DUPLICATE_GUARD",
+      "MANDATORY_READBACK",
+      "AUTHORIZATION",
+      "PRESENCE_NE_STOCK",
+      "SUPPLIER_AVAILABILITY_NE_M99_PHYSICAL_STOCK",
+      "NO_CHANGE_NO_WRITE",
+      "VERIFICATION_FAILURE_NE_ZERO_STOCK",
+      "NO_SECRETS_IN_GIT_LOGS_SCREENSHOTS",
+      "MACHINE_READABLE_GOVERNANCE",
+      "SELF_TESTED_RELEASE_PROCESS"
+    ]
+  },
+  "canonical": {
+    "chain": [
+      "ProductGroup",
+      "ProductVariant",
+      "SupplierOffer_or_SupplierMapping",
+      "Evidence_or_Observation",
+      "ChannelPresence",
+      "ChannelContent",
+      "ChannelPrice",
+      "InventoryMapping"
+    ],
+    "productgroup_lifecycle": [
+      "draft",
+      "active",
+      "paused",
+      "retired"
+    ],
+    "hard_delete": {
+      "exceptional": true,
+      "operator_approval": true,
+      "typed_confirmation": "DELETE",
+      "audit_required": true
+    },
+    "identity_states": [
+      "NEW",
+      "EXISTING",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "m99_reference_pattern": "^M99-[0-9]+$",
+    "external_ids_are_mappings": true
+  },
+  "organizations": {
+    "supplier_and_manufacturer_separate_governed_roles": true,
+    "brand_separate_object": true,
+    "operator_can_propose": true,
+    "superadmin_approval_required": true,
+    "supplier_brand_evidence_is_not_canonical_manufacturer": true,
+    "multi_supplier_mapping": true
+  },
+  "evidence_priority": [
+    "EXACT_OFFICIAL_MANUFACTURER",
+    "OFFICIAL_DOCUMENTATION_CATALOGUE_CERTIFICATE",
+    "VALIDATED_B2B",
+    "EXACT_SUPPLIER_SOURCE",
+    "VERIFIED_INTERNAL_LEGACY",
+    "OPERATOR_VERIFIED",
+    "AI_ON_VERIFIED_EVIDENCE"
+  ],
+  "channels": {
+    "mela99.com": {
+      "platform": "ThirtyBees 1.7 / PrestaShop 1.7 family",
+      "languages": [
+        "BG",
+        "EN"
+      ]
+    },
+    "m99.eu": {
+      "platform": "PrestaShop 9.1.5",
+      "verified_language_context": [
+        "EN",
+        "BG",
+        "RU"
+      ],
+      "api_get": true,
+      "api_post": true,
+      "historical_test_category_id": 26
+    },
+    "rabotni-drehi.com": {
+      "platform": "WordPress",
+      "languages": [
+        "BG"
+      ]
+    },
+    "medicinski-drehi.com": {
+      "role": "medical_clothing_channel"
+    },
+    "laviro.ro": {
+      "platform": "PrestaShop 1.6.1.24",
+      "market": "RO"
+    },
+    "alviro.ro": {
+      "market": "RO"
+    },
+    "toplinka.com": {
+      "role": "heating_photovoltaic_services"
+    },
+    "Dolibarr": {
+      "role": "operational_ERP_CRM_warehouse",
+      "canonical_master": false
+    },
+    "MoneyWork": {
+      "role": "migration_reconciliation_source",
+      "canonical_master": false
+    }
+  },
+  "historical_r37r7a1": {
+    "status": "ACCEPTED_CHECKPOINT",
+    "dedicated_tests": 10,
+    "maintained_regression": 560,
+    "identity_ready": true,
+    "identity_tables": [
+      "m99_v073_identity_external_mappings",
+      "m99_v073_identity_resolutions"
+    ],
+    "control_product": {
+      "supplier": "Calenda",
+      "name": "МЪЖКА РИЗА RIVER",
+      "supplier_reference": "93100",
+      "supplier_product_id": "31809",
+      "supplier_brand_evidence": "PROMO STARS",
+      "colors": 4,
+      "color_size_rows": 24,
+      "available_rows": 20,
+      "out_of_stock_rows": 4,
+      "expected_variant_images": 4
+    },
+    "open_at_checkpoint": [
+      "PREPARE_HTTP_500",
+      "VARIANT_IMAGES_ONE_VISIBLE",
+      "MANUFACTURER_OFFICIAL_URL_MISSING",
+      "CANONICAL_MANUFACTURER_MAPPING_INCOMPLETE"
+    ]
+  },
+  "phase46": {
+    "goal": "supplier -> category -> product/variant -> canonical preview -> DRAFT -> controlled automatic publish to m99.eu",
+    "status": "IN_PROGRESS_NOT_ACCEPTED",
+    "r1": "INSTALLER_PREFLIGHT_STOP_NO_REPO_WRITE",
+    "r1_1": "INSTALLER_PREFLIGHT_STOP_NO_REPO_WRITE",
+    "r1_2": "HARDENED_CANDIDATE_GENERATED_NO_ACCEPTANCE_LOG_RECORDED",
+    "automatic_live_publish_tested": false
+  },
+  "release_engineering": {
+    "decision_id": "REL-SELFTEST-001",
+    "status": "DECIDED",
+    "effective_date": "2026-09-06",
+    "goal": "operator CMD run is final environment acceptance, not first-line installer debugging",
+    "pipeline": [
+      "INTERNAL_RC",
+      "STATIC_AND_PACKAGE_AUDIT",
+      "POWERSHELL_AST_IF_USED",
+      "RESERVED_VARIABLE_AND_STRICTMODE_SCAN",
+      "BAT_SCRIPT_PATH_VALIDATION",
+      "MANIFEST_HASH_VALIDATION",
+      "GIT_WRAPPER_AND_FAILURE_PATH_SIMULATION",
+      "PYTHON_COMPILE",
+      "DEDICATED_TESTS_IF_RUNTIME_AVAILABLE",
+      "MAINTAINED_REGRESSION_IF_RUNTIME_AVAILABLE",
+      "SECRET_AND_NO_WRITE_GUARDS",
+      "FINAL_CANDIDATE",
+      "WINDOWS_CMD_ACCEPTANCE",
+      "AUTHORIZED_LIVE_ACCEPTANCE"
+    ],
+    "implementation_preference": "BAT_LAUNCHER_TO_CONTROLLED_PYTHON_RELEASE_DRIVER",
+    "rules": {
+      "no_user_revision_per_minor_installer_bug": true,
+      "consolidate_minor_fixes_in_internal_rc": true,
+      "do_not_weaken_tests_for_green": true,
+      "preserve_fixed_architecture": true,
+      "start_from_latest_green_synchronized_baseline": true,
+      "real_windows_acceptance_still_required": true,
+      "no_force_push": true,
+      "no_hard_reset": true,
+      "no_git_clean_fd": true,
+      "no_auto_pull_rebase": true
+    }
+  },
+  "documentation_release": {
+    "readme_v12": "README_M99_v12_2026-09-06.md",
+    "readme_v13": "README_M99_v13_2026-09-06.md",
+    "human_bg_docx": "M99_Project_From_Start_To_Now_BG_v13_2026-09-06.docx",
+    "human_bg_doc": "M99_Project_From_Start_To_Now_BG_v13_2026-09-06.doc",
+    "machine_state": "M99_CURRENT_STATE_v13_2026-09-06.json",
+    "decision_registry": "M99_DECISION_REGISTRY_v13_2026-09-06.yaml",
+    "history": "M99_PROJECT_HISTORY_v13_2026-09-06.jsonl"
+  },
+  "next_milestone": {
+    "name": "Phase 4.6 R1 FINAL - Self-Tested E2E Auto Publish",
+    "single_product_first": true,
+    "requires_explicit_operator_action": true,
+    "requires_duplicate_guard": true,
+    "requires_readback": true,
+    "requires_audit": true
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "m99.documentation.release.v13",
+  "generated_at": "2026-09-06T18:50:00+03:00",
+  "current_green_git_baseline": "732fd33fbc45eeed7150bf02d61c579430dbf0c1",
+  "readme_v12_preserved_sha256": "1b3419e84f5f13102d5c6f65c4b67c58e7225091bafe3844dc1d6c4ac15cf724",
+  "files": [
+    {
+      "name": "README_M99_v12_2026-09-06.md",
+      "bytes": 7522,
+      "sha256": "1b3419e84f5f13102d5c6f65c4b67c58e7225091bafe3844dc1d6c4ac15cf724"
+    },
+    {
+      "name": "README_M99_v13_2026-09-06.md",
+      "bytes": 24998,
+      "sha256": "1459b85ffbc3a163e6b347e0be2e2a459f2ced0eab988668c27efe1fdb12be91"
+    },
+    {
+      "name": "M99_Project_From_Start_To_Now_BG_v13_2026-09-06.docx",
+      "bytes": 43387,
+      "sha256": "1b5c12a7e30027c209f1c1f1690427e4544066abd3fb390edc2d316eafa27dca"
+    },
+    {
+      "name": "M99_Project_From_Start_To_Now_BG_v13_2026-09-06.doc",
+      "bytes": 14612,
+      "sha256": "2a92ddbbbe9e8fa92b7a919ae7d28e8c5cf992d26d62145a4f1e86601da89ad1"
+    },
+    {
+      "name": "M99_CURRENT_STATE_v13_2026-09-06.json",
+      "bytes": 7921,
+      "sha256": "0bc84c26a19afea1c7dd3879155cace68131067cb8fc84d7757a6ed662904705"
+    },
+    {
+      "name": "M99_DECISION_REGISTRY_v13_2026-09-06.yaml",
+      "bytes": 2698,
+      "sha256": "a77cc18a28b9f5206bd8231884108f5e01dea57bd9474fb9817369c6ebeedc1e"
+    },
+    {
+      "name": "M99_PROJECT_HISTORY_v13_2026-09-06.jsonl",
+      "bytes": 4446,
+      "sha256": "42c04148e20eaad396dfd2de352a6fdde8a46752ce4fb235083041941cd369c5"
+    },
+    {
+      "name": "M99_MASTER_MACHINE_MEMORY_v13_2026-09-06.json",
+      "bytes": 44545,
+      "sha256": "8c329df555e4241cbb4e57ff8cf64a8a1a4c001a5c95fa49fa9b97f20b652f6d"
+    }
+  ]
+}

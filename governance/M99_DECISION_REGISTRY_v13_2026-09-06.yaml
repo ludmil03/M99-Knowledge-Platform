@@ -1,0 +1,57 @@
+schema: m99.decision_registry.v13
+generated_at: "2026-09-06T18:50:00+03:00"
+decisions:
+  - id: GOV-ANTI-LOOP-001
+    status: DECIDED
+    statement: "DECIDED != IMPLEMENTED. Temporary defects and incomplete implementations do not reopen fixed architecture."
+  - id: ID-001
+    status: DECIDED
+    statement: "M99 canonical identity is independent from supplier, manufacturer, ERP, legacy and channel identifiers."
+  - id: ID-003
+    status: DECIDED
+    statement: "ProductGroup lifecycle is draft -> active -> paused -> retired."
+  - id: ID-004
+    status: DECIDED
+    statement: "Hard DELETE requires operator approval, typed DELETE confirmation and audit."
+  - id: ORG-SEP-001
+    status: DECIDED
+    statement: "Supplier and Manufacturer remain separate governed roles; supplier evidence cannot silently approve Manufacturer."
+  - id: EVID-001
+    status: DECIDED
+    statement: "Official exact manufacturer evidence outranks supplier evidence for technical truth."
+  - id: PUB-007
+    status: DECIDED
+    statement: "CREATE and UPDATE are separate contracts; duplicate guard is mandatory before CREATE."
+  - id: QA-002
+    status: DECIDED_TESTED
+    statement: "Readback after a channel write is mandatory."
+  - id: STOCK-002
+    status: DECIDED
+    statement: "Supplier availability is external evidence and is not M99-owned physical stock."
+  - id: SEC-001
+    status: DECIDED_IMPLEMENTED
+    statement: "Secrets are not committed, logged or exposed in screenshots."
+  - id: REL-SELFTEST-001
+    status: DECIDED
+    effective_date: "2026-09-06"
+    statement: "The operator CMD run is final environment acceptance; obvious installer defects must be caught by assistant-side pre-release self-testing."
+    requirements:
+      - "Internal RC before user delivery"
+      - "Static/package audit"
+      - "PowerShell AST/static audit when PowerShell is used"
+      - "Reserved-variable and StrictMode hazard scan"
+      - "BAT-to-script path validation"
+      - "Manifest and hash validation"
+      - "Mock Git wrapper and failure-path tests"
+      - "Python compile"
+      - "Dedicated and maintained regression tests when runtime snapshot is available"
+      - "Secret/no-write-before-gates audit"
+      - "Consolidate minor installer fixes before FINAL candidate"
+      - "Do not weaken tests to obtain green"
+      - "Preserve fixed architecture"
+      - "Start from latest green synchronized baseline"
+      - "Real Windows/CMD acceptance remains mandatory"
+  - id: REL-DRIVER-001
+    status: DECIDED
+    effective_date: "2026-09-06"
+    statement: "Prefer BAT -> controlled Python release driver over PowerShell-heavy installers when practical, to reduce Windows scripting failure surface."

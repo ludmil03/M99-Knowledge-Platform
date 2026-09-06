@@ -1,0 +1,581 @@
+{
+  "schema": "m99.master_machine_memory.v13",
+  "generated_at": "2026-09-06T18:50:00+03:00",
+  "purpose": [
+    "Loss-resistant machine-readable project memory",
+    "Anti-loop architecture context",
+    "Release and recovery context",
+    "Current target and acceptance gates",
+    "Historical milestones from project foundation through Phase 4.6 direction"
+  ],
+  "project": {
+    "name": "M99 Knowledge Platform",
+    "repo": "ludmil03/M99-Knowledge-Platform",
+    "local_path": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+    "branch": "main",
+    "canonical_role": "identity_verified_knowledge_governance_orchestration"
+  },
+  "canonical_state": {
+    "schema_version": "m99-project-state-v13",
+    "generated_at": "2026-09-06T18:50:00+03:00",
+    "project": {
+      "name": "M99 Knowledge Platform",
+      "repo": "ludmil03/M99-Knowledge-Platform",
+      "local_path": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+      "branch": "main",
+      "canonical_role": "identity_verified_knowledge_governance_orchestration"
+    },
+    "source_checkpoint": {
+      "readme_v12_preserved_byte_for_byte": true,
+      "v12_checkpoint_date": "2026-09-06",
+      "v12_accepted_revision": "Revision 31 Phase 4.3 R3.7R7A1",
+      "v12_open_defects_preserved_as_historical": [
+        "PREPARE_HTTP_500",
+        "VARIANT_IMAGES_ONE_VISIBLE",
+        "MANUFACTURER_OFFICIAL_URL_MISSING",
+        "CANONICAL_MANUFACTURER_MAPPING_INCOMPLETE"
+      ]
+    },
+    "current_green_git_baseline": {
+      "commit": "732fd33fbc45eeed7150bf02d61c579430dbf0c1",
+      "origin": "origin/main",
+      "pushed": true,
+      "head_equals_upstream": true,
+      "worktree_clean_after_checkpoint": true,
+      "maintained_regression_initial": {
+        "passed": 560,
+        "warnings": 6
+      },
+      "maintained_regression_final": {
+        "passed": 560,
+        "warnings": 6
+      },
+      "quarantined_runtime_or_temp_artifacts": 27
+    },
+    "governance": {
+      "anti_loop": "DECIDED != IMPLEMENTED",
+      "context_order": [
+        "DECISION_REGISTRY",
+        "M99_CURRENT_CONTEXT",
+        "PROJECT_STATE",
+        "latest_master_README",
+        "relevant_ADR",
+        "relevant_tests_and_implementation_history",
+        "new_proposal"
+      ],
+      "fixed_principles": [
+        "SINGLE_SOURCE_OF_TRUTH",
+        "KNOWLEDGE_FIRST",
+        "NO_DUPLICATE_DATA",
+        "EVIDENCE_BASED",
+        "AI_NATIVE_NOT_AI_INVENTED",
+        "HISTORICAL_OBSERVATIONS_PRESERVED",
+        "MARKET_NE_CHANNEL",
+        "IDENTITY_BEFORE_CONTENT",
+        "NO_ID_REUSE",
+        "PRODUCTGROUP_LIFECYCLE",
+        "EXPLICIT_DELETE",
+        "SUPPLIER_MANUFACTURER_SEPARATION",
+        "BRAND_SEPARATE_OBJECT",
+        "MULTI_SUPPLIER_MAPPING",
+        "OPERATOR_FIRST_UX",
+        "CREATE_NE_UPDATE",
+        "DUPLICATE_GUARD",
+        "MANDATORY_READBACK",
+        "AUTHORIZATION",
+        "PRESENCE_NE_STOCK",
+        "SUPPLIER_AVAILABILITY_NE_M99_PHYSICAL_STOCK",
+        "NO_CHANGE_NO_WRITE",
+        "VERIFICATION_FAILURE_NE_ZERO_STOCK",
+        "NO_SECRETS_IN_GIT_LOGS_SCREENSHOTS",
+        "MACHINE_READABLE_GOVERNANCE",
+        "SELF_TESTED_RELEASE_PROCESS"
+      ]
+    },
+    "canonical": {
+      "chain": [
+        "ProductGroup",
+        "ProductVariant",
+        "SupplierOffer_or_SupplierMapping",
+        "Evidence_or_Observation",
+        "ChannelPresence",
+        "ChannelContent",
+        "ChannelPrice",
+        "InventoryMapping"
+      ],
+      "productgroup_lifecycle": [
+        "draft",
+        "active",
+        "paused",
+        "retired"
+      ],
+      "hard_delete": {
+        "exceptional": true,
+        "operator_approval": true,
+        "typed_confirmation": "DELETE",
+        "audit_required": true
+      },
+      "identity_states": [
+        "NEW",
+        "EXISTING",
+        "AMBIGUOUS",
+        "UNRESOLVED"
+      ],
+      "m99_reference_pattern": "^M99-[0-9]+$",
+      "external_ids_are_mappings": true
+    },
+    "organizations": {
+      "supplier_and_manufacturer_separate_governed_roles": true,
+      "brand_separate_object": true,
+      "operator_can_propose": true,
+      "superadmin_approval_required": true,
+      "supplier_brand_evidence_is_not_canonical_manufacturer": true,
+      "multi_supplier_mapping": true
+    },
+    "evidence_priority": [
+      "EXACT_OFFICIAL_MANUFACTURER",
+      "OFFICIAL_DOCUMENTATION_CATALOGUE_CERTIFICATE",
+      "VALIDATED_B2B",
+      "EXACT_SUPPLIER_SOURCE",
+      "VERIFIED_INTERNAL_LEGACY",
+      "OPERATOR_VERIFIED",
+      "AI_ON_VERIFIED_EVIDENCE"
+    ],
+    "channels": {
+      "mela99.com": {
+        "platform": "ThirtyBees 1.7 / PrestaShop 1.7 family",
+        "languages": [
+          "BG",
+          "EN"
+        ]
+      },
+      "m99.eu": {
+        "platform": "PrestaShop 9.1.5",
+        "verified_language_context": [
+          "EN",
+          "BG",
+          "RU"
+        ],
+        "api_get": true,
+        "api_post": true,
+        "historical_test_category_id": 26
+      },
+      "rabotni-drehi.com": {
+        "platform": "WordPress",
+        "languages": [
+          "BG"
+        ]
+      },
+      "medicinski-drehi.com": {
+        "role": "medical_clothing_channel"
+      },
+      "laviro.ro": {
+        "platform": "PrestaShop 1.6.1.24",
+        "market": "RO"
+      },
+      "alviro.ro": {
+        "market": "RO"
+      },
+      "toplinka.com": {
+        "role": "heating_photovoltaic_services"
+      },
+      "Dolibarr": {
+        "role": "operational_ERP_CRM_warehouse",
+        "canonical_master": false
+      },
+      "MoneyWork": {
+        "role": "migration_reconciliation_source",
+        "canonical_master": false
+      }
+    },
+    "historical_r37r7a1": {
+      "status": "ACCEPTED_CHECKPOINT",
+      "dedicated_tests": 10,
+      "maintained_regression": 560,
+      "identity_ready": true,
+      "identity_tables": [
+        "m99_v073_identity_external_mappings",
+        "m99_v073_identity_resolutions"
+      ],
+      "control_product": {
+        "supplier": "Calenda",
+        "name": "МЪЖКА РИЗА RIVER",
+        "supplier_reference": "93100",
+        "supplier_product_id": "31809",
+        "supplier_brand_evidence": "PROMO STARS",
+        "colors": 4,
+        "color_size_rows": 24,
+        "available_rows": 20,
+        "out_of_stock_rows": 4,
+        "expected_variant_images": 4
+      },
+      "open_at_checkpoint": [
+        "PREPARE_HTTP_500",
+        "VARIANT_IMAGES_ONE_VISIBLE",
+        "MANUFACTURER_OFFICIAL_URL_MISSING",
+        "CANONICAL_MANUFACTURER_MAPPING_INCOMPLETE"
+      ]
+    },
+    "phase46": {
+      "goal": "supplier -> category -> product/variant -> canonical preview -> DRAFT -> controlled automatic publish to m99.eu",
+      "status": "IN_PROGRESS_NOT_ACCEPTED",
+      "r1": "INSTALLER_PREFLIGHT_STOP_NO_REPO_WRITE",
+      "r1_1": "INSTALLER_PREFLIGHT_STOP_NO_REPO_WRITE",
+      "r1_2": "HARDENED_CANDIDATE_GENERATED_NO_ACCEPTANCE_LOG_RECORDED",
+      "automatic_live_publish_tested": false
+    },
+    "release_engineering": {
+      "decision_id": "REL-SELFTEST-001",
+      "status": "DECIDED",
+      "effective_date": "2026-09-06",
+      "goal": "operator CMD run is final environment acceptance, not first-line installer debugging",
+      "pipeline": [
+        "INTERNAL_RC",
+        "STATIC_AND_PACKAGE_AUDIT",
+        "POWERSHELL_AST_IF_USED",
+        "RESERVED_VARIABLE_AND_STRICTMODE_SCAN",
+        "BAT_SCRIPT_PATH_VALIDATION",
+        "MANIFEST_HASH_VALIDATION",
+        "GIT_WRAPPER_AND_FAILURE_PATH_SIMULATION",
+        "PYTHON_COMPILE",
+        "DEDICATED_TESTS_IF_RUNTIME_AVAILABLE",
+        "MAINTAINED_REGRESSION_IF_RUNTIME_AVAILABLE",
+        "SECRET_AND_NO_WRITE_GUARDS",
+        "FINAL_CANDIDATE",
+        "WINDOWS_CMD_ACCEPTANCE",
+        "AUTHORIZED_LIVE_ACCEPTANCE"
+      ],
+      "implementation_preference": "BAT_LAUNCHER_TO_CONTROLLED_PYTHON_RELEASE_DRIVER",
+      "rules": {
+        "no_user_revision_per_minor_installer_bug": true,
+        "consolidate_minor_fixes_in_internal_rc": true,
+        "do_not_weaken_tests_for_green": true,
+        "preserve_fixed_architecture": true,
+        "start_from_latest_green_synchronized_baseline": true,
+        "real_windows_acceptance_still_required": true,
+        "no_force_push": true,
+        "no_hard_reset": true,
+        "no_git_clean_fd": true,
+        "no_auto_pull_rebase": true
+      }
+    },
+    "documentation_release": {
+      "readme_v12": "README_M99_v12_2026-09-06.md",
+      "readme_v13": "README_M99_v13_2026-09-06.md",
+      "human_bg_docx": "M99_Project_From_Start_To_Now_BG_v13_2026-09-06.docx",
+      "human_bg_doc": "M99_Project_From_Start_To_Now_BG_v13_2026-09-06.doc",
+      "machine_state": "M99_CURRENT_STATE_v13_2026-09-06.json",
+      "decision_registry": "M99_DECISION_REGISTRY_v13_2026-09-06.yaml",
+      "history": "M99_PROJECT_HISTORY_v13_2026-09-06.jsonl"
+    },
+    "next_milestone": {
+      "name": "Phase 4.6 R1 FINAL - Self-Tested E2E Auto Publish",
+      "single_product_first": true,
+      "requires_explicit_operator_action": true,
+      "requires_duplicate_guard": true,
+      "requires_readback": true,
+      "requires_audit": true
+    }
+  },
+  "architecture_contract": {
+    "single_source_of_truth": true,
+    "knowledge_first": true,
+    "no_duplicate_data": true,
+    "evidence_based": true,
+    "ai_native_not_ai_invented": true,
+    "historical_observations_preserved": true,
+    "market_not_channel": true,
+    "observation_not_automatically_canonical_truth": true,
+    "product_knowledge_survives_channel_removal": true,
+    "new_feature_must_not_break_accepted_guardrail": true
+  },
+  "identity_contract": {
+    "canonical_chain": [
+      "ProductGroup",
+      "ProductVariant",
+      "SupplierOffer_or_SupplierMapping",
+      "Evidence_or_Observation",
+      "ChannelPresence",
+      "ChannelContent",
+      "ChannelPrice",
+      "InventoryMapping"
+    ],
+    "identity_states": [
+      "NEW",
+      "EXISTING",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "m99_reference_pattern": "^M99-[0-9]+$",
+    "external_ids_are_mappings": true,
+    "identity_before_content": [
+      "SELECT",
+      "RESOLVE_IDENTITY",
+      "LINK_EXISTING_OR_CREATE_PERMANENT_M99_ID",
+      "THEN_CONTENT"
+    ],
+    "ambiguous_requires_human": true,
+    "no_identity_reuse": true
+  },
+  "organization_contract": {
+    "supplier_and_manufacturer_separate_governed_roles": true,
+    "brand_separate_object": true,
+    "operator_can_propose": true,
+    "superadmin_approval_required": true,
+    "supplier_brand_evidence_is_not_canonical_manufacturer": true,
+    "multi_supplier_mapping": true
+  },
+  "evidence_contract": {
+    "priority": [
+      "EXACT_OFFICIAL_MANUFACTURER",
+      "OFFICIAL_DOCUMENTATION_CATALOGUE_CERTIFICATE",
+      "VALIDATED_B2B",
+      "EXACT_SUPPLIER_SOURCE",
+      "VERIFIED_INTERNAL_LEGACY",
+      "OPERATOR_VERIFIED",
+      "AI_ON_VERIFIED_EVIDENCE"
+    ],
+    "provenance_fields": [
+      "source",
+      "organization",
+      "source_url_or_resource",
+      "observed_at",
+      "verified_at",
+      "document_page_if_applicable",
+      "reviewer",
+      "confidence",
+      "conflict_state",
+      "canonical_entity_relationship"
+    ],
+    "supplier_commercial_evidence_separate_from_manufacturer_technical_truth": true
+  },
+  "publishing_contract": {
+    "create_not_update": true,
+    "duplicate_guard_before_create": true,
+    "mandatory_readback": true,
+    "http_success_not_quality_pass": true,
+    "authorization_required": true,
+    "final_category_operator_owned": true,
+    "delete_explicit_human_action": true,
+    "approved_identity_locked_by_governance": true,
+    "new_phase46_direction_may_not_weaken_existing_guards": true
+  },
+  "stock_and_presence_contract": {
+    "presence_not_stock": true,
+    "supplier_availability_not_m99_physical_stock": true,
+    "visible_size_not_stock": true,
+    "verification_failure_not_zero_stock": true,
+    "no_change_no_write": true,
+    "no_fabricated_numeric_supplier_stock": true,
+    "variant_aware": true
+  },
+  "security_contract": {
+    "no_secrets_in_git": true,
+    "no_secrets_in_logs": true,
+    "no_secrets_in_screenshots": true,
+    "operators_do_not_see_credentials": true,
+    "operational_db_not_committed": true,
+    "db_backups_not_committed": true,
+    "venv_not_committed": true,
+    "caches_not_committed": true,
+    "runtime_audit_not_committed": true,
+    "temporary_bak_not_committed": true,
+    "downloaded_installer_zips_not_committed": true
+  },
+  "release_contract": {
+    "decision_id": "REL-SELFTEST-001",
+    "status": "DECIDED",
+    "effective_date": "2026-09-06",
+    "goal": "operator CMD run is final environment acceptance, not first-line installer debugging",
+    "pipeline": [
+      "INTERNAL_RC",
+      "STATIC_AND_PACKAGE_AUDIT",
+      "POWERSHELL_AST_IF_USED",
+      "RESERVED_VARIABLE_AND_STRICTMODE_SCAN",
+      "BAT_SCRIPT_PATH_VALIDATION",
+      "MANIFEST_HASH_VALIDATION",
+      "GIT_WRAPPER_AND_FAILURE_PATH_SIMULATION",
+      "PYTHON_COMPILE",
+      "DEDICATED_TESTS_IF_RUNTIME_AVAILABLE",
+      "MAINTAINED_REGRESSION_IF_RUNTIME_AVAILABLE",
+      "SECRET_AND_NO_WRITE_GUARDS",
+      "FINAL_CANDIDATE",
+      "WINDOWS_CMD_ACCEPTANCE",
+      "AUTHORIZED_LIVE_ACCEPTANCE"
+    ],
+    "implementation_preference": "BAT_LAUNCHER_TO_CONTROLLED_PYTHON_RELEASE_DRIVER",
+    "rules": {
+      "no_user_revision_per_minor_installer_bug": true,
+      "consolidate_minor_fixes_in_internal_rc": true,
+      "do_not_weaken_tests_for_green": true,
+      "preserve_fixed_architecture": true,
+      "start_from_latest_green_synchronized_baseline": true,
+      "real_windows_acceptance_still_required": true,
+      "no_force_push": true,
+      "no_hard_reset": true,
+      "no_git_clean_fd": true,
+      "no_auto_pull_rebase": true
+    }
+  },
+  "milestone_map": {
+    "foundation": {
+      "focus": "Knowledge Base",
+      "decisions": [
+        "Single Source of Truth",
+        "Evidence Based",
+        "AI Native"
+      ]
+    },
+    "v0.5.x": {
+      "focus": "Migration + ERP",
+      "artifacts_or_capabilities": [
+        "MoneyWork importer direction",
+        "identity mapping",
+        "Dolibarr adapter/import concepts"
+      ]
+    },
+    "v0.6.2-v0.6.3": {
+      "focus": "Evidence / Identity",
+      "artifacts_or_capabilities": [
+        "exact manufacturer evidence",
+        "supplier mismatch quarantine",
+        "existing-product discovery"
+      ]
+    },
+    "v0.6.4-v0.6.6": {
+      "focus": "Content + controlled publish",
+      "artifacts_or_capabilities": [
+        "claim taxonomy",
+        "multilingual content",
+        "DRY_RUN",
+        "WRITE_DRAFT",
+        "readback"
+      ]
+    },
+    "v0.6.6.4.x": {
+      "focus": "Legacy reconciliation",
+      "lesson": "Canonical record is field-by-field best verified evidence, not one global legacy winner"
+    },
+    "v0.6.7.x": {
+      "focus": "Cherokee pilot",
+      "lesson": "technical write success != product quality success"
+    },
+    "v0.7.1_rev7": {
+      "tests_passed": 234,
+      "commit": "8c3d2d7fc729f22001c320d1fa033528272eb21e"
+    },
+    "v0.7.2_phase1": {
+      "focus": "Canonical Data Model Foundation",
+      "commit": "193b6bcc6c8f4b13439102a99f00d1b542b1851f"
+    },
+    "v0.7.2_phase2": {
+      "focus": "SQLAlchemy + Alembic foundation",
+      "production_admin_db_silent_migration": false
+    },
+    "v0.7.2_phase2_5": {
+      "focus": "PrestaShop 9 integration",
+      "notable_commit": "5705bff675224748f95f58cbf5860b0bb761f972"
+    },
+    "governance_consolidation": {
+      "artifacts": [
+        "DECISION_REGISTRY",
+        "FEATURE_GAP_REGISTRY",
+        "M99_CURRENT_CONTEXT",
+        "ADR-0001"
+      ],
+      "reported_commit": "5aec1b40ddcc6f1498512dde9eb7da6b0d18bca8"
+    },
+    "v0.7.3": {
+      "focus": [
+        "Operator Product Import Wizard",
+        "Persistent ImportJob",
+        "Organization Registry",
+        "SupplierSource",
+        "Supplier Browser",
+        "Identity Resolver",
+        "Supplier/Manufacturer separation",
+        "Calenda hydration",
+        "variant evidence",
+        "Canonical Preview direction"
+      ]
+    },
+    "r37r7a1": {
+      "status": "ACCEPTED_CHECKPOINT",
+      "dedicated_tests": 10,
+      "maintained_regression": 560,
+      "identity_ready": true,
+      "identity_tables": [
+        "m99_v073_identity_external_mappings",
+        "m99_v073_identity_resolutions"
+      ],
+      "control_product": {
+        "supplier": "Calenda",
+        "name": "МЪЖКА РИЗА RIVER",
+        "supplier_reference": "93100",
+        "supplier_product_id": "31809",
+        "supplier_brand_evidence": "PROMO STARS",
+        "colors": 4,
+        "color_size_rows": 24,
+        "available_rows": 20,
+        "out_of_stock_rows": 4,
+        "expected_variant_images": 4
+      },
+      "open_at_checkpoint": [
+        "PREPARE_HTTP_500",
+        "VARIANT_IMAGES_ONE_VISIBLE",
+        "MANUFACTURER_OFFICIAL_URL_MISSING",
+        "CANONICAL_MANUFACTURER_MAPPING_INCOMPLETE"
+      ]
+    },
+    "v35_safe_git_consolidation": {
+      "commit": "732fd33fbc45eeed7150bf02d61c579430dbf0c1",
+      "origin": "origin/main",
+      "pushed": true,
+      "head_equals_upstream": true,
+      "worktree_clean_after_checkpoint": true,
+      "maintained_regression_initial": {
+        "passed": 560,
+        "warnings": 6
+      },
+      "maintained_regression_final": {
+        "passed": 560,
+        "warnings": 6
+      },
+      "quarantined_runtime_or_temp_artifacts": 27
+    },
+    "phase46": {
+      "goal": "supplier -> category -> product/variant -> canonical preview -> DRAFT -> controlled automatic publish to m99.eu",
+      "status": "IN_PROGRESS_NOT_ACCEPTED",
+      "r1": "INSTALLER_PREFLIGHT_STOP_NO_REPO_WRITE",
+      "r1_1": "INSTALLER_PREFLIGHT_STOP_NO_REPO_WRITE",
+      "r1_2": "HARDENED_CANDIDATE_GENERATED_NO_ACCEPTANCE_LOG_RECORDED",
+      "automatic_live_publish_tested": false
+    }
+  },
+  "acceptance_policy": {
+    "first_live_product_count": 1,
+    "batch_before_single_product_acceptance": false,
+    "identity_required": true,
+    "evidence_required": true,
+    "duplicate_guard_required": true,
+    "readback_required": true,
+    "audit_required": true,
+    "environment_acceptance_required": true
+  },
+  "current_target": {
+    "name": "Phase 4.6 R1 FINAL - Self-Tested E2E Auto Publish",
+    "single_product_first": true,
+    "requires_explicit_operator_action": true,
+    "requires_duplicate_guard": true,
+    "requires_readback": true,
+    "requires_audit": true
+  },
+  "source_documents": [
+    "README_M99_v12_2026-09-06.md",
+    "README_M99_v13_2026-09-06.md",
+    "M99_CURRENT_STATE_v13_2026-09-06.json",
+    "M99_DECISION_REGISTRY_v13_2026-09-06.yaml",
+    "M99_PROJECT_HISTORY_v13_2026-09-06.jsonl"
+  ],
+  "embedded_readme_v13": "# M99 Knowledge Platform - README v13\n\n**Checkpoint date:** 2026-09-06\n**Repository:** `ludmil03/M99-Knowledge-Platform`\n**Local repo:** `C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform`\n**Branch:** `main`\n**Document role:** Master System Constitution + Consolidated Project History + Current Development State + Release Engineering Contract\n**Supersedes as current master:** README v12 current-state sections, while preserving every still-valid decision and historical fact.\n\n---\n\n## 0. How to read v13\n\nREADME v13 consolidates the project from the original Knowledge Base foundation through the current Phase 4.6 direction.\n\nThe anti-loop rule remains mandatory:\n\n`DECIDED != IMPLEMENTED`\n\nA failed installer, incomplete connector, runtime exception, open defect or deferred feature does not reopen an accepted architectural decision. A fixed decision changes only through an explicit superseding decision with rationale and evidence.\n\nMandatory context order before proposing architectural change:\n\n`DECISION_REGISTRY -> M99_CURRENT_CONTEXT -> PROJECT_STATE -> latest master README -> relevant ADR -> relevant tests / implementation history -> new proposal`\n\nREADME v13 also introduces the formal **Self-Tested Release Process** decided on 2026-09-06.\n\n---\n\n## 1. Vision and role of M99 Knowledge Platform\n\nM99 Knowledge Platform is not a product scraper or a single-site uploader. It is the canonical identity, verified product knowledge, supplier/manufacturer evidence, commercial intelligence, content/SEO, publishing, synchronization, ERP/CRM integration, audit and governance layer for the M99 ecosystem.\n\nM99 owns canonical identity and governed verified knowledge.\n\nExternal systems are classified as:\n\n- evidence sources;\n- commercial sources;\n- channels;\n- destinations;\n- operational systems;\n- migration/reconciliation sources.\n\nDolibarr is the operational ERP/CRM/warehouse representation. It does not own canonical M99 identity.\n\nCore principles:\n\n- Single Source of Truth.\n- Knowledge First.\n- No Duplicate Data.\n- Evidence Based.\n- AI Native, not AI Invented.\n- Historical observations are preserved.\n- Market and Channel are separate concepts.\n- Observation is not automatically canonical truth.\n- Removing a product from one channel must not destroy accumulated M99 knowledge.\n- A new feature must not break an already accepted guardrail.\n\n---\n\n## 2. Business direction\n\nThe platform is designed to support M99 Group expansion with:\n\n- Bulgaria, Romania and future international markets;\n- minimal administrative headcount;\n- maximum safe automation;\n- stronger cash-flow control;\n- better management of slow-moving stock;\n- reusable product truth across multiple channels;\n- the long-term M99 Group Master Plan 2036.\n\n---\n\n## 3. Current ecosystem\n\n- `mela99.com` - ThirtyBees 1.7 / PrestaShop 1.7 family; BG + EN.\n- `m99.eu` - PrestaShop 9.1.5; verified API GET/POST path; EN/BG/RU context.\n- `rabotni-drehi.com` - WordPress; BG channel-specific content.\n- `medicinski-drehi.com` - medical clothing channel.\n- `laviro.ro` - PrestaShop 1.6.1.24; Romanian market.\n- `alviro.ro` - Romanian market channel.\n- `toplinka.com` - heating / photovoltaic services.\n- Dolibarr - operational ERP/CRM/warehouse target.\n- MoneyWork and legacy exports/sites - migration and reconciliation sources.\n\nChannels are configuration-driven mappings. Adding or removing a channel must not redesign product identity.\n\n---\n\n## 4. Canonical product and identity model\n\nCanonical chain:\n\n`ProductGroup -> ProductVariant -> SupplierOffer / SupplierMapping -> Evidence / Observation -> ChannelPresence -> ChannelContent -> ChannelPrice -> InventoryMapping`\n\nExternal identifiers are mappings, not canonical identity:\n\n- supplier reference / SKU;\n- manufacturer reference / MPN;\n- EAN / GTIN;\n- MoneyWork code;\n- Dolibarr ID;\n- website/channel product ID;\n- marketplace ID;\n- legacy reference;\n- title;\n- URL.\n\nIdentity resolution:\n\n`External Record -> Import -> Normalize -> Resolve -> Match -> Decision -> Overrides -> Operator Review -> Final M99 Identity`\n\nIdentity states:\n\n`NEW / EXISTING / AMBIGUOUS / UNRESOLVED`\n\n`AMBIGUOUS` requires a human decision.\n\nM99 Reference:\n\n`M99-` + digits only.\n\nAssigned M99 identity is never reused for another ProductGroup.\n\nIdentity Before Content:\n\n`SELECT -> RESOLVE IDENTITY -> LINK EXISTING or CREATE PERMANENT M99 ID -> THEN CONTENT`\n\n---\n\n## 5. ProductGroup lifecycle and destructive actions\n\nProductGroup lifecycle is fixed:\n\n`draft -> active -> paused -> retired`\n\nHard DELETE remains possible only as an exceptional governed operation requiring:\n\n1. operator approval;\n2. explicit manual `DELETE` confirmation;\n3. audit logging.\n\nNormal lifecycle transitions are preferred over physical deletion.\n\n---\n\n## 6. Organization, Supplier, Manufacturer and Brand governance\n\nSupplier and Manufacturer remain separate governed roles of canonical Organization.\n\nOne Organization may have both roles, but the roles are not silently interchangeable.\n\nBrand is a separate canonical object.\n\nAn operator may propose a new Supplier, Manufacturer or Brand. A proposed object remains pending until Super Admin governance.\n\nOnly Super Admin may perform governed approval actions such as APPROVE, REJECT, MERGE_WITH_EXISTING or ACTIVATE_ROLE.\n\nSupplier-provided manufacturer/brand text is evidence only. It must not silently become an approved canonical Manufacturer.\n\nOne canonical M99 product may have multiple verified SupplierMappings and Manufacturer mappings.\n\nThe system must never assume:\n\n`one product = one supplier`\n\n---\n\n## 7. Evidence and provenance\n\nImportant facts preserve provenance where applicable:\n\n- source;\n- source organization;\n- source URL/resource;\n- observed_at;\n- verified_at;\n- document/page;\n- reviewer;\n- confidence;\n- conflict state;\n- canonical entity relationship.\n\nEvidence priority remains:\n\n1. exact official manufacturer;\n2. official manufacturer documentation/catalogue/certificate;\n3. validated B2B;\n4. exact supplier source;\n5. verified internal/legacy data;\n6. operator-verified fact;\n7. AI operating on verified evidence.\n\nSupplier price and availability remain supplier evidence.\n\nManufacturer technical truth should come from approved official manufacturer evidence.\n\nHistorical observations are preserved.\n\n---\n\n## 8. SupplierSource and connector architecture\n\nSupplierSource may represent:\n\n- PUBLIC_WEBSITE;\n- B2B_PORTAL;\n- API;\n- CSV / XLSX / XML / JSON;\n- PDF_CATALOGUE;\n- TECHNICAL_DOCUMENT;\n- CERTIFICATE;\n- PRICE_LIST;\n- STOCK_FEED;\n- SIZE_CHART;\n- IMAGE_LIBRARY;\n- MANUAL_VERIFIED_SOURCE.\n\nGeneric connector contract:\n\n`connect / health_check -> list_categories -> list_products -> get_product -> get_variants -> get_images -> get_commercial_data`\n\nSupplier-specific adapters sit behind the shared contract so operator UX does not need to change for every supplier.\n\nConnector-specific semantics remain allowed when required by the source.\n\n---\n\n## 9. Operator and Super Admin model\n\nOPERATOR is a business user, not a programmer.\n\nThe normal operator workflow must not require knowledge of:\n\n- Python;\n- PowerShell;\n- HTTP;\n- JSON/XML;\n- SQL;\n- API credentials;\n- internal file paths.\n\nOperator-first UX and one-decision-per-screen remain fixed design goals.\n\nSUPER ADMIN controls governance-sensitive configuration, identity registries, organizations, supplier/manufacturer sources, channels, credentials status, quality gates, audit/logs and diagnostics.\n\n---\n\n## 10. New Product Import - normative workflow\n\nThe generalized operator workflow is:\n\n`Login`\n`-> Add Products`\n`-> Choose Supplier / Manufacturer`\n`-> Choose Source Category`\n`-> Choose Product / Variant`\n`-> Hydration`\n`-> Identity / Duplicate Review`\n`-> Permanent M99 ID or Existing Match`\n`-> Target Selection`\n`-> Canonical Preparation`\n`-> Pricing / VAT`\n`-> Content / SEO / Languages`\n`-> Images / ALT`\n`-> Variants / Default Combination`\n`-> Preflight`\n`-> Operator Confirmation`\n`-> DRAFT / TEST`\n`-> Readback`\n`-> Product Quality Gate`\n`-> Activation according to permission`\n\nSelection must support one product, many products, categories, first N, only-new-to-M99 and manual selection without bypassing identity/evidence/quality gates.\n\nEach new-product import is an auditable ImportJob.\n\n---\n\n## 11. Publishing Constitution\n\nFixed rules:\n\n- CREATE != UPDATE.\n- Duplicate guard before CREATE.\n- Mandatory readback after write.\n- HTTP 200/201 != Product Quality PASS.\n- Activation requires authorization.\n- DELETE is explicit human action.\n- Final category is operator-owned.\n- Approved/published identity and locked fields remain protected according to governance.\n- Normal publishing starts from M99 Admin; CLI/BAT scripts are development/diagnostic tooling.\n\nHistorically, the constitution used TEST/DRAFT-first controlled publishing.\n\nThe new Phase 4.6 automatic m99.eu publish direction is a new functional target and **must not silently weaken identity, evidence, duplicate, authorization, quality, secret-protection, readback or audit gates**.\n\n---\n\n## 12. Content, SEO and language policy\n\nContent Engine operates on verified Product Knowledge.\n\nSupplier prose is not copied verbatim.\n\nFacts may be shared, but prose and SEO are adapted by market/channel/language.\n\nA complete publishable package may include:\n\n- Product Name / H1;\n- short and long descriptions;\n- H2/H3;\n- technical specifications;\n- materials;\n- sizes;\n- FAQ;\n- Meta Title;\n- Meta Description;\n- SEO keywords;\n- schema/structured data where supported;\n- images;\n- localized ALT.\n\nAI may structure, translate and adapt verified facts. It must not invent technical claims, standards, stock, materials or unsupported marketing claims.\n\n---\n\n## 13. Images\n\nImage source priority:\n\n`official manufacturer -> verified supplier -> verified cached original source`\n\nPipeline:\n\n`Discover -> Verify -> Download -> Relevance Check -> Dedupe -> Resize ~1200-1400 px -> WebP -> Localized ALT -> Operator Review -> Upload -> Association -> Readback`\n\nTheme assets, logos, cart/search/header icons and unrelated images are rejected.\n\nVariant-specific source images must remain variant-specific when the source proves that relationship.\n\n---\n\n## 14. Variants and stock semantics\n\nVisible size != stock.\n\nSupplier availability != M99-owned physical stock.\n\nChannel-published sellability is also separate.\n\nFor a variational product, exactly one default combination is required.\n\nSupplier/manufacturer external availability may be represented separately from M99 physical stock, including variant-aware external warehouse semantics in Dolibarr.\n\nM99 must never fabricate numeric supplier quantity such as 30 or 999 merely because a product appears in stock.\n\n---\n\n## 15. Product Presence and Daily Sync\n\nPresence != Stock.\n\nProduct Presence answers where a canonical product exists or is missing and may preserve external IDs, publication state, last verification and sync state.\n\nNEW PRODUCT IMPORT and EXISTING PRODUCT DAILY SYNC are separate operational classes.\n\nDaily Sync contract:\n\n`Verified SupplierMapping -> Observation -> Compare Last Verified -> Change Detection -> Policy -> Existing Presence Mappings Only -> Write Changed Fields -> Readback -> Front Office Verify -> Audit`\n\n`NO_CHANGE -> NO_WRITE`\n\nA source outage/parser failure is `VERIFICATION_FAILED`.\n\nIt must never be converted automatically into OUT_OF_STOCK or quantity zero.\n\n---\n\n## 16. Dolibarr and MoneyWork boundaries\n\nM99 owns canonical identity/knowledge/governance.\n\nDolibarr is operational ERP/CRM/warehouse.\n\nMigration contract:\n\n`Inspect -> Normalize -> Deduplicate -> Identity Map -> Supplier/Customer Map -> Dry Run -> Import -> Reconcile -> Audit`\n\nMoneyWork and existing websites are reconciliation sources, not canonical masters.\n\nLegacy IDs/history are preserved through mappings.\n\nWarehouse semantics:\n\n- supplier order -> reception -> M99 physical stock increase;\n- customer order -> shipment/configured stock event -> M99 physical stock decrease.\n\nSupplier external availability remains distinct from M99 physical stock.\n\nCRM baseline remains:\n\n`First call -> Offer -> Second call`\n\nCustomer 360 remains a later product-platform-dependent direction.\n\n---\n\n## 17. Security, audit and credentials\n\nNever commit or expose:\n\n- passwords;\n- API keys;\n- tokens;\n- session secrets;\n- private keys;\n- runtime secrets.\n\nSecrets must not appear in Git, logs or screenshots.\n\nOperators do not see channel/B2B credentials.\n\nPermissions are enforced server-side.\n\nOperational DB files, DB backups, runtime audit JSONL, `.venv`, caches, temporary `.bak` patch backups and downloaded installer ZIP files do not belong in normal Git commits.\n\n---\n\n## 18. Historical development - Foundation through v0.6.x\n\n### README v1 / Foundation\n\nFocus: Knowledge Base foundation.\n\nKey direction:\n\n- Single Source of Truth;\n- Evidence Based;\n- AI Native;\n- initial repository structure.\n\n### v0.5.x - Migration + ERP\n\nIntroduced:\n\n- MoneyWork importer direction;\n- identity mapping;\n- Dolibarr adapter/import concepts;\n- M99 identity migration concepts.\n\n### v0.6.2-v0.6.3 - Evidence / Identity\n\nIntroduced and tested:\n\n- exact manufacturer evidence;\n- supplier near-match blocking/quarantine;\n- existing-product discovery.\n\n### v0.6.4-v0.6.6 - Content + Controlled Publishing\n\nIntroduced:\n\n- claim taxonomy;\n- multilingual content;\n- DRY_RUN;\n- WRITE_DRAFT;\n- readback.\n\n### v0.6.6.4.x - Legacy Reconciliation\n\nThe 2076 vs 2100 audit demonstrated that there is no universal legacy winner. Canonical records must be constructed field-by-field from the best verified evidence.\n\n### v0.6.7.x - Cherokee pilot and first real draft lessons\n\nThe Cherokee pilot expanded:\n\n- multi-source discovery;\n- channel matrix;\n- secrets handling;\n- live price/FX;\n- real controlled draft write;\n- Product Quality Gate thinking.\n\nCritical lesson:\n\n`technical write success != product quality success`\n\n---\n\n## 19. v0.7.1 and v0.7.2 milestones\n\n### v0.7.1 Revision 7\n\n- root regression: 234 tests passed;\n- commit: `8c3d2d7fc729f22001c320d1fa033528272eb21e`.\n\n### v0.7.2 Phase 1 - Canonical Data Model Foundation\n\n- canonical model foundation accepted;\n- commit: `193b6bcc6c8f4b13439102a99f00d1b542b1851f`.\n\n### v0.7.2 Phase 2 - SQLAlchemy + Alembic foundation\n\n- persistence/migration foundation;\n- tests/gates passed;\n- production Admin DB was not silently migrated by installer.\n\n### v0.7.2 Phase 2.5 - PrestaShop 9 integration\n\nThe m99.eu adapter evolved through import-path and multilingual contract fixes.\n\nNotable commits include:\n\n- `5705bff675224748f95f58cbf5860b0bb761f972` - multilingual contract alignment.\n\n### Governance Consolidation\n\nMachine-readable governance was added:\n\n- DECISION_REGISTRY;\n- FEATURE_GAP_REGISTRY;\n- M99_CURRENT_CONTEXT;\n- ADR-0001.\n\nReported governance commit:\n\n`5aec1b40ddcc6f1498512dde9eb7da6b0d18bca8`\n\n---\n\n## 20. v0.7.3 evolution\n\nv0.7.3 introduced and expanded:\n\n- Operator Product Import Wizard;\n- persistent ImportJob;\n- Organization Registry;\n- SupplierSource contracts;\n- live Supplier Browser foundation;\n- Identity Resolver / Identity Review;\n- Super Admin organization configuration;\n- production persistence foundations;\n- Supplier/Manufacturer separation;\n- Calenda supplier connector flow;\n- product hydration;\n- variant evidence;\n- R3.7 Identity -> DRAFT preparation;\n- Canonical Preview direction.\n\n---\n\n## 21. README v10 checkpoint\n\nREADME v10 froze a tested runtime checkpoint and preserved the additive-change rule.\n\nThe key rule remains:\n\nstable recovery/runtime checkpoints are preserved; later work should be additive unless an explicit superseding decision requires otherwise.\n\n---\n\n## 22. README v12 / R3.7R7A1 checkpoint - historical state on 2026-09-05/06\n\nREADME v12 recorded Revision 31 Phase 4.3 R3.7R7A1 as accepted.\n\nAccepted result:\n\n- 10 dedicated tests passed;\n- 560 maintained regression tests passed;\n- Identity persistence READY;\n- required identity tables:\n  - `m99_v073_identity_external_mappings`;\n  - `m99_v073_identity_resolutions`.\n\nControl product:\n\n- supplier: Calenda;\n- product: `МЪЖКА РИЗА RIVER`;\n- supplier reference: `93100`;\n- Calenda product ID: `31809`;\n- supplier brand evidence: `PROMO STARS`;\n- 4 colors;\n- 24 Color x Size evidence rows;\n- 20 available rows;\n- 4 OUT_OF_STOCK rows;\n- 4 expected color-specific images.\n\nREADME v12 also correctly kept these as OPEN at that checkpoint:\n\n- PREPARE HTTP 500;\n- one-image-only GUI defect;\n- missing Manufacturer official URL input;\n- incomplete canonical Manufacturer mapping.\n\nThese historical states must not be rewritten as solved without later acceptance evidence.\n\n---\n\n## 23. Safe Git consolidation - later on 2026-09-06\n\nAfter the v12-era uncommitted Phase 4.x checkpoint, a separate safe consolidation was completed.\n\nV3.5 SAFE CONSOLIDATION FINALIZER:\n\n- quarantined 27 obvious temporary/runtime artifacts outside the repo;\n- maintained regression passed: 560 tests, 6 warnings;\n- repaired one safe EOF whitespace issue;\n- reran maintained regression: 560 tests, 6 warnings;\n- credential guard passed;\n- `git diff --cached --check` passed;\n- commit created and pushed:\n\n`732fd33fbc45eeed7150bf02d61c579430dbf0c1`\n\nFinal state:\n\n- HEAD == origin/main;\n- worktree clean.\n\nTherefore this commit becomes the current known green synchronized Git baseline for documentation and the next controlled functional work.\n\nThis later fact does not invalidate README v12. It supersedes only the older Git-state statement that Phase 4.x had not yet been committed/pushed.\n\n---\n\n## 24. Phase 4.6 direction - real operator E2E publish to m99.eu\n\nCurrent functional target:\n\n`Add Products -> Supplier -> Category -> Product/Variant -> Canonical Preview -> DRAFT -> controlled automatic publish to m99.eu`\n\nThe first Phase 4.6 R1 and R1.1 installer attempts stopped safely in preflight due to installer-layer PowerShell defects.\n\nThey did not prove an application-runtime regression and did not change the repository.\n\nR1.2 was generated as a hardened candidate, but no successful Windows CMD acceptance log has been recorded in this checkpoint.\n\nTherefore:\n\n`Phase 4.6 automatic publish = IN PROGRESS / NOT YET ACCEPTED`\n\nDo not mark it IMPLEMENTED/TESTED until a successful Windows/runtime acceptance is recorded.\n\n---\n\n## 25. NEW DECISION - Self-Tested Release Process\n\n**Decision ID:** `REL-SELFTEST-001`\n**Effective:** 2026-09-06\n**Status:** DECIDED\n\nThe operator's Windows CMD run must become the **final environment acceptance test**, not the first place where obvious installer defects are discovered.\n\nBefore a release package is delivered for real CMD testing, the assistant performs the maximum possible internal pre-release validation.\n\nRequired internal release path:\n\n`INTERNAL RC`\n`-> static/package audit`\n`-> PowerShell AST/static analysis where PowerShell is used`\n`-> reserved-variable / StrictMode hazard scan`\n`-> BAT-to-script path validation`\n`-> package manifest and hash verification`\n`-> Git wrapper / failure-path simulation`\n`-> Python compile`\n`-> dedicated tests when runtime snapshot is available`\n`-> maintained regression when runtime snapshot is available`\n`-> secret/no-write-before-gates audit`\n`-> FINAL candidate`\n`-> operator Windows CMD acceptance`\n`-> authorized live-environment acceptance where required`\n\nRules:\n\n1. Do not create a user-facing revision for every minor installer bug.\n2. Consolidate minor defects during the internal RC audit.\n3. Do not weaken tests merely to obtain green.\n4. Do not redesign accepted architecture merely to make a new feature easier.\n5. Start functional releases from the latest known green synchronized baseline, unless an explicit recovery/superseding decision says otherwise.\n6. Preserve all fixed governance and safety gates.\n7. Real Windows acceptance remains mandatory for environment-specific behavior that cannot be faithfully reproduced elsewhere.\n8. Live website/DB/ERP writes require explicit authorized flow and must retain duplicate guards, readback and audit.\n\nThis decision is additive and is specifically intended to **increase development speed without sacrificing stability**.\n\n---\n\n## 26. Release engineering implementation preference\n\nTo reduce PowerShell-specific failure surface, future one-click release packages should prefer:\n\n`BAT launcher -> controlled Python release driver`\n\nwhen practical.\n\nPowerShell may still be used when Windows-specific capabilities require it, but it must pass AST/static checks before user delivery.\n\nThe release driver must:\n\n- identify the exact repo;\n- verify branch and expected baseline;\n- verify clean working tree;\n- verify synchronization;\n- touch only an explicit allowlist;\n- protect secrets and runtime artifacts;\n- run appropriate compile/tests;\n- stage only exact intended files;\n- run `git diff --cached --check`;\n- commit only after green gates;\n- refetch before push;\n- push only when remote parent has not changed;\n- verify final HEAD == upstream and clean worktree.\n\nNo force push, hard reset, `git clean -fd`, automatic pull/rebase or credential embedding.\n\n---\n\n## 27. Current Git documentation action\n\nREADME v12 and README v13 are both intended to be versioned in Git.\n\nREADME v12 is preserved byte-for-byte as the historical 2026-09-06 checkpoint.\n\nREADME v13 is the next consolidated master and includes the later safe Git consolidation, current Phase 4.6 status and `REL-SELFTEST-001`.\n\nThe documentation release should also version machine-readable state/decision/history companions and the Bulgarian human-readable status documents, while excluding operational DB/backups/caches/secrets.\n\n---\n\n## 28. Fixed decisions - do not reopen without explicit superseding decision\n\nThe following remain fixed unless explicitly superseded:\n\n- canonical M99 identity;\n- Knowledge First;\n- No Duplicate Data;\n- Evidence Based;\n- AI Native, not AI Invented;\n- historical observations;\n- Market != Channel;\n- external IDs as mappings;\n- Identity Before Content;\n- permanent M99 identity / no reuse;\n- ProductGroup lifecycle;\n- explicit DELETE governance;\n- Supplier/Manufacturer separation;\n- Brand as separate object;\n- multi-supplier mappings;\n- Super Admin approval gates;\n- operator-first UX;\n- ImportJob;\n- CREATE != UPDATE;\n- duplicate guard;\n- mandatory readback;\n- authorization;\n- channel/language differentiated content;\n- image source priority;\n- variant-aware semantics;\n- exactly one default combination;\n- Presence != Stock;\n- supplier availability != M99 physical stock;\n- Daily Sync;\n- NO_CHANGE -> NO_WRITE;\n- verification failure != zero stock;\n- Dolibarr operational role;\n- no invented numeric supplier stock;\n- server-side RBAC;\n- secret protection;\n- audit;\n- machine-readable governance;\n- Self-Tested Release Process.\n\n---\n\n## 29. Open / deferred items\n\nStill open or deferred at architecture/project level:\n\n- universal ProductGroup vs color-variant boundary;\n- universal Variant SKU standard;\n- exact Dolibarr parent/variant implementation;\n- exact production Dolibarr stock-decrease configuration;\n- image-rights policy per source;\n- production Vault;\n- exact WordPress adapters;\n- 2FA timing;\n- supplier-specific connector details;\n- observation freshness thresholds;\n- purchasing/preferred-supplier algorithm.\n\nAcceptance-specific items must remain visible until new evidence closes them:\n\n- RIVER variant-image preservation;\n- governed Manufacturer official URL/evidence completion;\n- Canonical Manufacturer mapping acceptance;\n- Phase 4.6 automatic m99.eu publish acceptance.\n\nThe historical PREPARE 500 defect belongs to the v12 checkpoint and should be considered closed only if a later accepted runtime test explicitly proves it closed.\n\n---\n\n## 30. Current milestone\n\n**Phase 4.6 R1 FINAL - Self-Tested E2E Auto Publish**\n\nRequired progression:\n\n1. internal release self-test framework;\n2. consolidated FINAL candidate;\n3. one real Windows CMD acceptance;\n4. one controlled real end-to-end product;\n5. mandatory readback and audit;\n6. only after single-product acceptance, repeatable multi-product flow without per-product custom code.\n\n---\n\n## 31. Machine-readable project memory\n\nREADME v13 is accompanied by:\n\n- `M99_CURRENT_STATE_v13_2026-09-06.json`;\n- `M99_DECISION_REGISTRY_v13_2026-09-06.yaml`;\n- `M99_PROJECT_HISTORY_v13_2026-09-06.jsonl`;\n- `M99_DOCUMENTATION_MANIFEST_v13_2026-09-06.json`.\n\nMachine-readable state does not replace README/ADR/tests. It exists to reduce context loss and circular redesign.\n\n---\n\n## 32. Final architecture philosophy\n\nM99 Knowledge Platform is one governed system:\n\n`KNOWLEDGE`\n`+ EVIDENCE`\n`+ IDENTITY`\n`+ ORGANIZATIONS`\n`+ BRANDS`\n`+ SUPPLIER/B2B CONNECTORS`\n`+ COMMERCIAL OBSERVATIONS`\n`+ CONTENT/SEO`\n`+ PRODUCT PRESENCE`\n`+ DAILY SYNC`\n`+ ERP/CRM`\n`+ PHYSICAL + EXTERNAL AVAILABILITY`\n`+ MULTI-CHANNEL PUBLISHING`\n`+ QUALITY GATES`\n`+ AUDIT/LOGS`\n`+ HUMAN GOVERNANCE`\n`+ MACHINE-READABLE PROJECT MEMORY`\n`+ SELF-TESTED RELEASE ENGINEERING`\n\n**Product truth once. Verified everywhere. Governed by humans. Released through evidence, tests and explicit acceptance.**\n"
+}

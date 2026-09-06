@@ -1,0 +1,127 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>M99 Knowledge Platform v13</title>
+<style>body{font-family:Arial,sans-serif;font-size:10.5pt;margin:2cm;line-height:1.35}h1{font-size:22pt;text-align:center}h2{font-size:15pt;margin-top:18pt}li{margin:4pt 0}</style></head><body>
+<h1>M99 KNOWLEDGE PLATFORM<br>Пълна история и текущо състояние</h1>
+<p><b>Версия v13 — 06.09.2026 г.</b><br>Български управленски и технически документ от началото на проекта до текущия checkpoint</p>
+<p><b>Green Git baseline:</b> 732fd33fbc45eeed7150bf02d61c579430dbf0c1</p>
+<h2>1. Предназначение</h2><ul>
+<li>Този документ е човешкият консолидиран отчет за M99 Knowledge Platform от началото на проекта до 06.09.2026 г. Той не заменя source code, тестовете, ADR и machine-readable governance, а ги обобщава в разбираем за собственика на бизнеса формат.</li>
+<li>Основната цел е да не губим контекст, да не се връщаме към вече взети решения и да разграничаваме ясно РЕШЕНО, РЕАЛИЗИРАНО, ТЕСТВАНО, ОТВОРЕНО и ОТЛОЖЕНО.</li>
+</ul>
+<h2>2. Какво изграждаме</h2><ul>
+<li>M99 Knowledge Platform е централната система за идентичност на продуктите, проверено продуктово знание, доставчици и производители, съдържание и SEO, канали, публикуване, синхронизация, Dolibarr ERP/CRM/склад и governance.</li>
+<li>M99 е Single Source of Truth. Сайтовете, Dolibarr, MoneyWork, доставчиците и производителите са източници, канали или оперативни системи, но не притежават canonical M99 identity.</li>
+</ul>
+<h2>3. Бизнес цел</h2><ul>
+<li>Платформата трябва да подпомага международната експанзия на M99 Group, минимален административен персонал, максимална безопасна автоматизация, по-добър cash flow, контрол на наличностите и повторно използване на едно проверено продуктово знание във всички канали.</li>
+</ul>
+<h2>4. Основни архитектурни принципи</h2><ul>
+<li>Single Source of Truth; Knowledge First; No Duplicate Data; Evidence Based; AI Native, not AI Invented; историческите observations се пазят; Market и Channel са различни понятия; observation не е автоматично canonical truth.</li>
+<li>Нов feature не трябва да чупи вече приет guardrail. Временен дефект не отменя архитектурно решение.</li>
+</ul>
+<h2>5. Canonical Product и Identity</h2><ul>
+<li>Canonical chain: ProductGroup -&gt; ProductVariant -&gt; SupplierOffer/SupplierMapping -&gt; Evidence/Observation -&gt; ChannelPresence -&gt; ChannelContent -&gt; ChannelPrice -&gt; InventoryMapping.</li>
+<li>Supplier SKU, manufacturer MPN, EAN/GTIN, MoneyWork code, Dolibarr ID, website ID, title и URL са mappings към M99, а не самата M99 identity.</li>
+<li>Identity states: NEW / EXISTING / AMBIGUOUS / UNRESOLVED. AMBIGUOUS задължително изисква човешко решение.</li>
+<li>ProductGroup lifecycle: draft -&gt; active -&gt; paused -&gt; retired. Hard DELETE изисква operator approval, ръчно DELETE и audit.</li>
+</ul>
+<h2>6. Supplier / Manufacturer / Brand</h2><ul>
+<li>Supplier и Manufacturer остават отделни governed роли. Supplier текст или brand evidence не може тихо да стане canonical Manufacturer.</li>
+<li>Brand е отделен object. Операторът може да предложи нов Supplier/Manufacturer/Brand, но Super Admin одобрява governed object-а.</li>
+<li>Един M99 продукт може да има повече от един verified supplier.</li>
+</ul>
+<h2>7. Evidence и източници</h2><ul>
+<li>Приоритетът за technical truth е: exact official manufacturer -&gt; official docs/catalogue/certificate -&gt; validated B2B -&gt; exact supplier -&gt; verified internal/legacy -&gt; operator -&gt; AI върху verified evidence.</li>
+<li>Всеки важен факт трябва да пази provenance, когато е приложимо.</li>
+</ul>
+<h2>8. Канали и системи</h2><ul>
+<li>mela99.com: ThirtyBees 1.7 / PrestaShop 1.7 family, BG+EN.</li>
+<li>m99.eu: PrestaShop 9.1.5, доказан API GET/POST path, EN/BG/RU контекст.</li>
+<li>rabotni-drehi.com: WordPress BG.</li>
+<li>medicinski-drehi.com: medical clothing channel.</li>
+<li>laviro.ro: PrestaShop 1.6.1.24, RO.</li>
+<li>alviro.ro: Romanian market channel.</li>
+<li>toplinka.com: отопление и фотоволтаици.</li>
+<li>Dolibarr: operational ERP/CRM/warehouse.</li>
+<li>MoneyWork/legacy sites: migration и reconciliation sources.</li>
+</ul>
+<h2>9. Operator workflow</h2><ul>
+<li>Нормалният бизнес оператор не трябва да знае Python, PowerShell, API, JSON, SQL или credentials.</li>
+<li>Главният поток е Add Products: доставчик -&gt; категория -&gt; продукт/вариант -&gt; hydration -&gt; Identity/Duplicate Review -&gt; M99 ID -&gt; targets -&gt; canonical preparation -&gt; pricing -&gt; content/SEO -&gt; images -&gt; variants -&gt; preflight -&gt; confirmation -&gt; DRAFT/TEST -&gt; readback -&gt; Quality Gate -&gt; activation.</li>
+</ul>
+<h2>10. Publishing Constitution</h2><ul>
+<li>CREATE и UPDATE са различни договори. Duplicate guard преди CREATE. Mandatory readback след write. HTTP 200/201 не означава Product Quality PASS.</li>
+<li>Activation изисква permission. Final category е operator-owned. DELETE е explicit human action.</li>
+<li>Новата Phase 4.6 посока за automatic m99.eu publish не отменя identity/evidence/quality/security/readback/audit правилата.</li>
+</ul>
+<h2>11. Content / SEO / Images / Variants</h2><ul>
+<li>AI работи върху verified facts и не измисля стандарти, материали, stock или технически claims.</li>
+<li>Supplier prose не се копира verbatim. Съдържанието се адаптира по channel/language.</li>
+<li>Image pipeline: Discover -&gt; Verify -&gt; Download -&gt; Relevance -&gt; Dedupe -&gt; Resize -&gt; WebP -&gt; ALT -&gt; Review -&gt; Upload -&gt; Association -&gt; Readback.</li>
+<li>Visible size != stock. Supplier availability != M99 physical stock. Variational product има точно една default combination.</li>
+</ul>
+<h2>12. Presence / Daily Sync / Dolibarr</h2><ul>
+<li>Presence != Stock. Daily Sync и New Product Import са отделни operational classes.</li>
+<li>NO_CHANGE -&gt; NO_WRITE. Verification failure не е OUT_OF_STOCK и не е quantity 0.</li>
+<li>Dolibarr е operational ERP/CRM/warehouse. Supplier external availability и M99 physical stock са различни величини.</li>
+</ul>
+<h2>13. История: Foundation до v0.6.x</h2><ul>
+<li>README v1: Knowledge Base, Single Source of Truth, Evidence Based, AI Native.</li>
+<li>v0.5.x: MoneyWork migration, identity mapping, Dolibarr integration concepts.</li>
+<li>v0.6.2-v0.6.3: exact manufacturer evidence, supplier mismatch blocking, existing-product discovery.</li>
+<li>v0.6.4-v0.6.6: multilingual content, DRY_RUN, WRITE_DRAFT, readback.</li>
+<li>v0.6.6.4.x: legacy reconciliation field-by-field.</li>
+<li>v0.6.7.x: Cherokee pilot, real draft, доказано е че technical write success != product quality.</li>
+</ul>
+<h2>14. История: v0.7.1 и v0.7.2</h2><ul>
+<li>v0.7.1 Rev7: 234 tests PASS; commit 8c3d2d7fc729f22001c320d1fa033528272eb21e.</li>
+<li>v0.7.2 Phase 1: Canonical Data Model Foundation; commit 193b6bcc6c8f4b13439102a99f00d1b542b1851f.</li>
+<li>v0.7.2 Phase 2: SQLAlchemy + Alembic foundation, без silent production migration.</li>
+<li>v0.7.2 Phase 2.5: m99.eu PrestaShop 9 adapter, import path и multilingual contract.</li>
+<li>Governance Consolidation: DECISION_REGISTRY, FEATURE_GAP_REGISTRY, M99_CURRENT_CONTEXT и ADR-0001.</li>
+</ul>
+<h2>15. История: v0.7.3</h2><ul>
+<li>Добавени са Operator Product Import Wizard, ImportJob, Organization Registry, SupplierSource contract, Supplier Browser foundation, Identity Resolver/Review, Super Admin Organization Configuration, Calenda flow, variant evidence и подготовка за Canonical Preview.</li>
+</ul>
+<h2>16. R3.7R7A1 — приет checkpoint</h2><ul>
+<li>Revision 31 Phase 4.3 R3.7R7A1 е приет с 10 dedicated и 560 maintained regression tests PASS.</li>
+<li>Identity persistence е READY. Изискваните таблици са m99_v073_identity_external_mappings и m99_v073_identity_resolutions.</li>
+<li>Контролен продукт: Calenda RIVER, ref 93100, product ID 31809, 4 цвята, 24 Color×Size evidence rows, 20 available и 4 OUT_OF_STOCK.</li>
+<li>Към този checkpoint са OPEN: PREPARE 500, само една видима variant image, липсващ Manufacturer official URL и незавършен canonical Manufacturer mapping.</li>
+</ul>
+<h2>17. Safe Git consolidation — 06.09.2026</h2><ul>
+<li>След README v12 checkpoint е направен отделен V3.5 SAFE CONSOLIDATION FINALIZER.</li>
+<li>560 maintained tests PASS, 6 warnings; след safe whitespace repair отново 560 PASS.</li>
+<li>27 временни/runtime артефакта са quarantined извън repository.</li>
+<li>Commit 732fd33fbc45eeed7150bf02d61c579430dbf0c1 е push-нат; HEAD == origin/main; worktree clean.</li>
+<li>Това е текущият доказан green synchronized Git baseline.</li>
+</ul>
+<h2>18. Phase 4.6 — текущата функционална цел</h2><ul>
+<li>Цел: Add Products -&gt; Supplier -&gt; Category -&gt; Product/Variant -&gt; Canonical Preview -&gt; DRAFT -&gt; controlled automatic publish to m99.eu.</li>
+<li>R1 и R1.1 са спрели безопасно в installer preflight заради PowerShell installer defects и не са променили repository.</li>
+<li>R1.2 е hardened candidate, но в този checkpoint няма записан успешен Windows CMD acceptance log. Следователно automatic publish все още е IN PROGRESS / NOT ACCEPTED.</li>
+</ul>
+<h2>19. Ново решение — Self-Tested Release Process</h2><ul>
+<li>От 06.09.2026 реалният CMD тест при оператора е финална environment acceptance проверка, а не първо място за откриване на очевидни installer дефекти.</li>
+<li>Преди да бъде даден ZIP: internal RC -&gt; static/package audit -&gt; PowerShell AST ако има PowerShell -&gt; reserved-variable/StrictMode scan -&gt; BAT/script path validation -&gt; manifest/hash -&gt; simulated Git/failure paths -&gt; Python compile -&gt; dedicated/regression tests когато runtime е наличен -&gt; secret/no-write guards -&gt; FINAL candidate.</li>
+<li>Не се прави нова user-facing revision за всеки дребен installer bug; дребните корекции се консолидират вътрешно.</li>
+<li>Тестовете не се отслабват, за да станат зелени. Нов feature се адаптира към архитектурата, не обратното.</li>
+<li>Предпочитан launcher: BAT -&gt; controlled Python release driver, когато е практично. Това намалява PowerShell-specific failure surface.</li>
+<li>Запазват се: no force push, no hard reset, no git clean -fd, no automatic pull/rebase, no credentials in code.</li>
+</ul>
+<h2>20. Какво се качва в Git и какво не</h2><ul>
+<li>Качват се source code, tests, templates, architecture/governance notes и approved checkpoint documentation.</li>
+<li>Не се качват operational DB, DB backups, .venv, __pycache__, .pytest_cache, runtime audit JSONL, временни .bak, downloaded installer ZIPs или secrets.</li>
+<li>README v12 се пази byte-for-byte като historical checkpoint. README v13 става следващият consolidated master.</li>
+</ul>
+<h2>21. Фиксирани решения</h2><ul>
+<li>Canonical identity; Knowledge First; No Duplicate Data; Evidence Based; AI Native not AI Invented; historical observations; Market != Channel; Identity Before Content; no ID reuse; lifecycle + explicit DELETE; Supplier/Manufacturer separation; Brand separate object; multi-supplier; Super Admin governance; operator-first UX; ImportJob; CREATE != UPDATE; duplicate guard; mandatory readback; authorization; image source priority; Presence != Stock; supplier availability != physical stock; Daily Sync; NO_CHANGE -&gt; NO_WRITE; verification failure != zero stock; Dolibarr operational role; no invented stock; server-side RBAC; secrets protection; machine-readable governance; Self-Tested Release Process.</li>
+</ul>
+<h2>22. Отворени / отложени</h2><ul>
+<li>Universal ProductGroup vs color-variant boundary; universal Variant SKU; exact Dolibarr parent/variant; exact production stock-decrease config; image rights; production Vault; WordPress adapters; 2FA timing; supplier-specific connector details; freshness thresholds; preferred-supplier algorithm.</li>
+<li>Acceptance-specific: variant-image preservation, Manufacturer official URL/evidence completion, canonical Manufacturer mapping, Phase 4.6 automatic m99.eu publish acceptance.</li>
+</ul>
+<h2>23. Следващ milestone</h2><ul>
+<li>Phase 4.6 R1 FINAL — Self-Tested E2E Auto Publish.</li>
+<li>Първо internal self-test; после един Windows CMD acceptance; после точно един real end-to-end product; mandatory readback и audit; едва след това repeatable multi-product flow.</li>
+</ul>
+</body></html>
