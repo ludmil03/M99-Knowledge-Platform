@@ -1,4 +1,4 @@
-﻿from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
+from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -72,3 +72,6 @@ app.include_router(unified_add_products_router)
 from app.routers.r37_add_products_flow import router as r37_add_products_flow_router
 app.include_router(r37_add_products_flow_router)
 
+# M99_PHASE46_R3_ACTIVE_RUNTIME_INCLUDE
+from app.routers.phase46_r3_content_intelligence import router as phase46_r3_content_router
+app.include_router(phase46_r3_content_router)

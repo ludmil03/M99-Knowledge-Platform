@@ -228,8 +228,22 @@ M99 прочете публичната продуктова страница н
 <tr><th>Наличност при доставчика</th><td>{{ hydrated.availability_text or "—" }}</td></tr>
 <tr><th>URL</th><td class="small">{{ hydrated.url }}</td></tr>
 <tr><th>Описание</th><td>{{ hydrated.description or "—" }}</td></tr>
-<tr><th>Изображения</th><td>{% for i in hydrated.images %}<img class="thumb" src="{{ i }}" alt="supplier image">{% else %}—{% endfor %}</td></tr>
+{# M99_PHASE46_R2_EVIDENCE_MATRIX #}
+<tr><th>Основни изображения</th><td>{% for i in hydrated.images %}<img class="thumb" src="{{ i }}" alt="supplier image">{% else %}—{% endfor %}</td></tr>
+<tr><th>Цветови изображения</th><td>
+{% for v in hydrated.variants %}{% if v.image_url %}<figure style="display:inline-block;vertical-align:top;margin:6px;text-align:center"><img class="thumb" src="{{ v.image_url }}" alt="supplier variant image {{ v.value or v.code }}"><figcaption><small>{{ v.value or "Color" }} · {{ v.code or "—" }}</small></figcaption></figure>{% endif %}{% else %}—{% endfor %}
+</td></tr>
 <tr><th>Варианти</th><td>{{ hydrated.variants|length }}</td></tr>
+<tr><th>Color × Size evidence</th><td>
+<table>
+<thead><tr><th>Цвят</th><th>Код</th><th>Размер</th><th>Цена EUR</th><th>Общо при доставчика</th><th>Статус</th></tr></thead>
+<tbody>
+{% for v in hydrated.variants %}{% for s in v.sizes or [] %}{% set a = s.supplier_availability or {} %}
+<tr><td>{{ v.value or "—" }}</td><td>{{ v.code or "—" }}</td><td>{{ s.size or "—" }}</td><td>{{ s.price_eur or "—" }}</td><td>{{ a.total_observed_qty if a.total_observed_qty is defined else "—" }}</td><td>{{ a.status or "UNKNOWN" }}</td></tr>
+{% endfor %}{% endfor %}
+</tbody></table>
+<small>Supplier availability evidence. Не е M99 physical stock.</small>
+</td></tr>
 <tr><th>Предупреждения</th><td>{% for w in hydrated.warnings %}<div>{{ w }}</div>{% else %}—{% endfor %}</td></tr>
 </table>
 

@@ -19,6 +19,7 @@ from app.services.v073_phase45.m99eu_r37_auto_publish import (
     supplier_product_from_draft_item,
 )
 from app.models.entities import ImportJobItem
+from app.services.v073_phase46.r4_r1_canonical_payload_bridge import build_canonical_payload_preview
 
 router = APIRouter(prefix="/r1-final", tags=["Phase 4.6 R1 FINAL"])
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parents[1] / "templates"))
@@ -75,8 +76,14 @@ def control_page(
     items = []
     selected_items = []
     product = {}
+    payload_preview = {}
     if selected_job is not None:
         items, selected_items, product = _job_snapshot(db, selected_job)
+        if len(selected_items) == 1:
+            try:
+                payload_preview = build_canonical_payload_preview(job=selected_job, item=selected_items[0])
+            except Exception as exc:
+                payload_preview = {"status":"BLOCKED","ready":False,"write_allowed":False,"blockers":[f"Preview failed safely: {exc}"],"warnings":[]}
 
     return templates.TemplateResponse(
         "operator_publish/phase46_r1_final.html",
@@ -91,6 +98,7 @@ def control_page(
             product=product,
             default_category_id=DEFAULT_CATEGORY_ID,
             confirmation=R1_CONFIRMATION,
+            payload_preview=payload_preview,
         ),
     )
 
@@ -112,6 +120,10 @@ def publish_one(
     job = db.get(ImportJob, int(job_id))
     if not job:
         raise HTTPException(404, "ImportJob not found.")
+    raise HTTPException(
+        409,
+        "LIVE WRITE LOCKED: R4→R1 Canonical Payload Bridge is preview-only until separate payload-adapter acceptance."
+    )
 
     items, selected_items, product = _job_snapshot(db, job)
     try:

@@ -14,7 +14,7 @@ from app.services.i18n import ui_for
 from app.services.v073_phase45.r37_import_bridge import (
     prepare_context,
     provision_operational_supplier_for_approved_source,
-    product_for_canonical_preview,
+    product_for_canonical_preview_from_draft,
     resolve_identity_then_create_draft,
 )
 
@@ -197,8 +197,8 @@ def canonical_preview(
         raise HTTPException(403, "Not authorized")
 
     try:
-        supplier_product = product_for_canonical_preview(
-            db, source_uuid=source_uuid, product_url=product_url
+        supplier_product = product_for_canonical_preview_from_draft(
+            db, job_id=job.id, source_uuid=source_uuid, product_url=product_url
         )
         preview = prepare_canonical_preview(supplier_product, target_code=target)
     except Exception as exc:

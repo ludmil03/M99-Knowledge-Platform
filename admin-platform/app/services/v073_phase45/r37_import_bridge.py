@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.entities import Supplier, User
+from app.models.entities import ImportJobItem, Supplier, User
 from app.services.import_jobs import authorized_target_codes, create_draft_job
 from app.services.v073_phase4.identity_resolver import IncomingIdentity, resolve_identity
 from app.services.v073_phase45.unified_add_products import require_source, hydrate_product
@@ -298,6 +298,157 @@ def _database_url(db: Session) -> str:
     return bind.url.render_as_string(hide_password=False)
 
 
+
+def _json_safe(value):
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(v) for v in value]
+    if hasattr(value, "__dict__"):
+        return {str(k): _json_safe(v) for k, v in vars(value).items() if not str(k).startswith("_")}
+    return str(value)
+
+
+def _decode_detection(value):
+    if isinstance(value, dict):
+        return dict(value)
+    if isinstance(value, str) and value.strip():
+        try:
+            parsed = json.loads(value)
+            return dict(parsed) if isinstance(parsed, dict) else {}
+        except Exception:
+            return {}
+    return {}
+
+
+def supplier_evidence_snapshot(hydrated) -> dict:
+    variants = [_json_safe(dict(v)) for v in (hydrated.variants or ())]
+    images = []
+    for variant in variants:
+        image = str(variant.get("image_url") or "").strip()
+        if image and image not in images:
+            images.append(image)
+    for image in (hydrated.images or ()):
+        image = str(image or "").strip()
+        if image and image not in images:
+            images.append(image)
+
+    size_rows = 0
+    available_rows = 0
+    unavailable_rows = 0
+    for variant in variants:
+        for row in (variant.get("sizes") or []):
+            size_rows += 1
+            observed = (row.get("supplier_availability") or {}).get("total_observed_qty")
+            try:
+                observed_value = float(observed)
+            except (TypeError, ValueError):
+                observed_value = None
+            if observed_value is not None and observed_value > 0:
+                available_rows += 1
+            elif observed_value == 0:
+                unavailable_rows += 1
+
+    return {
+        "schema": "m99.phase46.r2.supplier_evidence.v1",
+        "snapshot_source": "DRAFT",
+        "url": hydrated.url,
+        "title": hydrated.name,
+        "name": hydrated.name,
+        "supplier_reference": hydrated.supplier_reference or "",
+        "source_key": hydrated.source_key or "",
+        "calenda_product_id": getattr(hydrated, "calenda_product_id", None),
+        "brand": hydrated.brand or "",
+        "price_text": hydrated.price_text or "",
+        "currency": hydrated.currency or "",
+        "availability_text": hydrated.availability_text or "UNKNOWN",
+        "description": hydrated.description or "",
+        "specifications": _json_safe(list(getattr(hydrated, "specifications", ()) or ())),
+        "images": images,
+        "variants": variants,
+        "warnings": _json_safe(list(hydrated.warnings or ())),
+        "evidence_summary": {
+            "variant_count": len(variants),
+            "color_size_rows": size_rows,
+            "available_rows": available_rows,
+            "unavailable_rows": unavailable_rows,
+            "unique_images": len(images),
+            "supplier_availability_not_owned": True,
+        },
+    }
+
+
+def _detection_storage_value(model_cls, snapshot: dict):
+    column = getattr(getattr(model_cls, "__table__", None), "c", {}).get("detection") if getattr(model_cls, "__table__", None) is not None else None
+    if column is not None:
+        try:
+            if column.type.python_type is str:
+                return json.dumps(snapshot, ensure_ascii=False, sort_keys=True)
+        except (AttributeError, NotImplementedError):
+            pass
+    return snapshot
+
+
+def persist_draft_evidence(db: Session, *, job, identity, hydrated) -> None:
+    rows = (
+        db.query(ImportJobItem)
+        .filter(
+            ImportJobItem.import_job_id == int(job.id),
+            ImportJobItem.selected.is_(True),
+        )
+        .order_by(ImportJobItem.id.asc())
+        .all()
+    )
+    if len(rows) != 1:
+        raise ValueError(f"Expected exactly one selected DRAFT item for evidence persistence; found {len(rows)}.")
+
+    row = rows[0]
+    current = _decode_detection(getattr(row, "detection", None))
+    evidence = supplier_evidence_snapshot(hydrated)
+    current.update({
+        "identity": _json_safe(identity),
+        "supplier_evidence": evidence,
+        "commercial": {
+            "price_text": evidence["price_text"],
+            "currency": evidence["currency"],
+            "availability_text": evidence["availability_text"],
+        },
+    })
+    row.detection = _detection_storage_value(ImportJobItem, current)
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
+
+def product_for_canonical_preview_from_draft(
+    db: Session, *, job_id: int, source_uuid: str, product_url: str
+) -> dict:
+    rows = (
+        db.query(ImportJobItem)
+        .filter(
+            ImportJobItem.import_job_id == int(job_id),
+            ImportJobItem.selected.is_(True),
+        )
+        .order_by(ImportJobItem.id.asc())
+        .all()
+    )
+    if len(rows) == 1:
+        detection = _decode_detection(getattr(rows[0], "detection", None))
+        evidence = detection.get("supplier_evidence")
+        if isinstance(evidence, dict) and evidence.get("schema") == "m99.phase46.r2.supplier_evidence.v1":
+            result = dict(evidence)
+            result["snapshot_source"] = "DRAFT"
+            return result
+
+    # Compatibility fallback for pre-R2 DRAFTs only. New R2 DRAFTs must persist evidence.
+    result = product_for_canonical_preview(db, source_uuid=source_uuid, product_url=product_url)
+    result["snapshot_source"] = "LIVE_FALLBACK_PRE_R2_DRAFT"
+    return result
+
 def prepare_context(db: Session, *, user: User, source_uuid: str, product_url: str):
     source = require_source(db, source_uuid)
     hydrated = hydrate_product(source, product_url)
@@ -369,6 +520,7 @@ def resolve_identity_then_create_draft(
         items=[item],
         requested_targets=[target],
     )
+    persist_draft_evidence(db, job=job, identity=identity, hydrated=hydrated)
     return {
         "created": True,
         "identity": identity,

@@ -6,28 +6,37 @@
 <tr><th>Target</th><td>{{ "m99.eu" if target == "m99eu" else target }}</td></tr>
 <tr><th>Supplier product</th><td>{{ supplier_product.title }}</td></tr>
 <tr><th>Supplier reference</th><td>{{ supplier_product.supplier_reference }}</td></tr>
+<tr><th>Evidence source</th><td>{{ supplier_product.snapshot_source or "LIVE_FALLBACK" }}</td></tr>
 <tr><th>Identity / canonical state</th><td>{{ preview.identity_state if preview.identity_state is defined else "see preview below" }}</td></tr>
 </table>
 
-<h2>Manufacturer evidence</h2>
-<p><b>{{ supplier_product.manufacturer_name or "—" }}</b></p>
-<p><small>{{ supplier_product.manufacturer_evidence_scope }}</small></p>
-<h2>Variant image evidence</h2>
-{% if supplier_product.variant_image_evidence %}
-<div style="display:flex;gap:14px;flex-wrap:wrap">
-{% for img in supplier_product.variant_image_evidence %}
-  <div style="width:160px">
-    <img src="{{ img.image_url }}" alt="{{ img.value or img.code }}"
-         style="width:150px;height:150px;object-fit:contain;border:1px solid #ddd">
-    <div><b>{{ img.value or ("Color " ~ img.code) }}</b></div>
-  </div>
-{% endfor %}
+<h2>Supplier images preserved in DRAFT</h2>
+<div>
+{% for i in supplier_product.images or [] %}<img class="thumb" src="{{ i }}" alt="supplier evidence image">{% else %}—{% endfor %}
 </div>
-{% else %}<div class="warn">Няма variant image evidence.</div>{% endif %}
+
+<h2>Color × Size evidence preserved in DRAFT</h2>
+<table>
+<thead><tr><th>Цвят</th><th>Код</th><th>Размер</th><th>Цена EUR</th><th>Общо при доставчика</th><th>Статус</th></tr></thead>
+<tbody>
+{% for v in supplier_product.variants or [] %}
+  {% for s in v.sizes or [] %}
+    {% set a = s.supplier_availability or {} %}
+    <tr><td>{{ v.value or "—" }}</td><td>{{ v.code or "—" }}</td><td>{{ s.size or "—" }}</td><td>{{ s.price_eur or "—" }}</td><td>{{ a.total_observed_qty if a.total_observed_qty is defined else "—" }}</td><td>{{ a.status or "UNKNOWN" }}</td></tr>
+  {% endfor %}
+{% endfor %}
+</tbody>
+</table>
+<p><small>Supplier availability evidence ≠ M99 physical stock.</small></p>
+
 <h2>Canonical payload preview</h2>
 <pre style="white-space:pre-wrap">{{ preview }}</pre>
 
 <div class="warn">
-Няма Publish бутон в R3.7. Следващата отделна ревизия трябва да реализира explicit Preflight/Publish към m99.eu.
+R3.7 остава READ / VERIFY / DRAFT слой. Channel write е отделен Phase 4.6 control plane и остава блокиран до acceptance на evidence chain.
 </div>
+
+{# M99_PHASE46_R3_CONTENT_INTELLIGENCE #}
+<div class="card"><h2>Manufacturer Intelligence + Canonical Content</h2><p>Official manufacturer discovery + exact code + multilingual Content/SEO.</p><a class="btn" href="/content-intelligence/review?job_id={{ job.id }}&source_uuid={{ request.query_params.get("source_uuid","")|urlencode }}&product_url={{ request.query_params.get("product_url","")|urlencode }}&target={{ target }}">Отвори Manufacturer + Content Intelligence</a></div>
+
 {% endblock %}

@@ -10,7 +10,7 @@
 <div class="card">
   <h2>1. Избери DRAFT ImportJob</h2>
   {% if jobs %}
-  <form method="get" action="/operator-publish/m99eu/r1-final">
+  <form method="get" action="/operator-publish/r1-final">
     <select name="job_id" style="min-width:520px;padding:8px">
       {% for job in jobs %}
       <option value="{{ job.id }}" {% if selected_job and selected_job.id == job.id %}selected{% endif %}>
@@ -40,22 +40,56 @@
   <p><small>Permanent canonical M99 reference се извлича само от доказания DRAFT/Identity context. Няма M99-900... fallback.</small></p>
 </div>
 
+<div class="card">
+  <h2>3. R4 → R1 Canonical Payload Preview Gate</h2>
+  {% if payload_preview %}
+    <p><b>Status:</b> {{ payload_preview.status }} · <b>Channel write:</b> LOCKED / PREVIEW ONLY</p>
+    {% if payload_preview.blockers %}
+      <div class="warn"><b>BLOCKERS</b><ul>{% for x in payload_preview.blockers %}<li>{{ x }}</li>{% endfor %}</ul></div>
+    {% endif %}
+    {% if payload_preview.warnings %}
+      <div class="warn"><b>Warnings</b><ul>{% for x in payload_preview.warnings %}<li>{{ x }}</li>{% endfor %}</ul></div>
+    {% endif %}
+    {% if payload_preview.identifiers %}
+    <h3>Identifier governance</h3>
+    <table>
+      <tr><th>m99.eu product reference</th><td>{{ payload_preview.identifiers.channel_reference or "—" }}</td><td>PERMANENT M99 REFERENCE</td></tr>
+      <tr><th>Supplier reference</th><td>{{ payload_preview.identifiers.supplier_reference or "—" }}</td><td>SUPPLIER MAPPING ONLY</td></tr>
+      <tr><th>Manufacturer reference / MPN</th><td>{{ payload_preview.identifiers.manufacturer_reference or "—" }}</td><td>VERIFIED MANUFACTURER MPN ONLY</td></tr>
+    </table>
+    {% endif %}
+    {% if payload_preview.manufacturer %}
+    <h3>Manufacturer evidence</h3>
+    <p>{{ payload_preview.manufacturer.evidence_status }} · {{ payload_preview.manufacturer.official_product_url }}</p>
+    {% endif %}
+    {% if payload_preview.languages %}
+    <h3>m99.eu multilingual content</h3>
+    {% for code, doc in payload_preview.languages.items() %}
+      <details style="margin:8px 0"><summary><b>{{ code }}</b> — {{ doc.product_name }}</summary>
+        <p><b>H1:</b> {{ doc.h1 }}</p>
+        <p><b>Manufacturer MPN in specs:</b> {{ doc.manufacturer_reference_in_specs or "—" }}</p>
+        <p><b>Meta:</b> {{ doc.meta_description }}</p>
+        <p><b>Short:</b> {{ doc.short_description }}</p>
+      </details>
+    {% endfor %}
+    {% endif %}
+    {% if payload_preview.images %}<p><b>Images:</b> {{ payload_preview.images.count }}</p>{% endif %}
+    {% if payload_preview.variants %}<p><b>Variants:</b> {{ payload_preview.variants.groups }} groups / {{ payload_preview.variants.rows_count }} Color×Size rows</p>{% endif %}
+    {% if payload_preview.editorial_policy %}
+      <h3>Editorial / SEO policy</h3>
+      <p><b>{{ payload_preview.editorial_policy.policy_id }}</b> · {{ payload_preview.editorial_policy.status }} · model-assisted allowed · AI-detector evasion is NOT a target.</p>
+      <p>Required gates: {{ payload_preview.editorial_policy.required_quality_gates|join(", ") }}</p>
+    {% endif %}
+    <p><small>Durable R4 SHA256: {{ payload_preview.durable_sha256 or "—" }}</small></p>
+  {% else %}
+    <div class="warn">Canonical payload preview is unavailable.</div>
+  {% endif %}
+</div>
+
 <div class="card" style="background:#fff8df">
-  <h2>3. Controlled live write</h2>
-  <p>Target state: <code>active=1</code>, <code>visibility=none</code>, <code>available_for_order=0</code>.</p>
-  <form method="post" action="/operator-publish/m99eu/r1-final/publish"
-        onsubmit="return confirm('Това е реален write към m99.eu за точно един DRAFT продукт. Продължаваме ли?');">
-    <input type="hidden" name="job_id" value="{{ selected_job.id }}">
-    <label>m99.eu category ID
-      <input type="number" name="category_id" min="1" value="{{ default_category_id }}" style="width:140px;padding:8px">
-    </label>
-    <div style="margin-top:12px">
-      <label>Напиши точно <code>{{ confirmation }}</code><br>
-        <input type="text" name="confirmation" autocomplete="off" style="width:360px;padding:8px;margin-top:6px">
-      </label>
-    </div>
-    <button class="btn" type="submit" style="margin-top:14px">PUBLISH ONE CONTROLLED PRODUCT</button>
-  </form>
+  <h2>4. Controlled live write — LOCKED</h2>
+  <p>Live write is intentionally disabled in this revision. The next acceptance must prove that the PrestaShop adapter consumes this exact canonical preview without falling back to supplier prose or supplier reference as channel identity.</p>
+  <button class="btn" type="button" disabled>PUBLISH LOCKED — PREVIEW GATE FIRST</button>
 </div>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,170 @@
+{% extends "base.html" %}{% block content %}
+<h1>Phase 4.6 R3 — Manufacturer Intelligence + Canonical Content</h1>
+{% if saved %}<div class="pass">Manufacturer evidence и multilingual content bundle са записани в DRAFT snapshot.</div>{% endif %}
+
+<div class="card">
+  <h2>Runtime evidence contract</h2>
+  <p>Supplier context source: <b>{{ supplier_context_source or "—" }}</b></p>
+  {% if persistence %}
+  <p>DRAFT persistence carrier: <b>{{ persistence.persistence_carrier or "NONE IN CURRENT ORM" }}</b></p>
+  {% if not persistence.persistence_ready %}
+  <div class="warn">Current ImportJobItem has no mapped evidence carrier. R3 continues as READ / VERIFY / PREVIEW and does not fake durable persistence through an unmapped Python attribute.</div>
+  {% endif %}
+  {% endif %}
+</div>
+
+{% if persistence_result and not persistence_result.persisted %}
+<div class="warn">Exact Manufacturer evidence + Content bundle are generated for review but are not durably stored: {{ persistence_result.reason }}.</div>
+{% endif %}
+
+<div class="card">
+  <h2>1. Supplier evidence</h2>
+  <p><b>{{ supplier.name or supplier.title }}</b></p>
+  <p>Supplier reference: <b>{{ supplier.supplier_reference }}</b></p>
+  <p>Brand evidence: {{ supplier.brand or supplier.manufacturer_name or "—" }}</p>
+  <p>Supplier prose е evidence, не final customer content.</p>
+</div>
+
+<div class="card">
+  <h2>2. Manufacturer resolution</h2>
+
+  {% if manufacturer_source and manufacturer_source.status == "KNOWN" %}
+    <div class="pass">
+      Manufacturer: <b>{{ manufacturer_source.manufacturer_name }}</b>
+      · approved source match {{ manufacturer_source.match_score }}%
+    </div>
+    <p>Official site is taken automatically from the existing Manufacturer source:</p>
+    <p><a href="{{ manufacturer_source.official_site }}" target="_blank" rel="noopener">{{ manufacturer_source.official_site }}</a></p>
+  {% else %}
+    <div class="warn">
+      Manufacturer: <b>UNKNOWN</b>.
+      This is a valid state and does not block DRAFT creation or supplier-only work.
+    </div>
+    {% if manufacturer_source and manufacturer_source.manufacturer_name %}
+      <p>Unresolved supplier/brand evidence: <b>{{ manufacturer_source.manufacturer_name }}</b></p>
+    {% endif %}
+  {% endif %}
+
+  <p>
+    Manufacturer product code:
+    <b>{{ manufacturer_product_code.code or "UNKNOWN" }}</b>
+    {% if manufacturer_product_code.status %}
+      · {{ manufacturer_product_code.status }}
+    {% endif %}
+  </p>
+
+  <form method="post" action="/content-intelligence/discover">
+    <input type="hidden" name="job_id" value="{{ job.id }}">
+    <input type="hidden" name="source_uuid" value="{{ source_uuid }}">
+    <input type="hidden" name="product_url" value="{{ product_url }}">
+    <input type="hidden" name="target" value="{{ target }}">
+
+    {% if manufacturer_source and manufacturer_source.status == "KNOWN" %}
+      <input type="hidden" name="manufacturer_site_url" value="{{ manufacturer_source.official_site }}">
+      <button class="btn" type="submit">Намери точния продукт по code</button>
+    {% else %}
+      <p><b>Optional manual override</b> — попълва се само ако Manufacturer е UNKNOWN, но знаеш официалния сайт.</p>
+      <input style="width:100%" type="url" name="manufacturer_site_url" value="" placeholder="https://manufacturer.example">
+      <button class="btn" type="submit">Провери по ръчно зададен official site</button>
+    {% endif %}
+  </form>
+
+  {% if manufacturer_source and manufacturer_source.status == "KNOWN" %}
+  <details style="margin-top:12px">
+    <summary>Advanced: manual official-site override</summary>
+    <form method="post" action="/content-intelligence/discover" style="margin-top:10px">
+      <input type="hidden" name="job_id" value="{{ job.id }}">
+      <input type="hidden" name="source_uuid" value="{{ source_uuid }}">
+      <input type="hidden" name="product_url" value="{{ product_url }}">
+      <input type="hidden" name="target" value="{{ target }}">
+      <input style="width:100%" type="url" name="manufacturer_site_url" placeholder="https://manufacturer.example/product/...">
+      <button class="btn" type="submit">Провери manual override</button>
+    </form>
+  </details>
+  {% endif %}
+</div>
+
+{% if discovery_error %}
+<div class="warn"><b>Manufacturer discovery:</b> {{ discovery_error }}</div>
+{% endif %}
+
+{% if discovery %}
+<div class="card">
+  <h2>3. Manufacturer discovery</h2>
+  <p>Status: <b>{{ discovery.status }}</b> · checked pages: {{ discovery.pages_checked }}</p>
+  <p>Code used: <b>{{ discovery.manufacturer_product_code or discovery.supplier_reference or "UNKNOWN" }}</b></p>
+  {% if discovery.exact_candidate %}
+    {% set c=discovery.exact_candidate %}
+    <div class="pass">Exact-reference candidate found. Operator confirmation required.</div>
+    <p><b>{{ c.title }}</b></p>
+    <p><a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.url }}</a></p>
+    <p>Score {{ c.score }} · Images {{ c.images|length }} · Documents {{ c.documents|length }} · Tables {{ c.tables|length }}</p>
+    {% if c.images %}
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+      {% for image in c.images[:8] %}
+        <img src="{{ image }}" alt="Manufacturer evidence {{ loop.index }}" style="max-width:150px;max-height:150px;object-fit:contain">
+      {% endfor %}
+      </div>
+    {% endif %}
+    <form method="post" action="/content-intelligence/confirm">
+      <input type="hidden" name="job_id" value="{{ job.id }}">
+      <input type="hidden" name="source_uuid" value="{{ source_uuid }}">
+      <input type="hidden" name="product_url" value="{{ product_url }}">
+      <input type="hidden" name="target" value="{{ target }}">
+      <input type="hidden" name="manufacturer_site_url" value="{{ discovery.official_site }}">
+      <input type="hidden" name="manufacturer_page_url" value="{{ c.url }}">
+      <p>Напиши точно: <code>CONFIRM EXACT MANUFACTURER PRODUCT</code></p>
+      <input style="width:100%" name="confirmation" required>
+      <button class="btn" type="submit">Потвърди exact manufacturer evidence и създай content bundle</button>
+    </form>
+  {% else %}
+    <div class="warn">Exact reference не е намерен. Нищо не е одобрено или записано. DRAFT остава валиден.</div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if manufacturer %}
+<div class="card">
+  <h2>4. Confirmed manufacturer evidence</h2>
+  <p>Status <b>{{ manufacturer.status }}</b></p>
+  <p>Manufacturer code <b>{{ manufacturer.manufacturer_product_code or manufacturer.supplier_reference or "—" }}</b></p>
+  <p><a href="{{ manufacturer.official_product_url }}" target="_blank" rel="noopener">{{ manufacturer.official_product_url }}</a></p>
+  <p>Images {{ manufacturer.images|length }} · Documents {{ manufacturer.documents|length }} · Tables {{ manufacturer.tables|length }}</p>
+</div>
+{% endif %}
+
+{% if content and content.documents %}
+<div class="card">
+  <h2>5. Canonical Content / SEO / Languages</h2>
+  <p>Languages: <b>{{ content.languages|join(", ") }}</b></p>
+  {% for lang,doc in content.documents.items() %}
+  <div class="card">
+    <h2>{{ lang }} — {{ doc.h1 }}</h2>
+    <p><b>Meta Title:</b> {{ doc.meta_title }}</p>
+    <p><b>Meta Description (SEO snippet):</b> {{ doc.meta_description }}</p>
+    <p><b>Short Description (customer summary):</b> {{ doc.short_description }}</p>
+    <p><b>Meta↔Short similarity:</b> {{ doc.quality_metrics.meta_short_similarity }} · required &lt; 0.75</p>
+    <div>{{ doc.long_description_html|safe }}</div>
+    <h3>Technical specifications</h3>
+    <table>{% for row in doc.technical_specifications %}<tr><th>{{ row.name }}</th><td>{{ row.value }}</td></tr>{% endfor %}</table>
+    <p><b>SEO:</b> {{ doc.seo_keywords|join(", ") }}</p>
+    <p><b>ALT count:</b> {{ doc.image_alt|length }} · <b>Long words:</b> {{ doc.quality_metrics.long_description_words }} · <b>H2:</b> {{ doc.quality_metrics.h2_count }} · <b>H3:</b> {{ doc.quality_metrics.h3_count }}</p>
+    {% if doc.official_tables %}
+      <h3>Official manufacturer tables</h3>
+      {% for table in doc.official_tables %}<table><tr>{% for cell in table %}<td>{{ cell }}</td>{% endfor %}</tr></table>{% endfor %}
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="warn">{% if publish_review_url %}
+<section class="card" style="margin-top:16px;padding:20px;border:2px solid #2f6f44">
+  <h2>6. Durable DRAFT → Publish Review</h2>
+  <p><strong>READY:</strong> Confirmed Manufacturer evidence + Canonical Content are durably stored with checksum/readback.</p>
+  <p>This step does not publish. The next screen is the existing m99.eu controlled Publish Review.</p>
+  <a class="btn" href="{{ publish_review_url }}">Продължи към m99.eu Publish Review</a>
+</section>
+{% endif %}
+R3 е READ/VERIFY + DRAFT enrichment слой. Няма channel write.</div>
+{% endblock %}

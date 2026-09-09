@@ -97,4 +97,6 @@ def publish_product(
 
 # M99_PHASE46_R1_FINAL_INCLUDE
 from app.routers.phase46_r1_final_publish import router as phase46_r1_final_router
+from app.routers.phase46_r3_content_intelligence import router as phase46_r3_content_router
 router.include_router(phase46_r1_final_router)
+router.include_router(phase46_r3_content_router)
