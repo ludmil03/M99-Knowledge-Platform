@@ -13,6 +13,7 @@ from app.services.v073_phase45.palltex_public_connector import (
     PalltexPublicConnector,
     PalltexConnectorError,
 )
+from app.services.v073_phase46.calenda_runtime_governance import postprocess_calenda_hydrated
 from app.services.v073_phase45.calenda_public_connector import (
     CalendaPublicConnector,
     CalendaConnectorError,
@@ -182,7 +183,7 @@ def hydrate_product(source: SourceView, product_url: str):
     domain = normalize_domain(source.domain or source.base_url)
     if domain == "calenda.bg":
         try:
-            return CalendaPublicConnector(source.base_url).get_product(product_url)
+            return postprocess_calenda_hydrated(CalendaPublicConnector(source.base_url).get_product(product_url))
         except CalendaConnectorError as exc:
             raise SourceDiscoveryError(str(exc)) from exc
     if domain == "palltex.bg":

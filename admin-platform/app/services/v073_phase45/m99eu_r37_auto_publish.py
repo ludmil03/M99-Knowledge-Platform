@@ -9,9 +9,9 @@ from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from typing import Any, Iterable
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, object_session
 
-from app.models.entities import AuditLog, ImportJob, ImportJobItem, User
+from app.models.entities import AuditLog, ImportJob, ImportJobItem, Product, User
 from app.services.v073_phase45.m99eu_operator_single_publish import (
     Candidate,
     PublishSafetyError,
@@ -553,6 +553,22 @@ def canonical_reference_from_draft(*, job: ImportJob, item: ImportJobItem) -> st
         for raw in _iter_identity_values(context):
             if M99_REFERENCE_RE.fullmatch(raw):
                 candidates.add(raw)
+    if not candidates:
+        # R7E: a governed canonical Product linked by matched_product_id is a durable
+        # identity carrier. Supplier reference / MPN are never promoted to M99 identity.
+        session = None
+        try:
+            session = object_session(item)
+        except Exception:
+            # SAFE R2: non-ORM / detached / test-double objects are equivalent
+            # to "no attached Session" and must preserve the old safe BLOCK path.
+            session = None
+        matched_id = getattr(item, "matched_product_id", None)
+        if session is not None and matched_id:
+            linked = session.get(Product, int(matched_id))
+            linked_ref = str(getattr(linked, "m99_reference", "") or "").strip() if linked else ""
+            if M99_REFERENCE_RE.fullmatch(linked_ref):
+                candidates.add(linked_ref)
     if not candidates:
         raise AutoPublishError(
             "DRAFT does not expose a permanent canonical M99 reference. "

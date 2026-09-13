@@ -454,6 +454,12 @@ def _profile(s:dict,m:dict)->dict:
     manufacturer_ref=str(m.get("manufacturer_product_code") or "").strip() if (m.get("status")=="OPERATOR_CONFIRMED_EXACT" and m.get("manufacturer_product_code_status")=="VERIFIED_EXACT_REFERENCE") else ""
     p={"name":s.get("name") or s.get("title") or m.get("page_title") or "Product","supplier_reference":supplier_ref,"manufacturer_reference":manufacturer_ref,"reference":manufacturer_ref,"brand":s.get("brand") or "","images":list(dict.fromkeys([*list(m.get("images") or ()),*list(s.get("images") or ())])),"variants":s.get("variants") or [],"manufacturer_url":m.get("official_product_url") or ""}
     p["product_type"]="shirt" if any(x in low for x in ("shirt","koszula","риза","рубашка","cămaș","πουκάμισ")) else "product"
+    identity_text=(" ".join(str(x) for x in [p.get("name",""),s.get("name",""),s.get("title",""),m.get("page_title","")])).lower()
+    female_tokens=("women","woman","women's","damska","damskie","дамска","женск","femei","damă","γυναικ")
+    male_tokens=("men","man's","men's","męska","męskie","мъжк","мужск","bărba","ανδρ")
+    if any(x in identity_text for x in female_tokens):p["gender"]="female"
+    elif any(x in identity_text for x in male_tokens):p["gender"]="male"
+    else:p["gender"]="unisex"
     p["oxford"]="oxford" in low or "оксфорд" in low
     p["classic_cut"]=any(x in low for x in ("classic cut","klasyczny fason","класическа кройка","классический крой","croială clasic"))
     p["stiff_collar"]=any(x in low for x in ("stiffened stand-up collar","usztywniony kołnierzyk ze stójką","укрепленный воротник","усилена яка"))
@@ -487,8 +493,21 @@ COLOR_MAP={
  "небесно-син":{"BG":"Небесносин","EN":"Sky blue","RU":"Небесно-голубой","RO":"Albastru deschis","GR":"Γαλάζιο"}}
 def _localized_colors(p,lang):return list(dict.fromkeys(COLOR_MAP.get(str(c).strip().lower(),{}).get(lang,str(c)) for c in p.get("colors") or []))
 def _localized_title(p,lang):
-    brand=(p.get("brand") or "").strip(); model="RIVER" if "river" in p.get("name","").lower() else p.get("name","").strip(); prefix=(brand+" "+model).strip()
-    if p.get("product_type")=="shirt":return {"BG":f"Мъжка риза {prefix} от Oxford","EN":f"{prefix} Men's Oxford Shirt","RU":f"Мужская рубашка {prefix} из ткани Oxford","RO":f"Cămașă bărbătească {prefix} din Oxford","GR":f"Ανδρικό πουκάμισο {prefix} από Oxford"}[lang]
+    brand=(p.get("brand") or "").strip()
+    raw=(p.get("name") or "").strip()
+    model="RIVER" if "river" in raw.lower() else raw
+    prefix=(brand+" "+model).strip()
+    if p.get("product_type")=="shirt":
+        gender=p.get("gender") or "unisex"
+        if gender=="female":
+            label={"BG":"Дамска риза","EN":"Women's Shirt","RU":"Женская рубашка","RO":"Cămașă de damă","GR":"Γυναικείο πουκάμισο"}[lang]
+        elif gender=="male":
+            label={"BG":"Мъжка риза","EN":"Men's Shirt","RU":"Мужская рубашка","RO":"Cămașă bărbătească","GR":"Ανδρικό πουκάμισο"}[lang]
+        else:
+            label={"BG":"Риза","EN":"Shirt","RU":"Рубашка","RO":"Cămașă","GR":"Πουκάμισο"}[lang]
+        oxford={"BG":" от Oxford","EN":" Oxford","RU":" из ткани Oxford","RO":" din Oxford","GR":" από Oxford"}[lang] if p.get("oxford") else ""
+        if lang=="EN":return f"{prefix} {label}{oxford}".strip()
+        return f"{label} {prefix}{oxford}".strip()
     return prefix or p.get("name") or "Product"
 
 LEX={
@@ -584,6 +603,36 @@ def _content_similarity(a:str,b:str)->float:
     if not aa or not bb:return 0.0
     return SequenceMatcher(None,aa,bb).ratio()
 
+
+def _fallback_meta_description(p:dict,lang:str)->str:
+    title=_localized_title(p,lang)
+    sizes=", ".join(p.get("sizes") or [])
+    material=_material(p,lang)
+    if lang=="BG":
+        md=f"{title} – технически данни и потвърдени характеристики."
+        if sizes:md+=f" Размери: {sizes}."
+        if material:md+=f" Материал: {material}."
+    elif lang=="EN":
+        md=f"{title} – technical data and manufacturer-confirmed details."
+        if sizes:md+=f" Sizes: {sizes}."
+        if material:md+=f" Material: {material}."
+    elif lang=="RU":
+        md=f"{title} – технические данные и подтверждённые характеристики."
+        if sizes:md+=f" Размеры: {sizes}."
+        if material:md+=f" Материал: {material}."
+    elif lang=="RO":
+        md=f"{title} – date tehnice și caracteristici confirmate."
+        if sizes:md+=f" Mărimi: {sizes}."
+        if material:md+=f" Material: {material}."
+    elif lang=="GR":
+        md=f"{title} – τεχνικά στοιχεία και επιβεβαιωμένα χαρακτηριστικά."
+        if sizes:md+=f" Μεγέθη: {sizes}."
+        if material:md+=f" Υλικό: {material}."
+    else:
+        md=f"{title} – technical data and verified product details."
+    md=" ".join(md.split()).strip()
+    return md if len(md)<=160 else md[:157].rstrip(" ,.;:-")+"…"
+
 def _meta_description_for(p:dict,lang:str,short_description:str)->str:
     """SEO snippet, deliberately different in purpose and sentence shape from Short."""
     title=_localized_title(p,lang)
@@ -644,10 +693,13 @@ def _meta_description_for(p:dict,lang:str,short_description:str)->str:
     if len(md)>160:md=md[:157].rstrip(" ,.;:-")+"…"
 
     similarity=_content_similarity(md,short_description)
+    if _normalized_content_text(md)==_normalized_content_text(short_description) or similarity>=0.75:
+        md=_fallback_meta_description(p,lang)
+        similarity=_content_similarity(md,short_description)
     if _normalized_content_text(md)==_normalized_content_text(short_description):
-        raise ValueError(f"{lang} Meta Description duplicates Short Description.")
+        raise ValueError(f"{lang} Meta Description duplicates Short Description after generic fallback.")
     if similarity>=0.75:
-        raise ValueError(f"{lang} Meta Description / Short Description are too similar ({similarity:.3f} >= 0.750).")
+        raise ValueError(f"{lang} Meta Description / Short Description are too similar after generic fallback ({similarity:.3f} >= 0.750).")
     return md
 
 def _validate_meta_short_distinctness(documents:dict)->dict:

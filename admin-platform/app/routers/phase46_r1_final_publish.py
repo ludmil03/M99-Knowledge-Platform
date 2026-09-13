@@ -19,7 +19,12 @@ from app.services.v073_phase45.m99eu_r37_auto_publish import (
     supplier_product_from_draft_item,
 )
 from app.models.entities import ImportJobItem
+from app.services.v073_phase46.canonical_identity_allocator import CanonicalIdentityAllocationError, allocate_or_reuse_for_item
 from app.services.v073_phase46.r4_r1_canonical_payload_bridge import build_canonical_payload_preview
+from app.services.v073_phase46.canonical_live_pilot import CanonicalPilotError, CONFIRMATION as R7D_CONFIRMATION, publish_canonical_pilot
+from app.services.v073_phase46.secure_integration_settings import (
+    SecureSettingsError, effective_m99eu_credentials, public_m99eu_status, save_m99eu_settings, verify_m99eu_connection,
+)
 
 router = APIRouter(prefix="/r1-final", tags=["Phase 4.6 R1 FINAL"])
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parents[1] / "templates"))
@@ -60,6 +65,8 @@ def _job_snapshot(db: Session, job: ImportJob):
 def control_page(
     request: Request,
     job_id: int | None = None,
+    integration_saved: int | None = None,
+    integration_test: str | None = None,
     db: Session = Depends(get_db),
 ):
     user = _current_user(request, db)
@@ -97,11 +104,71 @@ def control_page(
             selected_items=selected_items,
             product=product,
             default_category_id=DEFAULT_CATEGORY_ID,
-            confirmation=R1_CONFIRMATION,
+            confirmation=R7D_CONFIRMATION,
             payload_preview=payload_preview,
+            integration_status=public_m99eu_status(),
+            integration_saved=bool(integration_saved),
+            integration_test=integration_test or "",
         ),
     )
 
+
+
+
+@router.post("/complete-identity")
+def complete_identity(
+    request: Request,
+    job_id: int = Form(...),
+    confirmation: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    user = _current_user(request, db)
+    if not user:
+        return RedirectResponse("/login", 303)
+    if not user.is_superuser:
+        raise HTTPException(403, "Canonical identity completion is Super Admin only.")
+    if str(confirmation or "").strip() != "CREATE PERMANENT M99 ID":
+        raise HTTPException(409, "Exact canonical identity confirmation text is required.")
+
+    job=db.get(ImportJob,int(job_id))
+    if not job:
+        raise HTTPException(404,"ImportJob not found.")
+    if str(getattr(job,"status","")).upper()!="DRAFT":
+        raise HTTPException(409,"Canonical identity may be completed only for a DRAFT ImportJob.")
+
+    items, selected_items, _product = _job_snapshot(db,job)
+    if len(selected_items)!=1:
+        raise HTTPException(409,f"Exactly one selected DRAFT item is required; found {len(selected_items)}.")
+    try:
+        result=allocate_or_reuse_for_item(db,item=selected_items[0])
+    except CanonicalIdentityAllocationError as exc:
+        raise HTTPException(409,str(exc))
+    return RedirectResponse(
+        url=f"/operator-publish/r1-final?job_id={int(job.id)}&identity_completed=1",
+        status_code=303,
+    )
+
+
+@router.post("/integration-settings/save")
+def save_integration_settings(request:Request,job_id:int|None=Form(None),api_key:str=Form(""),enabled:str|None=Form(None),db:Session=Depends(get_db)):
+    user=_current_user(request,db)
+    if not user:return RedirectResponse("/login",303)
+    if not user.is_superuser:raise HTTPException(403,"Integration Settings are Super Admin only.")
+    try:save_m99eu_settings(api_key=api_key,enabled=(enabled=="1"))
+    except SecureSettingsError as exc:raise HTTPException(409,str(exc))
+    q="?integration_saved=1"+(f"&job_id={int(job_id)}" if job_id else "")
+    return RedirectResponse("/operator-publish/r1-final"+q,303)
+
+@router.post("/integration-settings/verify")
+def verify_integration_settings(request:Request,job_id:int|None=Form(None),db:Session=Depends(get_db)):
+    user=_current_user(request,db)
+    if not user:return RedirectResponse("/login",303)
+    if not user.is_superuser:raise HTTPException(403,"Integration Settings are Super Admin only.")
+    try:
+        enabled,key,source=effective_m99eu_credentials();verify_m99eu_connection(key);result="ok"
+    except Exception:result="fail"
+    q=f"?integration_test={result}"+(f"&job_id={int(job_id)}" if job_id else "")
+    return RedirectResponse("/operator-publish/r1-final"+q,303)
 
 @router.post("/publish", response_class=HTMLResponse)
 def publish_one(
@@ -109,6 +176,7 @@ def publish_one(
     job_id: int = Form(...),
     category_id: int = Form(DEFAULT_CATEGORY_ID),
     confirmation: str = Form(""),
+    price_override: str = Form(""),
     db: Session = Depends(get_db),
 ):
     user = _current_user(request, db)
@@ -120,27 +188,22 @@ def publish_one(
     job = db.get(ImportJob, int(job_id))
     if not job:
         raise HTTPException(404, "ImportJob not found.")
-    raise HTTPException(
-        409,
-        "LIVE WRITE LOCKED: R4→R1 Canonical Payload Bridge is preview-only until separate payload-adapter acceptance."
-    )
-
     items, selected_items, product = _job_snapshot(db, job)
     try:
-        result = publish_existing_draft_job(
-            db,
-            user=user,
-            job=job,
-            category_id=category_id,
-            confirmation=confirmation,
+        if len(selected_items) != 1:
+            raise CanonicalPilotError(f"R7D requires exactly one selected item; found {len(selected_items)}.")
+        payload_preview = build_canonical_payload_preview(job=job, item=selected_items[0])
+        result = publish_canonical_pilot(
+            db, user=user, job=job, item=selected_items[0], preview=payload_preview,
+            category_id=category_id, price_override=price_override, confirmation=confirmation,
         )
         error = None
-    except AutoPublishError as exc:
+    except (CanonicalPilotError, AutoPublishError) as exc:
         result = None
         error = str(exc)
 
     return templates.TemplateResponse(
-        "operator_publish/phase46_r1_final_result.html",
+        "operator_publish/phase46_r7d_live_result.html",
         _ctx(
             request,
             db,

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R7D — m99.eu Canonical Pilot Result</h1>
+<div class="card">
+{% if publish_error %}
+  <div class="warn"><b>BLOCKED / FAILED SAFELY</b><p>{{ publish_error }}</p></div>
+{% else %}
+  <div class="pass"><b>LIVE WRITE VERIFIED</b></div>
+  <table>
+    <tr><th>Created</th><td>{{ publish_result.created }}</td></tr>
+    <tr><th>m99.eu Product ID</th><td>{{ publish_result.product_id }}</td></tr>
+    <tr><th>Permanent M99 reference</th><td>{{ publish_result.reference }}</td></tr>
+    <tr><th>Active</th><td>{{ publish_result.active }}</td></tr>
+    <tr><th>Available for order</th><td>{{ publish_result.available_for_order }}</td></tr>
+    <tr><th>Visibility</th><td>{{ publish_result.visibility }}</td></tr>
+    <tr><th>Category</th><td>{{ publish_result.category_id }}</td></tr>
+    <tr><th>Pilot price</th><td>{{ publish_result.price }}</td></tr>
+    <tr><th>Languages</th><td>{{ publish_result.languages|join(", ") }}</td></tr>
+    <tr><th>Images</th><td>{{ publish_result.image_upload_status }}</td></tr>
+    <tr><th>Correlation ID</th><td>{{ publish_result.correlation_id }}</td></tr>
+  </table>
+{% endif %}
+</div>
+<p><a class="btn" href="/operator-publish/r1-final?job_id={{ job.id }}">← Back to R7D control plane</a></p>
+{% endblock %}

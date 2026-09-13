@@ -46,9 +46,39 @@ def test_preview_requires_en_bg_ru_variants_images_and_v3_identifier_contract():
     assert "No canonical product image evidence" in s
     assert "identifier_governance" in s
 
-def test_live_publish_is_hard_locked_server_side_and_ui():
+def test_live_publish_is_governed_server_side_and_ui_monotonic_upgrade():
+    """R7F replaces env-only enablement with stronger integrated secure settings."""
     r=ROUTER.read_text(encoding="utf-8")
     t=TPL.read_text(encoding="utf-8")
-    assert "LIVE WRITE LOCKED: R4→R1 Canonical Payload Bridge is preview-only" in r
-    assert "PUBLISH LOCKED — PREVIEW GATE FIRST" in t
-    assert 'disabled' in t
+    s=(ADMIN/"app/services/v073_phase46/canonical_live_pilot.py").read_text(encoding="utf-8")
+    settings=(ADMIN/"app/services/v073_phase46/secure_integration_settings.py").read_text(encoding="utf-8")
+    for frag in (
+        "PUBLISH CANONICAL PILOT TO M99.EU",
+        "effective_m99eu_credentials()",
+        'str(confirmation or "").strip()!=CONFIRMATION',
+        'getattr(user,"is_superuser",False)',
+        'str(getattr(job,"status","")).upper()!="DRAFT"',
+        '"m99eu" not in requested or "m99eu" not in authorized',
+        "validate_preview(preview)",
+        "_find_existing",
+        "_readback",
+        'tag("active","0")',
+        'tag("available_for_order","0")',
+        'tag("visibility","none")',
+    ):
+        assert frag in s
+    for frag in (
+        "WINDOWS_DPAPI_CURRENT_USER",
+        "effective_m99eu_credentials",
+        "verify_m99eu_connection",
+        "LEGACY_ENV_FALLBACK",
+    ):
+        assert frag in settings
+    assert "payload_preview = build_canonical_payload_preview" in r
+    assert "publish_canonical_pilot" in r
+    assert "/integration-settings/save" in r
+    assert "/integration-settings/verify" in r
+    assert "M99 Integration Settings — m99.eu" in t
+    assert "PUBLISH ONE HIDDEN CANONICAL PILOT" in t
+    assert "PUBLISH BLOCKED — CANONICAL PREVIEW NOT READY" in t
+    assert "disabled" in t

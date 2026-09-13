@@ -7,6 +7,23 @@
   <p>Първият реален продукт е Super Admin only и остава скрит/non-orderable до отделна QA приемка.</p>
 </div>
 
+
+<div class="card" style="background:#f4fbf7;border:1px solid #c8e6d3">
+  <h2>0. M99 Integration Settings — m99.eu</h2>
+  <p>API key се въвежда <b>еднократно</b> и се пази криптирано чрез Windows DPAPI. Не се записва plaintext в source, Git, лог или audit.</p>
+  {% if integration_saved %}<div class="ok"><b>Saved.</b> Настройката е активна веднага — без restart.</div>{% endif %}
+  {% if integration_test == "ok" %}<div class="ok"><b>Connection test PASS.</b> m99.eu products schema е достъпна.</div>{% endif %}
+  {% if integration_test == "fail" %}<div class="warn"><b>Connection test FAILED.</b> Провери API key и Products permissions.</div>{% endif %}
+  <table><tr><th>API key</th><td>{{ "CONFIGURED" if integration_status.configured else "NOT CONFIGURED" }}</td></tr><tr><th>Publishing</th><td>{{ "ENABLED" if integration_status.enabled else "DISABLED" }}</td></tr><tr><th>Secret storage</th><td>{{ integration_status.secret_storage }}</td></tr><tr><th>Restart required</th><td>NO</td></tr></table>
+  <form method="post" action="/operator-publish/r1-final/integration-settings/save" style="margin-top:12px">
+    {% if selected_job %}<input type="hidden" name="job_id" value="{{ selected_job.id }}">{% endif %}
+    <label>m99.eu PrestaShop API key <input name="api_key" type="password" autocomplete="new-password" style="min-width:360px" placeholder="{{ 'Leave blank to keep stored key' if integration_status.configured else '32-character API key' }}"></label>
+    <label style="margin-left:16px"><input name="enabled" type="checkbox" value="1" {% if integration_status.enabled %}checked{% endif %}> Enable controlled m99.eu publishing</label>
+    <button class="btn" type="submit">SAVE IN M99</button>
+  </form>
+  <form method="post" action="/operator-publish/r1-final/integration-settings/verify" style="margin-top:10px">{% if selected_job %}<input type="hidden" name="job_id" value="{{ selected_job.id }}">{% endif %}<button class="btn" type="submit" {% if not integration_status.configured %}disabled{% endif %}>VERIFY m99.eu CONNECTION</button></form>
+</div>
+
 <div class="card">
   <h2>1. Избери DRAFT ImportJob</h2>
   {% if jobs %}
@@ -43,7 +60,7 @@
 <div class="card">
   <h2>3. R4 → R1 Canonical Payload Preview Gate</h2>
   {% if payload_preview %}
-    <p><b>Status:</b> {{ payload_preview.status }} · <b>Channel write:</b> LOCKED / PREVIEW ONLY</p>
+    <p><b>Status:</b> {{ payload_preview.status }} · <b>Channel write:</b> {% if payload_preview.ready %}READY FOR CONTROLLED R7D PILOT{% else %}BLOCKED{% endif %}</p>
     {% if payload_preview.blockers %}
       <div class="warn"><b>BLOCKERS</b><ul>{% for x in payload_preview.blockers %}<li>{{ x }}</li>{% endfor %}</ul></div>
     {% endif %}
@@ -86,10 +103,39 @@
   {% endif %}
 </div>
 
+
+<div class="card" style="background:#eef7ff">
+  <h2>3A. R7E — Permanent Canonical M99 Identity</h2>
+  <p>Ако blocker-ът е липсващ permanent canonical M99 reference, създай canonical Product и го свържи с избрания DRAFT item.</p>
+  <p><b>Supplier ref и Manufacturer MPN никога не стават M99 identity.</b></p>
+  {% if selected_items|length == 1 and not payload_preview.ready %}
+  <form method="post" action="/operator-publish/r1-final/complete-identity">
+    <input type="hidden" name="job_id" value="{{ selected_job.id }}">
+    <label>Exact confirmation
+      <input name="confirmation" type="text" style="min-width:340px" placeholder="CREATE PERMANENT M99 ID" required>
+    </label>
+    <button class="btn" type="submit">CREATE / REUSE PERMANENT M99 ID</button>
+  </form>
+  {% endif %}
+  <p><small>След успешна Identity стъпка, ако R4 durable enrichment още липсва, върни се в Manufacturer Intelligence и потвърди exact Manufacturer product отново.</small></p>
+</div>
+
 <div class="card" style="background:#fff8df">
-  <h2>4. Controlled live write — LOCKED</h2>
-  <p>Live write is intentionally disabled in this revision. The next acceptance must prove that the PrestaShop adapter consumes this exact canonical preview without falling back to supplier prose or supplier reference as channel identity.</p>
-  <button class="btn" type="button" disabled>PUBLISH LOCKED — PREVIEW GATE FIRST</button>
+  <h2>4. Controlled live write — R7D CANONICAL PILOT</h2>
+  <p>Това е реален write към m99.eu, но продуктът се създава <b>inactive, unavailable_for_order=0, visibility=none</b>. Каналният reference е само permanent M99 reference. Supplier reference и verified Manufacturer MPN остават отделни роли.</p>
+  <p><b>Първият R7D pilot не качва изображения.</b> Image evidence остава задължително за READY preview, но image upload ще е отделната контролирана стъпка след доказан product create/readback.</p>
+  {% if payload_preview.ready %}
+  <form method="post" action="/operator-publish/r1-final/publish">
+    <input type="hidden" name="job_id" value="{{ selected_job.id }}">
+    <label>m99.eu Category ID <input name="category_id" type="number" min="1" value="{{ default_category_id }}" required></label><br><br>
+    <label>Explicit pilot price <input name="price_override" type="text" placeholder="e.g. 49.90" required></label>
+    <p><small>Цената е изрично операторско решение за pilot-а и се записва в audit като OPERATOR_EXPLICIT_PILOT_PRICE.</small></p>
+    <label>Exact confirmation <input name="confirmation" type="text" style="min-width:420px" placeholder="{{ confirmation }}" required></label><br><br>
+    <button class="btn" type="submit">PUBLISH ONE HIDDEN CANONICAL PILOT</button>
+  </form>
+  {% else %}
+    <button class="btn" type="button" disabled>PUBLISH BLOCKED — CANONICAL PREVIEW NOT READY</button>
+  {% endif %}
 </div>
 {% endif %}
 {% endblock %}
