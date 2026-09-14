@@ -28,7 +28,7 @@ API_KEY_ENV = "M99EU_API_KEY"
 CATEGORY_ENV = "M99EU_CATEGORY_ID"
 
 R1_CONFIRMATION = "PUBLISH ONE PRODUCT"
-M99_REFERENCE_RE = re.compile(r"^M99-[0-9]+$")
+M99_REFERENCE_RE = re.compile(r"^(?:M99 [0-9]{6}|M99-[0-9]+)$")
 
 # R1 FINAL proves a real channel write without exposing the pilot to customers.
 PILOT_ACTIVE = "1"
@@ -175,7 +175,7 @@ def candidate_from_supplier_product(
 ) -> Candidate:
     if not M99_REFERENCE_RE.fullmatch(str(canonical_reference or "").strip()):
         raise AutoPublishError(
-            "Permanent canonical M99 reference is missing or invalid; expected M99- + digits."
+            "Permanent canonical M99 reference is missing or invalid; expected governed M99 identity (normative: M99 + space + six digits)."
         )
 
     title = str(

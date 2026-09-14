@@ -1,5 +1,5 @@
 from __future__ import annotations
-import hashlib, json, os, tempfile
+import hashlib, json, os, tempfile, re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -43,3 +43,57 @@ def load(job_id:int)->dict:
     sha=obj.pop("payload_sha256",""); calc=hashlib.sha256(_canon(obj)).hexdigest(); obj["payload_sha256"]=sha
     if sha!=calc:raise RuntimeError("Durable enrichment checksum mismatch")
     return obj
+
+
+def find_confirmed_exact(*,supplier_reference:str,target:str,product_url:str="")->dict:
+    """Find the newest checksum-verified confirmed enrichment for the exact supplier product.
+
+    Cross-job reuse is deliberately narrow: exact supplier reference + exact target and,
+    when both sides provide it, exact supplier product URL. It never performs fuzzy matching,
+    brand-wide inference, or Supplier == Manufacturer inference.
+    """
+    ref=str(supplier_reference or "").strip()
+    tgt=str(target or "").strip()
+    url=str(product_url or "").strip().rstrip("/")
+    if not ref or not tgt:
+        return {}
+
+    candidates=[]
+    for p in _root().glob("job-*.json"):
+        m=re.fullmatch(r"job-(\d+)\.json",p.name)
+        if not m:
+            continue
+        try:
+            obj=load(int(m.group(1)))
+        except Exception:
+            # A corrupt sidecar must never become reusable evidence.
+            continue
+
+        if str(obj.get("supplier_reference") or "").strip()!=ref:
+            continue
+        if str(obj.get("target") or "").strip()!=tgt:
+            continue
+
+        stored_supplier=dict(obj.get("supplier_evidence") or {})
+        stored_url=str(stored_supplier.get("url") or "").strip().rstrip("/")
+        if url and stored_url and url!=stored_url:
+            continue
+
+        manufacturer=dict(obj.get("manufacturer_evidence") or {})
+        content=dict(obj.get("content_bundle") or {})
+        if manufacturer.get("status") not in {"OPERATOR_CONFIRMED_EXACT","CONFIRMED_EXACT"}:
+            continue
+        if not content.get("documents"):
+            continue
+
+        candidates.append(obj)
+
+    if not candidates:
+        return {}
+
+    # ISO-8601 UTC strings sort chronologically. Fall back to job id for legacy records.
+    candidates.sort(
+        key=lambda x:(str(x.get("confirmed_at_utc") or ""),int(x.get("job_id") or 0)),
+        reverse=True,
+    )
+    return candidates[0]

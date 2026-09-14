@@ -10,7 +10,7 @@ ENABLE_ENV="M99EU_CANONICAL_PILOT_ENABLED"
 API_KEY_ENV="M99EU_API_KEY"
 CONFIRMATION="PUBLISH CANONICAL PILOT TO M99.EU"
 REQUIRED_LANGS=("EN","BG","RU")
-M99_RE=re.compile(r"^M99-[0-9]+$")
+M99_RE=re.compile(r"^(?:M99 [0-9]{6}|M99-[0-9]+)$")
 
 class CanonicalPilotError(RuntimeError):pass
 
@@ -28,6 +28,8 @@ class CanonicalPilotResult:
     price:str
     languages:tuple[str,...]
     image_upload_status:str="NOT_IN_R7D_PILOT"
+    api_truth_verified:bool=False
+    truth_summary:str=""
 
 def _money(raw:Any)->str:
     s=str(raw or "").strip().replace(",",".")
@@ -156,7 +158,11 @@ def publish_canonical_pilot(db,*,user,job,item,preview:dict,category_id:int,pric
         if state.get(k)!=v:raise CanonicalPilotError(f"Readback mismatch {k}: expected {v!r}, got {state.get(k)!r}")
     mref=str(preview["identifiers"].get("manufacturer_reference") or "")
     if "mpn" in fields and mref and state.get("mpn")!=mref:raise CanonicalPilotError("Readback Manufacturer MPN mismatch.")
+    from app.services.v073_phase46.live_product_truth_verifier import verify_product_truth
+    truth=verify_product_truth(api_key,product_id=pid,reference=ref,expected_category_id=category_id,expected_price=p,require_hidden=True)
+    truth_summary="; ".join(truth.blockers) if truth.blockers else ", ".join(truth.evidence)
     from app.models.entities import AuditLog
-    details={"canonical_reference":ref,"supplier_reference":preview["identifiers"].get("supplier_reference") or "","manufacturer_mpn":mref,"channel_product_id":str(pid),"category_id":str(category_id),"price":p,"price_source":"OPERATOR_EXPLICIT_PILOT_PRICE","created":created,"active":"0","available_for_order":"0","visibility":"none","languages":[iso for _,iso in active],"image_upload_status":"NOT_IN_R7D_PILOT","correlation_id":corr,"credential_source":credential_source,"secret_logged":False}
-    db.add(AuditLog(user_id=int(user.id),action="PHASE46_R7D_CANONICAL_PILOT_PUBLISH_M99EU",entity_type="ImportJob",entity_id=str(job.id),result="OK",details=json.dumps(details,ensure_ascii=False,sort_keys=True)));db.commit()
-    return CanonicalPilotResult(created,str(pid),ref,state["active"],state["available_for_order"],state["visibility"],state["id_category_default"],str(http),corr,p,tuple(iso for _,iso in active))
+    details={"canonical_reference":ref,"supplier_reference":preview["identifiers"].get("supplier_reference") or "","manufacturer_mpn":mref,"channel_product_id":str(pid),"category_id":str(category_id),"price":p,"price_source":"OPERATOR_EXPLICIT_PILOT_PRICE","created":created,"active":"0","available_for_order":"0","visibility":"none","languages":[iso for _,iso in active],"image_upload_status":"NOT_IN_R7D_PILOT","correlation_id":corr,"credential_source":credential_source,"secret_logged":False,"api_truth_verified":truth.verified,"truth_evidence":list(truth.evidence),"truth_blockers":list(truth.blockers),"id_shop_default":truth.id_shop_default}
+    audit_result="OK" if truth.verified else "NOT_VERIFIED"
+    db.add(AuditLog(user_id=int(user.id),action="PHASE46_R7G_CANONICAL_PILOT_TRUTH_M99EU",entity_type="ImportJob",entity_id=str(job.id),result=audit_result,details=json.dumps(details,ensure_ascii=False,sort_keys=True)));db.commit()
+    return CanonicalPilotResult(created,str(pid),ref,state["active"],state["available_for_order"],state["visibility"],state["id_category_default"],str(http),corr,p,tuple(iso for _,iso in active),api_truth_verified=truth.verified,truth_summary=truth_summary)

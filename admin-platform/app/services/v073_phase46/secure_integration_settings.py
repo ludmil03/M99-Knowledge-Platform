@@ -1,9 +1,10 @@
 from __future__ import annotations
 import base64,ctypes,json,os,re,tempfile
+from urllib.parse import urlparse
 from ctypes import wintypes
 from pathlib import Path
 from typing import Callable
-INTEGRATION_ID="m99eu";KEY_RE=re.compile(r"^[A-Za-z0-9]{32}$");SCHEMA="m99.integrations.secure_settings.v2"
+INTEGRATION_ID="m99eu";KEY_RE=re.compile(r"^[A-Za-z0-9]{32}$");SCHEMA="m99.integrations.secure_settings.v3"
 class SecureSettingsError(RuntimeError):pass
 class DATA_BLOB(ctypes.Structure):_fields_=[("cbData",wintypes.DWORD),("pbData",ctypes.POINTER(ctypes.c_byte))]
 def _blob(data:bytes):
@@ -43,13 +44,32 @@ def _read_raw(repo_root=None):
  except Exception as e:raise SecureSettingsError("Stored m99.eu integration settings are unreadable.") from e
  if not isinstance(d,dict):raise SecureSettingsError("Stored m99.eu integration settings have invalid structure.")
  return d
-def save_m99eu_settings(*,api_key,enabled,repo_root=None,protect:Callable[[bytes],bytes]|None=None):
- protect=protect or _dpapi_protect;cur=_read_raw(repo_root);key=str(api_key or "").strip();enc=str(cur.get("api_key_dpapi_b64") or "")
+def _normalize_back_office_template(raw:str)->str:
+ value=str(raw or "").strip()
+ if not value:return ""
+ u=urlparse(value)
+ if u.scheme!="https" or (u.hostname or "").lower()!="m99.eu":
+  raise SecureSettingsError("Back Office URL must be an https://m99.eu URL.")
+ path=u.path.rstrip("/")
+ m=re.match(r"^(?P<admin>/[^/]+)/sell/catalog/products/(?P<id>\d+|\{id\})/edit$",path)
+ if not m:
+  raise SecureSettingsError("Paste a real m99.eu product EDIT URL ending in /sell/catalog/products/<id>/edit.")
+ admin=m.group("admin")
+ if not re.fullmatch(r"/[A-Za-z0-9_-]{6,128}",admin):
+  raise SecureSettingsError("Back Office admin path is not valid.")
+ return f"https://m99.eu{admin}/sell/catalog/products/{{id}}/edit"
+
+def save_m99eu_settings(*,api_key,enabled,back_office_url="",repo_root=None,protect:Callable[[bytes],bytes]|None=None):
+ protect=protect or _dpapi_protect;cur=_read_raw(repo_root);key=str(api_key or "").strip();enc=str(cur.get("api_key_dpapi_b64") or "");bo_enc=str(cur.get("back_office_url_dpapi_b64") or "")
  if key:
   if not KEY_RE.fullmatch(key):raise SecureSettingsError("PrestaShop API key must be exactly 32 letters/digits.")
   enc=base64.b64encode(protect(key.encode())).decode("ascii")
+ bo_raw=str(back_office_url or "").strip()
+ if bo_raw:
+  bo_template=_normalize_back_office_template(bo_raw)
+  bo_enc=base64.b64encode(protect(bo_template.encode())).decode("ascii")
  if not enc:raise SecureSettingsError("Enter the API key once before enabling m99.eu publishing.")
- rec={"schema":SCHEMA,"integration_id":INTEGRATION_ID,"enabled":bool(enabled),"api_key_dpapi_b64":enc,"secret_storage":"WINDOWS_DPAPI_CURRENT_USER"}
+ rec={"schema":SCHEMA,"integration_id":INTEGRATION_ID,"enabled":bool(enabled),"api_key_dpapi_b64":enc,"back_office_url_dpapi_b64":bo_enc,"secret_storage":"WINDOWS_DPAPI_CURRENT_USER"}
  _atomic_write(settings_path(repo_root),json.dumps(rec,ensure_ascii=False,indent=2,sort_keys=True));return public_m99eu_status(repo_root=repo_root)
 def load_m99eu_secret(*,repo_root=None,unprotect:Callable[[bytes],bytes]|None=None):
  unprotect=unprotect or _dpapi_unprotect;d=_read_raw(repo_root);enc=str(d.get("api_key_dpapi_b64") or "")
@@ -58,8 +78,21 @@ def load_m99eu_secret(*,repo_root=None,unprotect:Callable[[bytes],bytes]|None=No
  except Exception as e:raise SecureSettingsError("Stored m99.eu API key could not be decrypted for this Windows user.") from e
  if not KEY_RE.fullmatch(key):raise SecureSettingsError("Stored m99.eu API key has invalid format.")
  return key
+def load_back_office_template(*,repo_root=None,unprotect:Callable[[bytes],bytes]|None=None):
+ unprotect=unprotect or _dpapi_unprotect;d=_read_raw(repo_root);enc=str(d.get("back_office_url_dpapi_b64") or "")
+ if not enc:return ""
+ try:value=unprotect(base64.b64decode(enc.encode("ascii"),validate=True)).decode().strip()
+ except Exception as e:raise SecureSettingsError("Stored m99.eu Back Office URL could not be decrypted for this Windows user.") from e
+ return _normalize_back_office_template(value)
+
+def back_office_product_url(product_id,*,repo_root=None,unprotect:Callable[[bytes],bytes]|None=None):
+ pid=str(product_id or "").strip()
+ if not pid.isdigit() or int(pid)<=0:return ""
+ template=load_back_office_template(repo_root=repo_root,unprotect=unprotect)
+ return template.replace("{id}",str(int(pid))) if template else ""
+
 def public_m99eu_status(*,repo_root=None):
- d=_read_raw(repo_root);return {"configured":bool(d.get("api_key_dpapi_b64")),"enabled":bool(d.get("enabled",False)),"secret_storage":str(d.get("secret_storage") or "NOT_CONFIGURED"),"masked_api_key":"••••••••••••••••••••••••••••••••" if d.get("api_key_dpapi_b64") else "","restart_required":False}
+ d=_read_raw(repo_root);return {"configured":bool(d.get("api_key_dpapi_b64")),"enabled":bool(d.get("enabled",False)),"back_office_configured":bool(d.get("back_office_url_dpapi_b64")),"secret_storage":str(d.get("secret_storage") or "NOT_CONFIGURED"),"masked_api_key":"••••••••••••••••••••••••••••••••" if d.get("api_key_dpapi_b64") else "","restart_required":False}
 def effective_m99eu_credentials(*,repo_root=None):
  st=public_m99eu_status(repo_root=repo_root)
  if st["configured"]:return bool(st["enabled"]),load_m99eu_secret(repo_root=repo_root),"M99_SECURE_SETTINGS"

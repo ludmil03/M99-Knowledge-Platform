@@ -448,12 +448,29 @@ def fetch_exact_manufacturer_evidence(*,manufacturer_site_url:str,manufacturer_p
     if not c.exact_reference:raise ValueError("Selected manufacturer page does not contain the exact reference.")
     return {"schema":"m99.phase46.r3.manufacturer_evidence.v1","status":"OPERATOR_CONFIRMED_EXACT","official_site":site,"official_product_url":c.url,"supplier_reference":supplier_reference,"manufacturer_product_code":supplier_reference,"manufacturer_product_code_status":"VERIFIED_EXACT_REFERENCE","page_title":c.title,"meta_description":c.meta_description,"images":list(c.images),"documents":list(c.documents),"tables":[list(x) for x in c.tables],"text_excerpt":c.text_excerpt,"provenance":{"source_class":"OFFICIAL_MANUFACTURER_PUBLIC_WEBSITE","match_basis":"EXACT_REFERENCE"}}
 
+def _clean_inline(value)->str:
+    text=str(value or "")
+    text=re.sub(r"<\s*br\s*/?\s*>", " ", text, flags=re.I)
+    text=re.sub(r"<[^>]+>", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
 def _profile(s:dict,m:dict)->dict:
     text=" ".join(str(x) for x in [s.get("description",""),m.get("page_title",""),m.get("meta_description",""),m.get("text_excerpt","")]+[" | ".join(map(str,list(r or ()))) for r in list(m.get("tables") or ())]); low=text.lower()
     supplier_ref=str(s.get("supplier_reference") or "").strip()
     manufacturer_ref=str(m.get("manufacturer_product_code") or "").strip() if (m.get("status")=="OPERATOR_CONFIRMED_EXACT" and m.get("manufacturer_product_code_status")=="VERIFIED_EXACT_REFERENCE") else ""
-    p={"name":s.get("name") or s.get("title") or m.get("page_title") or "Product","supplier_reference":supplier_ref,"manufacturer_reference":manufacturer_ref,"reference":manufacturer_ref,"brand":s.get("brand") or "","images":list(dict.fromkeys([*list(m.get("images") or ()),*list(s.get("images") or ())])),"variants":s.get("variants") or [],"manufacturer_url":m.get("official_product_url") or ""}
-    p["product_type"]="shirt" if any(x in low for x in ("shirt","koszula","риза","рубашка","cămaș","πουκάμισ")) else "product"
+    p={"name":_clean_inline(s.get("name") or s.get("title") or m.get("page_title") or "Product"),"supplier_reference":supplier_ref,"manufacturer_reference":manufacturer_ref,"reference":manufacturer_ref,"brand":s.get("brand") or "","images":list(dict.fromkeys([*list(m.get("images") or ()),*list(s.get("images") or ())])),"variants":s.get("variants") or [],"manufacturer_url":m.get("official_product_url") or ""}
+    # Product identity is determined from the exact product title/name first.
+    # Long supplier/manufacturer prose may mention other garment types (for example
+    # cross-selling text) and must never turn trousers into a shirt.
+    identity_low=(" ".join(str(x) for x in [p.get("name",""),s.get("name",""),s.get("title",""),m.get("page_title","")])).lower()
+    trousers_tokens=("панталон","trouser","trousers","pants","брюк","брюки")
+    shirt_tokens=("shirt","koszula","риза","рубашка","cămaș","πουκάμισ")
+    if any(x in identity_low for x in trousers_tokens):
+        p["product_type"]="trousers"
+    elif any(x in identity_low for x in shirt_tokens):
+        p["product_type"]="shirt"
+    else:
+        p["product_type"]="product"
     identity_text=(" ".join(str(x) for x in [p.get("name",""),s.get("name",""),s.get("title",""),m.get("page_title","")])).lower()
     female_tokens=("women","woman","women's","damska","damskie","дамска","женск","femei","damă","γυναικ")
     male_tokens=("men","man's","men's","męska","męskie","мъжк","мужск","bărba","ανδρ")
@@ -570,6 +587,16 @@ def _faq(p,lang):
 
 def _section_texts(p,lang):
     title=_localized_title(p,lang); mat=_material(p,lang); colors=", ".join(_localized_colors(p,lang)); sizes=", ".join(p.get("sizes") or []); methods=", ".join(p.get("branding_methods") or [])
+    if p.get("product_type") != "shirt":
+        ref=p.get("reference") or "—"
+        if lang=="BG":
+            return [("Преглед на продукта",f"{title} е представен чрез проверени данни за точния модел {ref}. Информацията е структурирана за избор и сравнение, без неподкрепени твърдения."),("Материал и конструкция",f"{('Потвърден материал: '+mat+'.') if mat else 'Материалът се публикува само когато е потвърден от evidence.'}"),("Функционални детайли","Функционалните характеристики се включват само когато са потвърдени от доставчик или производител за точния модел."),("Размери и цветове",f"Проверени размери: {sizes or 'според variant evidence'}. Проверени цветове: {colors or 'според variant evidence'}. Supplier availability не е M99 physical stock."),("Идентификация и проследимост",f"Код на производителя / MPN: {ref}. Supplier reference и Manufacturer MPN остават отделни управлявани роли."),("Проверена информация","M99 използва evidence-first подход: съдържанието се извежда от проверени факти и се блокира при несъответствие с типа на продукта.")]
+        if lang=="EN":
+            return [("Product overview",f"{title} is presented from verified evidence for exact model {ref}. Information is structured for comparison without unsupported claims."),("Material and construction",f"{('Verified material: '+mat+'.') if mat else 'Material is published only when supported by evidence.'}"),("Practical details","Functional characteristics are included only when verified for the exact product."),("Sizes and colours",f"Verified sizes: {sizes or 'from variant evidence'}. Verified colours: {colors or 'from variant evidence'}. Supplier availability is not M99 physical stock."),("Identity and traceability",f"Manufacturer reference / MPN: {ref}. Supplier reference and Manufacturer MPN remain separate governed roles."),("Evidence-first information","M99 derives customer content from verified facts and blocks product-type inconsistencies before publishing.")]
+        if lang=="RU":
+            return [("Обзор товара",f"{title}: информация основана на проверенных данных для точной модели {ref}."),("Материал и конструкция",f"{('Подтверждённый материал: '+mat+'.') if mat else 'Материал публикуется только при наличии подтверждающих данных.'}"),("Функциональные детали","Характеристики включаются только при подтверждении для точной модели."),("Размеры и цвета",f"Проверенные размеры: {sizes or 'из variant evidence'}. Проверенные цвета: {colors or 'из variant evidence'}. Наличие поставщика не является физическим складом M99."),("Идентификация",f"Код производителя / MPN: {ref}. Роли supplier reference и Manufacturer MPN остаются раздельными."),("Проверенные данные","M99 блокирует несоответствия типа товара до публикации.")]
+        base=_summary(p,lang)
+        return [(LEX[lang]["overview"],base),(LEX[lang]["construction"],base),(LEX[lang]["details"],base),(LEX[lang]["variants"],f"{LEX[lang]['sizes']}: {sizes}; {LEX[lang]['colors']}: {colors}"),(LEX[lang]["technical"],base),(LEX[lang]["buyer"],base)]
     if lang=="BG":return [
       ("Риза за професионална визия и ежедневно носене",f"{title} е мъжка риза с класическа линия, описана чрез проверени данни от доставчика и официалния източник на производителя. Страницата пази код {p.get('reference') or '—'} видим, за да може клиентът да провери точния модел, а информацията е подредена за бързо сравнение на материал, размер, цвят и детайли."),
       ("Oxford материя, състав и плътност",f"Официалните данни посочват {mat or 'Oxford материя'}"+(f" и плътност {p['weight_gsm']} g/m²" if p.get('weight_gsm') else "")+". Тези характеристики са отделени и в техническата таблица, за да не се губят в маркетингов текст. M99 не добавя материал, сертификат или техническо твърдение, което не е подкрепено от evidence."),

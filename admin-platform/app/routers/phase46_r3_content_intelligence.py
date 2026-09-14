@@ -17,6 +17,10 @@ from app.services.v073_phase46.content_manufacturer_intelligence import (
     fetch_exact_manufacturer_evidence,
     persist_confirmed_enrichment,
 )
+from app.services.v073_phase46.durable_draft_enrichment import (
+    load as load_durable_enrichment,
+    find_confirmed_exact as find_cross_job_confirmed_enrichment,
+)
 
 router=APIRouter(prefix="/content-intelligence",tags=["Phase 4.6 R3 Content Intelligence"])
 templates=Jinja2Templates(directory=str(Path(__file__).resolve().parents[1]/"templates"))
@@ -42,7 +46,7 @@ def _ctx(request,db,user,**kw):
 
 def _review_context(c,*,request,db,user,job,target,source_uuid,product_url,discovery=None,
                     discovery_error="",content=None,manufacturer=None,saved=False,persistence_result=None,
-                    publish_review_url=""):
+                    publish_review_url="",durable_readback=None):
     return _ctx(
         request,db,user,
         job=job,target=target,source_uuid=source_uuid,product_url=product_url,
@@ -58,7 +62,68 @@ def _review_context(c,*,request,db,user,job,target,source_uuid,product_url,disco
         supplier_context_source=c.get("supplier_context_source"),
         persistence=c.get("persistence"),
         publish_review_url=publish_review_url,
+        durable_readback=durable_readback or {},
     )
+
+
+def _verified_durable_readback(c:dict, *, job_id:int, target:str, product_url:str)->dict:
+    """Resolve checksum-verified durable manufacturer/content evidence.
+
+    Priority:
+      1) exact sidecar for this job;
+      2) newest exact cross-job match for the same supplier product.
+
+    Cross-job matching is intentionally exact and fail-closed.
+    """
+    current_supplier=dict(c.get("supplier_evidence") or {})
+    current_ref=str(current_supplier.get("supplier_reference") or "").strip()
+    current_url=str(current_supplier.get("url") or product_url or "").strip().rstrip("/")
+    if not current_ref:
+        return {}
+
+    stored=load_durable_enrichment(int(job_id))
+    source_mode="SAME_JOB"
+    if not stored:
+        stored=find_cross_job_confirmed_enrichment(
+            supplier_reference=current_ref,
+            target=target,
+            product_url=current_url,
+        )
+        source_mode="CROSS_JOB_EXACT"
+    if not stored:
+        return {}
+
+    if str(stored.get("target") or "").strip()!=str(target or "").strip():
+        raise RuntimeError("Durable readback target mismatch.")
+
+    stored_ref=str(stored.get("supplier_reference") or "").strip()
+    if stored_ref!=current_ref:
+        raise RuntimeError("Durable readback supplier-reference mismatch.")
+
+    stored_supplier=dict(stored.get("supplier_evidence") or {})
+    stored_url=str(stored_supplier.get("url") or "").strip().rstrip("/")
+    if current_url and stored_url and current_url!=stored_url:
+        raise RuntimeError("Durable readback supplier-product URL mismatch.")
+
+    manufacturer=dict(stored.get("manufacturer_evidence") or {})
+    content=dict(stored.get("content_bundle") or {})
+    if manufacturer.get("status") not in {"OPERATOR_CONFIRMED_EXACT","CONFIRMED_EXACT"}:
+        raise RuntimeError("Durable manufacturer evidence is not in an accepted confirmed state.")
+    if not content.get("documents"):
+        raise RuntimeError("Durable content bundle is incomplete.")
+
+    return {
+        "verified":True,
+        "source_mode":source_mode,
+        "source_job_id":int(stored.get("job_id") or 0),
+        "schema":stored.get("schema"),
+        "payload_sha256":stored.get("payload_sha256"),
+        "confirmed_at_utc":stored.get("confirmed_at_utc"),
+        "manufacturer_evidence":manufacturer,
+        "content_bundle":content,
+        "supplier_reference":stored_ref,
+        "target":stored.get("target"),
+    }
 
 @router.get("/review",response_class=HTMLResponse)
 def review(request:Request,job_id:int,source_uuid:str,product_url:str,target:str="m99eu",saved:int=0,db:Session=Depends(get_db)):
@@ -68,18 +133,51 @@ def review(request:Request,job_id:int,source_uuid:str,product_url:str,target:str
     c=draft_context(db,job_id,source_uuid,product_url)
     manufacturer=c["manufacturer_evidence"]
     content=c["content_enrichment"]
-    if manufacturer and not content:
+    durable={}
+    readback_error=""
+    try:
+        durable=_verified_durable_readback(
+            c,job_id=job_id,target=target,product_url=product_url,
+        )
+    except Exception as exc:
+        # Fail closed: a broken/mismatched durable sidecar is never silently trusted.
+        readback_error=f"Durable manufacturer readback blocked safely: {exc}"
+
+    if durable:
+        manufacturer=durable["manufacturer_evidence"]
+        # Durable evidence is authoritative, but customer-facing content is
+        # derived with the current generator so accepted cross-job evidence
+        # cannot keep stale semantic boilerplate or raw supplier HTML.
         content=build_content_bundle(
             supplier_evidence=c["supplier_evidence"],
             manufacturer_evidence=manufacturer,
             target_code=target,
         )
+    elif manufacturer and not content:
+        content=build_content_bundle(
+            supplier_evidence=c["supplier_evidence"],
+            manufacturer_evidence=manufacturer,
+            target_code=target,
+        )
+
     return templates.TemplateResponse(
         "content_intelligence/review.html",
         _review_context(
             c,request=request,db=db,user=user,job=job,target=target,
             source_uuid=source_uuid,product_url=product_url,
-            content=content,saved=bool(saved),
+            manufacturer=manufacturer,content=content,
+            saved=bool(saved or durable),
+            persistence_result=(
+                {"persisted":True,"reason":"DURABLE_READBACK_VERIFIED",
+                 "payload_sha256":durable.get("payload_sha256")}
+                if durable else None
+            ),
+            publish_review_url=(
+                f"/content-intelligence/publish-handoff?job_id={int(job_id)}"
+                if durable else ""
+            ),
+            durable_readback=durable,
+            discovery_error=readback_error,
         ),
     )
 
@@ -244,6 +342,109 @@ def confirm(
                 publish_review_url="",
             ),
         )
+
+
+@router.post("/confirm-palltex-bwolf-brand-owner", response_class=HTMLResponse)
+def confirm_palltex_bwolf_brand_owner(
+    request:Request,
+    job_id:int=Form(...),
+    source_uuid:str=Form(...),
+    product_url:str=Form(...),
+    target:str=Form("m99eu"),
+    confirmation:str=Form(...),
+    db:Session=Depends(get_db),
+):
+    """R7K.2 controlled exception: Palltex is both Supplier and Manufacturer/Brand owner for BWOLF.
+
+    This is an explicit Super Admin assertion for this organization/brand relation only.
+    It does NOT introduce a global Supplier == Manufacturer rule.
+    The Palltex product page remains the exact official product evidence page.
+    """
+    user,job=_auth(request,db,job_id)
+    if not user:
+        return RedirectResponse("/login",303)
+    if not user.is_superuser:
+        raise HTTPException(403,"Palltex/BWOLF manufacturer resolution is Super Admin only.")
+    exact="CONFIRM PALLTEX IS BWOLF MANUFACTURER"
+    if confirmation.strip()!=exact:
+        raise HTTPException(409,f"Exact confirmation required: {exact}")
+
+    c=draft_context(db,job_id,source_uuid,product_url)
+    s=dict(c["supplier_evidence"] or {})
+    source_url=str(s.get("url") or product_url or "").strip()
+    brand=str(s.get("brand") or s.get("manufacturer_name") or "").strip()
+    supplier_ref=str(s.get("supplier_reference") or "").strip()
+    from urllib.parse import urlparse
+    p=urlparse(source_url)
+    host=(p.hostname or "").lower().rstrip(".")
+    if p.scheme.lower()!="https" or host not in {"palltex.bg","www.palltex.bg"} or "/p/" not in (p.path or ""):
+        raise HTTPException(409,"R7K.2 applies only to an exact HTTPS Palltex product page.")
+    if brand.casefold()!="bwolf":
+        raise HTTPException(409,"R7K.2 applies only to verified supplier Brand evidence BWOLF.")
+    if not supplier_ref:
+        raise HTTPException(409,"Verified Palltex Supplier Reference is required.")
+
+    # The same exact code is allowed to occupy two governed roles only because the
+    # operator explicitly confirms Palltex as Manufacturer/Brand owner and the exact
+    # official Palltex product page visibly carries that code. Roles remain separate.
+    evidence={
+        "status":"OPERATOR_CONFIRMED_EXACT",
+        "resolution_mode":"PALLTEX_BWOLF_BRAND_OWNER_CONTROLLED",
+        "manufacturer_name":"Палтекс",
+        "brand_name":"BWOLF",
+        "brand_owner":"Палтекс",
+        "supplier_name":"Палтекс",
+        "supplier_role":"SUPPLIER",
+        "manufacturer_role":"MANUFACTURER_BRAND_OWNER",
+        "roles_are_distinct":True,
+        "official_site":"https://palltex.bg",
+        "official_product_url":source_url,
+        "manufacturer_product_code":supplier_ref,
+        "manufacturer_product_code_status":"VERIFIED_EXACT_REFERENCE",
+        "supplier_reference":supplier_ref,
+        "supplier_reference_role":"SUPPLIER_MAPPING_ONLY",
+        "manufacturer_reference_role":"VERIFIED_MANUFACTURER_MPN_ONLY",
+        "operator_assertion":exact,
+        "operator_user_id":int(user.id),
+        "evidence_basis":"EXACT_PALLTEX_PRODUCT_PAGE_PLUS_EXPLICIT_SUPER_ADMIN_BRAND_OWNER_ASSERTION",
+        "images":list(s.get("images") or []),
+        "documents":[],
+        "tables":[],
+        "page_title":str(s.get("name") or s.get("title") or ""),
+        "meta_description":"",
+        "text_excerpt":str(s.get("description") or "")[:4000],
+    }
+    try:
+        content=build_content_bundle(
+            supplier_evidence=s,
+            manufacturer_evidence=evidence,
+            target_code=target,
+        )
+        persistence_result=persist_confirmed_enrichment(
+            db,job_id=job_id,manufacturer_evidence=evidence,
+            content_bundle=content,supplier_evidence=s,
+        )
+    except Exception as exc:
+        return templates.TemplateResponse(
+            "content_intelligence/review.html",
+            _review_context(
+                c,request=request,db=db,user=user,job=job,target=target,
+                source_uuid=source_uuid,product_url=product_url,
+                discovery_error=f"R7K.2 Palltex/BWOLF confirmation failed safely: {exc}",
+            ),
+        )
+
+    return templates.TemplateResponse(
+        "content_intelligence/review.html",
+        _review_context(
+            c,request=request,db=db,user=user,job=job,target=target,
+            source_uuid=source_uuid,product_url=product_url,
+            manufacturer=evidence,content=content,
+            saved=bool(persistence_result.get("persisted")),
+            persistence_result=persistence_result,
+            publish_review_url=(f"/content-intelligence/publish-handoff?job_id={int(job_id)}" if persistence_result.get("persisted") else ""),
+        ),
+    )
 
 
 @router.get("/publish-handoff", name="phase46_r4_publish_handoff")

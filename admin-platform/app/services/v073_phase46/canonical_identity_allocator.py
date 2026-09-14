@@ -7,7 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.models.entities import Product, ImportJobItem
 
-M99_RE = re.compile(r"^M99-([0-9]+)$")
+M99_RE = re.compile(r"^M99-([0-9]+)$")  # historical compatibility surface
+NORMATIVE_M99_RE = re.compile(r"^M99 ([0-9]{6})$")
+RESERVED_CANONICAL_FLOOR = 100017
 
 class CanonicalIdentityAllocationError(RuntimeError):
     pass
@@ -16,17 +18,20 @@ def _text(v) -> str:
     return str(v or "").strip()
 
 def _valid(v: str) -> bool:
-    return bool(M99_RE.fullmatch(_text(v)))
+    return bool(NORMATIVE_M99_RE.fullmatch(_text(v)) or M99_RE.fullmatch(_text(v)))
 
 def _next_reference(db: Session) -> str:
     values = db.query(Product.m99_reference).all()
-    high = 0
+    high = RESERVED_CANONICAL_FLOOR
     for row in values:
         raw = row[0] if isinstance(row, tuple) else getattr(row, "m99_reference", row)
-        m = M99_RE.fullmatch(_text(raw))
+        text = _text(raw)
+        m = NORMATIVE_M99_RE.fullmatch(text)
         if m:
             high = max(high, int(m.group(1)))
-    return f"M99-{high+1}"
+    if high >= 999999:
+        raise CanonicalIdentityAllocationError("Canonical six-digit M99 namespace is exhausted.")
+    return f"M99 {high+1:06d}"
 
 def _required_unhandled_columns() -> list[str]:
     known = {"id","m99_reference","supplier_reference","name","lifecycle"}
@@ -47,7 +52,7 @@ def allocate_or_reuse_for_item(db: Session, *, item: ImportJobItem) -> dict:
     """Create/reuse permanent canonical M99 identity for exactly one DRAFT item.
 
     Supplier reference and Manufacturer MPN are never used as the M99 identity.
-    If item.matched_product_id already points to a Product with M99-N, reuse it.
+    If item.matched_product_id already points to a Product with a governed permanent M99 identity, reuse it.
     Otherwise create a canonical Product in lifecycle=draft, link matched_product_id,
     commit, then read back.
     """

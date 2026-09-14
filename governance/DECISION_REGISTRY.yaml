@@ -642,3 +642,21 @@ open_decisions:
   - id: OPEN-012
     statement: "Final production migration plan for v0.7.3 persistence tables."
     status: OPEN
+
+- id: ID-002A
+  area: identity
+  status: DECIDED_TESTED
+  statement: M99 canonical reference format is M99 + single space + exactly six digits.
+  format: "M99 000001"
+  regex: "^M99 [0-9]{6}$"
+  supersedes: ID-002
+  compatibility:
+    historical_hyphenated_ids: "read/publish compatibility only; never allocate new IDs in that form"
+  allocation:
+    reserved_history_through: "M99 100017"
+    next_allocation_floor: "M99 100018"
+  sources:
+    - config/identity/m99_identity_policy.json
+    - ARCHITECTURE_v0.5.4.md
+    - tests/test_identity_v2.py
+  reopen_policy: explicit_superseding_decision_only

@@ -14,11 +14,16 @@
   {% if integration_saved %}<div class="ok"><b>Saved.</b> Настройката е активна веднага — без restart.</div>{% endif %}
   {% if integration_test == "ok" %}<div class="ok"><b>Connection test PASS.</b> m99.eu products schema е достъпна.</div>{% endif %}
   {% if integration_test == "fail" %}<div class="warn"><b>Connection test FAILED.</b> Провери API key и Products permissions.</div>{% endif %}
-  <table><tr><th>API key</th><td>{{ "CONFIGURED" if integration_status.configured else "NOT CONFIGURED" }}</td></tr><tr><th>Publishing</th><td>{{ "ENABLED" if integration_status.enabled else "DISABLED" }}</td></tr><tr><th>Secret storage</th><td>{{ integration_status.secret_storage }}</td></tr><tr><th>Restart required</th><td>NO</td></tr></table>
+  <table><tr><th>API key</th><td>{{ "CONFIGURED" if integration_status.configured else "NOT CONFIGURED" }}</td></tr><tr><th>Publishing</th><td>{{ "ENABLED" if integration_status.enabled else "DISABLED" }}</td></tr><tr><th>Back Office URL</th><td>{{ "CONFIGURED" if integration_status.back_office_configured else "NOT CONFIGURED" }}</td></tr><tr><th>Secret storage</th><td>{{ integration_status.secret_storage }}</td></tr><tr><th>Restart required</th><td>NO</td></tr></table>
   <form method="post" action="/operator-publish/r1-final/integration-settings/save" style="margin-top:12px">
     {% if selected_job %}<input type="hidden" name="job_id" value="{{ selected_job.id }}">{% endif %}
     <label>m99.eu PrestaShop API key <input name="api_key" type="password" autocomplete="new-password" style="min-width:360px" placeholder="{{ 'Leave blank to keep stored key' if integration_status.configured else '32-character API key' }}"></label>
-    <label style="margin-left:16px"><input name="enabled" type="checkbox" value="1" {% if integration_status.enabled %}checked{% endif %}> Enable controlled m99.eu publishing</label>
+    <label style="margin-left:16px"><input name="enabled" type="checkbox" value="1" {% if integration_status.enabled %}checked{% endif %}> Enable controlled m99.eu publishing</label><br><br>
+    <label>m99.eu Back Office product EDIT URL
+      <input name="back_office_url" type="password" autocomplete="off" style="min-width:620px"
+        placeholder="{{ 'Leave blank to keep encrypted Back Office URL' if integration_status.back_office_configured else 'Paste one real product EDIT URL once, e.g. .../products/2036/edit' }}">
+    </label>
+    <p><small>M99 strips the dynamic _token/query string, extracts the private admin path, builds .../products/{id}/edit and stores only that template encrypted with Windows DPAPI. It is not written to Git or audit.</small></p>
     <button class="btn" type="submit">SAVE IN M99</button>
   </form>
   <form method="post" action="/operator-publish/r1-final/integration-settings/verify" style="margin-top:10px">{% if selected_job %}<input type="hidden" name="job_id" value="{{ selected_job.id }}">{% endif %}<button class="btn" type="submit" {% if not integration_status.configured %}disabled{% endif %}>VERIFY m99.eu CONNECTION</button></form>
@@ -54,13 +59,13 @@
     <tr><th>Supplier ref</th><td>{{ product.supplier_reference or "—" }}</td></tr>
     <tr><th>Price evidence</th><td>{{ product.price_text or "—" }}</td></tr>
   </table>
-  <p><small>Permanent canonical M99 reference се извлича само от доказания DRAFT/Identity context. Няма M99-900... fallback.</small></p>
+  <p><small>Permanent canonical M99 identity: M99 + single space + six digits (example M99 100018). Supplier/Manufacturer identifiers never become M99 identity.</small></p>
 </div>
 
 <div class="card">
   <h2>3. R4 → R1 Canonical Payload Preview Gate</h2>
   {% if payload_preview %}
-    <p><b>Status:</b> {{ payload_preview.status }} · <b>Channel write:</b> {% if payload_preview.ready %}READY FOR CONTROLLED R7D PILOT{% else %}BLOCKED{% endif %}</p>
+    <p><b>Status:</b> {{ payload_preview.status }} · <b>Channel write:</b> {% if payload_preview.ready %}READY FOR R7K.3 CONTROLLED PUBLISH{% else %}BLOCKED{% endif %}</p>
     {% if payload_preview.blockers %}
       <div class="warn"><b>BLOCKERS</b><ul>{% for x in payload_preview.blockers %}<li>{{ x }}</li>{% endfor %}</ul></div>
     {% endif %}
@@ -92,6 +97,11 @@
     {% endif %}
     {% if payload_preview.images %}<p><b>Images:</b> {{ payload_preview.images.count }}</p>{% endif %}
     {% if payload_preview.variants %}<p><b>Variants:</b> {{ payload_preview.variants.groups }} groups / {{ payload_preview.variants.rows_count }} Color×Size rows</p>{% endif %}
+    {% if payload_preview.publish_ready_content_gate %}
+      <h3>R7K.3 Publish-Ready Content Gate</h3>
+      <p><b>{{ "PASS" if payload_preview.publish_ready_content_gate.pass else "BLOCKED" }}</b> · Source type: {{ payload_preview.publish_ready_content_gate.source_type }}</p>
+    {% endif %}
+    <p><small>Durable evidence: {{ payload_preview.durable_source_mode or "SAME_JOB" }}{% if payload_preview.durable_source_job_id %} · source Job #{{ payload_preview.durable_source_job_id }}{% endif %}</small></p>
     {% if payload_preview.editorial_policy %}
       <h3>Editorial / SEO policy</h3>
       <p><b>{{ payload_preview.editorial_policy.policy_id }}</b> · {{ payload_preview.editorial_policy.status }} · model-assisted allowed · AI-detector evasion is NOT a target.</p>
@@ -105,7 +115,7 @@
 
 
 <div class="card" style="background:#eef7ff">
-  <h2>3A. R7E — Permanent Canonical M99 Identity</h2>
+  <h2>3A. R7K.3 — Permanent Canonical M99 Identity</h2>
   <p>Ако blocker-ът е липсващ permanent canonical M99 reference, създай canonical Product и го свържи с избрания DRAFT item.</p>
   <p><b>Supplier ref и Manufacturer MPN никога не стават M99 identity.</b></p>
   {% if selected_items|length == 1 and not payload_preview.ready %}
@@ -120,21 +130,36 @@
   <p><small>След успешна Identity стъпка, ако R4 durable enrichment още липсва, върни се в Manufacturer Intelligence и потвърди exact Manufacturer product отново.</small></p>
 </div>
 
-<div class="card" style="background:#fff8df">
-  <h2>4. Controlled live write — R7D CANONICAL PILOT</h2>
-  <p>Това е реален write към m99.eu, но продуктът се създава <b>inactive, unavailable_for_order=0, visibility=none</b>. Каналният reference е само permanent M99 reference. Supplier reference и verified Manufacturer MPN остават отделни роли.</p>
-  <p><b>Първият R7D pilot не качва изображения.</b> Image evidence остава задължително за READY preview, но image upload ще е отделната контролирана стъпка след доказан product create/readback.</p>
+<div class="card" style="background:#fff2f2;border:1px solid #e7b5b5">
+  <h2>3B. R7G — Live Product Truth Verification (GET-only)</h2>
+  <p>Тази проверка <b>не пише</b> в m99.eu. Изисква независимо съвпадение от direct GET, ID filter и canonical reference filter.</p>
+  <form method="get" action="/operator-publish/r1-final/truth-verify">
+    <label>Product ID <input name="product_id" type="number" min="1" required></label>
+    <label style="margin-left:10px">Canonical reference <input name="reference" type="text" placeholder="M99-1" required></label>
+    <label style="margin-left:10px">Category ID <input name="category_id" type="number" min="1"></label>
+    <label style="margin-left:10px">Price <input name="price" type="text"></label>
+    <label style="margin-left:10px">Known-good Product ID <input name="known_good_product_id" type="number" min="1" placeholder="2036"></label>
+    <button class="btn" type="submit">VERIFY PRODUCT TRUTH + SHOP STRUCTURE — GET ONLY</button>
+  </form>
+</div>
+
+<div class="card" style="background:#fff8df;border:2px solid #e1bb4f">
+  <h2>4. R7K.3 — Palltex Controlled Product Publish</h2>
+  <p><small>Monotonic compatibility marker: PUBLISH ONE HIDDEN CANONICAL PILOT — superseded for Palltex by the stricter R7K gate.</small></p>
+  <p><b>Това е реалният Palltex → m99.eu write gate.</b> R7K приема само HTTPS Palltex product URL, permanent M99 identity, READY canonical preview, verified Supplier Reference, variant evidence и explicit Super Admin confirmation.</p>
+  <p>Продуктът се създава само като <b>inactive=0, available_for_order=0, visibility=none</b>. Supplier availability никога не се превръща във физическа M99 наличност.</p>
+  <p><b>Historical protected identities M99-1 и M99-2 остават блокирани. Новите canonical IDs използват normative format M99 + space + six digits.</b> R7K използва доказания canonical publisher и задължителния strict API readback/truth verification.</p>
   {% if payload_preview.ready %}
-  <form method="post" action="/operator-publish/r1-final/publish">
+  <form method="post" action="/operator-publish/r1-final/publish-palltex">
     <input type="hidden" name="job_id" value="{{ selected_job.id }}">
     <label>m99.eu Category ID <input name="category_id" type="number" min="1" value="{{ default_category_id }}" required></label><br><br>
-    <label>Explicit pilot price <input name="price_override" type="text" placeholder="e.g. 49.90" required></label>
-    <p><small>Цената е изрично операторско решение за pilot-а и се записва в audit като OPERATOR_EXPLICIT_PILOT_PRICE.</small></p>
-    <label>Exact confirmation <input name="confirmation" type="text" style="min-width:420px" placeholder="{{ confirmation }}" required></label><br><br>
-    <button class="btn" type="submit">PUBLISH ONE HIDDEN CANONICAL PILOT</button>
+    <label>Explicit controlled price <input name="price_override" type="text" placeholder="e.g. 49.90" required></label>
+    <p><small>Цената е explicit operator decision. R7K не извежда M99 physical stock от Palltex availability.</small></p>
+    <label>Exact confirmation <input name="confirmation" type="text" style="min-width:520px" placeholder="{{ r7k_confirmation }}" required></label><br><br>
+    <button class="btn" type="submit">PUBLISH ONE HIDDEN PALLTEX PRODUCT — R7K</button>
   </form>
   {% else %}
-    <button class="btn" type="button" disabled>PUBLISH BLOCKED — CANONICAL PREVIEW NOT READY</button>
+    <button class="btn" type="button" disabled>R7K PUBLISH BLOCKED — CANONICAL PREVIEW NOT READY</button>
   {% endif %}
 </div>
 {% endif %}

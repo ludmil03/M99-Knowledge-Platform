@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import Any
-from app.services.v073_phase46.durable_draft_enrichment import load as load_enrichment
+from app.services.v073_phase46.durable_draft_enrichment import load as load_enrichment, find_confirmed_exact
 from app.services.v073_phase45.m99eu_r37_auto_publish import canonical_reference_from_draft
 from app.services.v073_phase46.editorial_content_policy import policy_preview
+from app.services.v073_phase46.content_manufacturer_intelligence import build_content_bundle
+from app.services.v073_phase46.publish_ready_content_gate import validate_publish_ready_content
 
 REQUIRED_LANGUAGES=("EN","BG","RU")
 
@@ -35,17 +37,35 @@ def build_canonical_payload_preview(*,job,item)->dict[str,Any]:
         canonical=""; blockers.append("Canonical M99 reference: "+str(exc))
 
     durable=load_enrichment(int(job.id))
+    durable_source_mode="SAME_JOB"
     if not durable:
-        blockers.append("R4 durable enrichment is missing; reconfirm exact Manufacturer product.")
+        durable=find_confirmed_exact(
+            supplier_reference=str(getattr(item,"supplier_reference","") or "").strip(),
+            target="m99eu",
+            product_url=str(getattr(item,"source_url","") or "").strip(),
+        )
+        durable_source_mode="CROSS_JOB_EXACT"
+    if not durable:
+        blockers.append("R4 durable enrichment is missing; exact same-job/cross-job evidence was not found.")
         return {"status":"BLOCKED","ready":False,"blockers":blockers,"warnings":warnings}
 
-    if int(durable.get("job_id") or 0)!=int(job.id):blockers.append("Durable job_id mismatch.")
-    if int(durable.get("item_id") or 0)!=int(item.id):blockers.append("Durable item_id mismatch.")
+    if durable_source_mode=="SAME_JOB":
+        if int(durable.get("job_id") or 0)!=int(job.id):blockers.append("Durable job_id mismatch.")
+        if int(durable.get("item_id") or 0)!=int(item.id):blockers.append("Durable item_id mismatch.")
     if durable.get("target")!="m99eu":blockers.append("Durable target is not m99eu.")
 
     supplier=dict(durable.get("supplier_evidence") or {})
     manufacturer=dict(durable.get("manufacturer_evidence") or {})
     bundle=dict(durable.get("content_bundle") or {})
+    # Always rebuild the publish-facing content bundle from checksum-verified
+    # durable evidence using the CURRENT generator. This prevents a valid old
+    # sidecar from carrying stale boilerplate/HTML into a newer publish gate.
+    # The durable evidence itself remains immutable; this is a read/derive bridge.
+    bundle=build_content_bundle(
+        supplier_evidence=supplier,
+        manufacturer_evidence=manufacturer,
+        target_code="m99eu",
+    )
     docs=dict(bundle.get("documents") or {})
     supplier_ref=str(getattr(item,"supplier_reference","") or durable.get("supplier_reference") or "").strip()
     persisted_supplier_ref=str(durable.get("supplier_reference") or "").strip()
@@ -96,6 +116,13 @@ def build_canonical_payload_preview(*,job,item)->dict[str,Any]:
     if supplier_ref and mref and supplier_ref==mref:
         warnings.append("Supplier reference and Manufacturer MPN have the same value, but remain separate mappings/roles.")
 
+    content_gate=validate_publish_ready_content(
+        supplier_title=str(supplier.get("name") or supplier.get("title") or getattr(item,"source_title","") or ""),
+        supplier_description=str(supplier.get("description") or ""),
+        languages=language_preview,
+    )
+    blockers.extend(content_gate.get("blockers") or [])
+
     return {
         "schema":"m99.phase46.r4r1.canonical_payload_preview.v1",
         "status":"READY" if not blockers else "BLOCKED",
@@ -104,6 +131,8 @@ def build_canonical_payload_preview(*,job,item)->dict[str,Any]:
         "job_id":int(job.id),
         "item_id":int(item.id),
         "durable_sha256":durable.get("payload_sha256") or "",
+        "durable_source_mode":durable_source_mode,
+        "durable_source_job_id":int(durable.get("job_id") or 0),
         "identifiers":{
             "channel_reference":canonical,
             "channel_reference_role":"PERMANENT_M99_REFERENCE",
@@ -122,5 +151,6 @@ def build_canonical_payload_preview(*,job,item)->dict[str,Any]:
         "variants":{"groups":v["variant_groups"],"rows_count":len(v["rows"]),"rows":v["rows"]},
         "blockers":blockers,
         "editorial_policy":policy_preview(),
+        "publish_ready_content_gate":content_gate,
         "warnings":warnings,
     }

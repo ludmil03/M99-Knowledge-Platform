@@ -13,6 +13,17 @@
   {% endif %}
 </div>
 
+{% if durable_readback and durable_readback.verified %}
+<div class="pass">
+  Durable manufacturer readback: <b>VERIFIED</b>
+  · mode <b>{{ durable_readback.source_mode or "SAME_JOB" }}</b>
+  {% if durable_readback.source_job_id %} · source Job #{{ durable_readback.source_job_id }}{% endif %}
+  · schema {{ durable_readback.schema }}
+  · checksum {{ durable_readback.payload_sha256[:12] }}…
+  {% if durable_readback.confirmed_at_utc %} · confirmed {{ durable_readback.confirmed_at_utc }}{% endif %}
+</div>
+{% endif %}
+
 {% if persistence_result and not persistence_result.persisted %}
 <div class="warn">Exact Manufacturer evidence + Content bundle are generated for review but are not durably stored: {{ persistence_result.reason }}.</div>
 {% endif %}
@@ -28,7 +39,20 @@
 <div class="card">
   <h2>2. Manufacturer resolution</h2>
 
-  {% if manufacturer_source and manufacturer_source.status == "KNOWN" %}
+  {% set confirmed_manufacturer = manufacturer and manufacturer.status in ["OPERATOR_CONFIRMED_EXACT","CONFIRMED_EXACT"] %}
+  {% if confirmed_manufacturer %}
+    <div class="pass">
+      Manufacturer: <b>{{ manufacturer.manufacturer_name or manufacturer.brand_owner or "CONFIRMED" }}</b>
+      {% if manufacturer.brand_name %} · Brand: <b>{{ manufacturer.brand_name }}</b>{% endif %}
+      · Resolution: <b>{{ manufacturer.status }}</b>
+    </div>
+    {% if manufacturer.roles_are_distinct %}
+      <p>Supplier and Manufacturer remain separate governed roles.</p>
+    {% endif %}
+    {% if manufacturer.official_product_url %}
+      <p>Authoritative evidence: <a href="{{ manufacturer.official_product_url }}" target="_blank" rel="noopener">{{ manufacturer.official_product_url }}</a></p>
+    {% endif %}
+  {% elif manufacturer_source and manufacturer_source.status == "KNOWN" %}
     <div class="pass">
       Manufacturer: <b>{{ manufacturer_source.manufacturer_name }}</b>
       · approved source match {{ manufacturer_source.match_score }}%
@@ -53,6 +77,30 @@
     {% endif %}
   </p>
 
+
+  {% set brand_ev=(supplier.brand or supplier.manufacturer_name or "") %}
+  {% set src_url=(supplier.url or product_url or "") %}
+  {% if (not confirmed_manufacturer) and (manufacturer_source and manufacturer_source.status != "KNOWN") and brand_ev|lower == "bwolf" and "palltex.bg" in src_url %}
+  <section class="card" style="margin:14px 0;background:#eef7ff;border:2px solid #4c89b8">
+    <h3>R7K.2 — Palltex ↔ BWOLF controlled Manufacturer resolution</h3>
+    <p>Supplier: <b>Палтекс</b> · Brand: <b>BWOLF</b> · Manufacturer / Brand owner: <b>Палтекс</b>.</p>
+    <p><b>Ролите остават отделни.</b> Това потвърждение не създава глобално правило Supplier = Manufacturer.</p>
+    <p>Exact product evidence: <b>{{ supplier.supplier_reference }}</b> on the current Palltex product page.</p>
+    <form method="post" action="/content-intelligence/confirm-palltex-bwolf-brand-owner">
+      <input type="hidden" name="job_id" value="{{ job.id }}">
+      <input type="hidden" name="source_uuid" value="{{ source_uuid }}">
+      <input type="hidden" name="product_url" value="{{ product_url }}">
+      <input type="hidden" name="target" value="{{ target }}">
+      <p>Напиши точно: <code>CONFIRM PALLTEX IS BWOLF MANUFACTURER</code></p>
+      <input style="width:100%" name="confirmation" required>
+      <button class="btn" type="submit">Потвърди Palltex ↔ BWOLF и запиши durable evidence</button>
+    </form>
+  </section>
+  {% endif %}
+
+  {% if confirmed_manufacturer %}
+  <div class="pass">Manufacturer is already resolved from verified durable evidence. Re-confirmation / manual discovery is not required.</div>
+  {% else %}
   <form method="post" action="/content-intelligence/discover">
     <input type="hidden" name="job_id" value="{{ job.id }}">
     <input type="hidden" name="source_uuid" value="{{ source_uuid }}">
@@ -68,8 +116,9 @@
       <button class="btn" type="submit">Провери по ръчно зададен official site</button>
     {% endif %}
   </form>
+  {% endif %}
 
-  {% if manufacturer_source and manufacturer_source.status == "KNOWN" %}
+  {% if (not confirmed_manufacturer) and manufacturer_source and manufacturer_source.status == "KNOWN" %}
   <details style="margin-top:12px">
     <summary>Advanced: manual official-site override</summary>
     <form method="post" action="/content-intelligence/discover" style="margin-top:10px">

@@ -132,3 +132,8 @@ class PalltexPublicConnector:
         if not av:w.append('AVAILABILITY_NOT_FOUND')
         w.append('PALLTEX_VARIANTS_REQUIRE_VALIDATED_PRODUCT_VARIANT_PARSER')
         return ProductHydration(u,name,u,sku,brand,price,curr,av,desc,imgs,tuple(),bool(name and sku and price and imgs and av),tuple(w))
+
+# M99-PALLTEX-HYDRATION-ADAPTER-R7J-BEGIN
+from app.services.v073_phase45.palltex_product_hydration_adapter import install_adapter as _m99_install_palltex_hydration_adapter
+_m99_install_palltex_hydration_adapter(globals())
+# M99-PALLTEX-HYDRATION-ADAPTER-R7J-END

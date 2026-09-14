@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>R7G R5 — m99.eu Product Truth + Shop Structure Diagnostics</h1>
+<div class="card">
+{% if truth_error %}
+  <div class="warn"><b>TRUTH VERIFICATION ERROR</b><p>{{ truth_error }}</p></div>
+{% elif truth %}
+  {% if truth.verified %}
+    <div class="pass"><b>API RESOURCE VERIFIED</b> — three independent GET paths agree. Back Office acceptance is still a separate human check.</div>
+  {% else %}
+    <div class="warn"><b>WRITE NOT VERIFIED — DO NOT REPUBLISH</b></div>
+  {% endif %}
+  <table>
+    <tr><th>Product ID</th><td>{{ truth.product_id }}</td></tr>
+    <tr><th>Reference</th><td>{{ truth.reference }}</td></tr>
+    <tr><th>Direct GET</th><td>HTTP {{ truth.direct_http }}</td></tr>
+    <tr><th>ID-filter GET</th><td>HTTP {{ truth.id_filter_http }}</td></tr>
+    <tr><th>Reference-filter GET</th><td>HTTP {{ truth.reference_filter_http }}</td></tr>
+    <tr><th>Active</th><td>{{ truth.active or "—" }}</td></tr>
+    <tr><th>Available for order</th><td>{{ truth.available_for_order or "—" }}</td></tr>
+    <tr><th>Visibility</th><td>{{ truth.visibility or "—" }}</td></tr>
+    <tr><th>Category</th><td>{{ truth.category_id or "—" }}</td></tr>
+    <tr><th>Price</th><td>{{ truth.price or "—" }}</td></tr>
+    <tr><th>id_shop_default</th><td>{{ truth.id_shop_default or "—" }}</td></tr>
+  </table>
+  {% if truth.evidence %}<p><b>Evidence:</b> {{ truth.evidence|join(", ") }}</p>{% endif %}
+  {% if truth.associations_summary %}
+  <h3>GET-only structural comparison</h3>
+  <ul>{% for x in truth.associations_summary %}<li>{{ x }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if truth.structural_warnings %}
+  <div class="warn"><b>Structural warnings</b><ul>{% for x in truth.structural_warnings %}<li>{{ x }}</li>{% endfor %}</ul></div>
+  {% endif %}
+  {% if truth.blockers %}<div class="warn"><b>Blockers</b><ul>{% for x in truth.blockers %}<li>{{ x }}</li>{% endfor %}</ul></div>{% endif %}
+  {% if back_office_url %}
+    <p><a class="btn" href="{{ back_office_url }}" target="_blank" rel="noopener noreferrer">OPEN PRODUCT IN m99.eu BACK OFFICE</a></p>
+  {% else %}
+    <div class="warn">Back Office URL is not configured yet. Paste one real m99.eu product EDIT URL once in Integration Settings and save it.</div>
+  {% endif %}
+{% endif %}
+</div>
+<p><a class="btn" href="/operator-publish/r1-final">← Back to control plane</a></p>
+{% endblock %}

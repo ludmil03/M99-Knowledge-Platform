@@ -5,7 +5,11 @@
 {% if publish_error %}
   <div class="warn"><b>BLOCKED / FAILED SAFELY</b><p>{{ publish_error }}</p></div>
 {% else %}
-  <div class="pass"><b>LIVE WRITE VERIFIED</b></div>
+  {% if publish_result.api_truth_verified %}
+  <div class="pass"><b>API RESOURCE VERIFIED</b> — direct GET + ID filter + reference filter agree. Back Office acceptance is still pending.</div>
+  {% else %}
+  <div class="warn"><b>WRITE RESPONSE RECEIVED BUT PRODUCT TRUTH IS NOT VERIFIED — DO NOT REPUBLISH</b><p>{{ publish_result.truth_summary }}</p></div>
+  {% endif %}
   <table>
     <tr><th>Created</th><td>{{ publish_result.created }}</td></tr>
     <tr><th>m99.eu Product ID</th><td>{{ publish_result.product_id }}</td></tr>
@@ -17,8 +21,16 @@
     <tr><th>Pilot price</th><td>{{ publish_result.price }}</td></tr>
     <tr><th>Languages</th><td>{{ publish_result.languages|join(", ") }}</td></tr>
     <tr><th>Images</th><td>{{ publish_result.image_upload_status }}</td></tr>
+    <tr><th>API truth verified</th><td>{{ publish_result.api_truth_verified }}</td></tr>
+    <tr><th>Truth evidence / blockers</th><td>{{ publish_result.truth_summary or "—" }}</td></tr>
     <tr><th>Correlation ID</th><td>{{ publish_result.correlation_id }}</td></tr>
   </table>
+  <p><a class="btn" href="/operator-publish/r1-final/truth-verify?product_id={{ publish_result.product_id }}&reference={{ publish_result.reference }}&category_id={{ publish_result.category_id }}&price={{ publish_result.price }}">VERIFY PRODUCT TRUTH AGAIN — GET ONLY</a></p>
+  {% if back_office_url %}
+  <p><a class="btn" href="{{ back_office_url }}" target="_blank" rel="noopener noreferrer">OPEN PRODUCT IN m99.eu BACK OFFICE</a></p>
+  {% else %}
+  <div class="warn">Back Office URL is not configured yet. Configure it once in M99 Integration Settings.</div>
+  {% endif %}
 {% endif %}
 </div>
 <p><a class="btn" href="/operator-publish/r1-final?job_id={{ job.id }}">← Back to R7D control plane</a></p>
