@@ -14,3 +14,9 @@ output/
 
 .DS_Store
 Thumbs.db
+
+# M99 runtime state - local only
+var/phase46_draft_enrichment/
+
+# M99 local-only runtime/test environments
+.m99-test-runner/
