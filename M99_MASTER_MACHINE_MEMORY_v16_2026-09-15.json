@@ -1,0 +1,1243 @@
+{
+  "schema": "m99.master_machine_memory.v15",
+  "generated_at": "2026-09-14T21:39:00+03:00",
+  "document_role": "machine-readable canonical project memory companion to README v15",
+  "precedence": {
+    "rule": "latest explicit superseding decision wins; history is preserved",
+    "anti_loop": "DECIDED != IMPLEMENTED",
+    "context_order": [
+      "DECISION_REGISTRY",
+      "M99_CURRENT_CONTEXT",
+      "PROJECT_STATE",
+      "latest_master_README",
+      "relevant_ADR",
+      "tests_and_history",
+      "proposal"
+    ]
+  },
+  "project": {
+    "name": "M99 Knowledge Platform",
+    "repository": "ludmil03/M99-Knowledge-Platform",
+    "branch": "main",
+    "local_repo_path": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+    "last_proven_synchronized_git_baseline": "ac3005eb610a3fe1e1417366a116fd51e61003aa",
+    "business_goals": [
+      "minimal administrative headcount",
+      "safe automation",
+      "international expansion",
+      "M99 Group Master Plan 2036"
+    ]
+  },
+  "channels": [
+    {
+      "id": "mela99.com",
+      "type": "web",
+      "platform": "ThirtyBees / PrestaShop 1.7 family",
+      "languages": [
+        "BG",
+        "EN"
+      ],
+      "notes": "Primary Bulgarian e-commerce channel; historical hidden TEST/review workflow."
+    },
+    {
+      "id": "rabotni-drehi.com",
+      "type": "web",
+      "platform": "WordPress",
+      "languages": [
+        "BG"
+      ],
+      "notes": "Bulgarian workwear channel; channel-specific content."
+    },
+    {
+      "id": "m99.eu",
+      "type": "web",
+      "platform": "PrestaShop 9.1.5",
+      "languages": [
+        "EN",
+        "BG",
+        "RU"
+      ],
+      "notes": "Proven classic /api GET/POST; Test category 26; controlled live acceptance Product 2041."
+    },
+    {
+      "id": "medicinski-drehi.com",
+      "type": "web",
+      "platform": "e-commerce channel",
+      "languages": [
+        "BG",
+        "EN",
+        "RU"
+      ],
+      "notes": "Medical clothing operational channel."
+    },
+    {
+      "id": "laviro.ro",
+      "type": "web",
+      "platform": "PrestaShop 1.6.1.24",
+      "languages": [
+        "RO",
+        "EN"
+      ],
+      "notes": "Romanian market channel."
+    },
+    {
+      "id": "alviro.ro",
+      "type": "web",
+      "platform": "Romanian e-commerce channel",
+      "languages": [
+        "RO",
+        "EN"
+      ],
+      "notes": "Romanian market channel."
+    },
+    {
+      "id": "toplinka.com",
+      "type": "web/services",
+      "platform": "service channel",
+      "languages": [
+        "BG"
+      ],
+      "notes": "Heating / photovoltaic services; included in configured channel scope."
+    },
+    {
+      "id": "Dolibarr",
+      "type": "erp",
+      "platform": "ERP / CRM / warehouse",
+      "languages": [
+        "BG",
+        "EN"
+      ],
+      "notes": "Operational destination, not a web shop and not canonical identity owner."
+    }
+  ],
+  "identity": {
+    "normative_new_reference_regex": "^M99 [0-9]{6}$",
+    "historical_hyphenated_compatibility_only": true,
+    "reserved_floor_through": "M99 100017",
+    "first_live_new_allocation": "M99 100018",
+    "no_reuse": true,
+    "lifecycle": [
+      "draft",
+      "active",
+      "paused",
+      "retired"
+    ],
+    "hard_delete": {
+      "requires_operator_approval": true,
+      "typed_confirmation": "DELETE",
+      "audit": true
+    }
+  },
+  "pricing": {
+    "supplier_monitoring_frequency": "DAILY",
+    "source_priority": [
+      "validated_supplier_B2B",
+      "exact_supplier_product_page"
+    ],
+    "target_price_semantics": "customer-facing GROSS / VAT-included",
+    "undercut_rule": {
+      "min_percent": 1.0,
+      "max_percent": 1.7,
+      "selection": "random",
+      "apply_on": [
+        "initial_pricing",
+        "verified_supplier_price_change"
+      ],
+      "no_change_no_write": true
+    },
+    "pipeline": [
+      "supplier_observation",
+      "change_detection",
+      "approved_pricing_rule",
+      "market_currency",
+      "channel_VAT",
+      "target_GROSS",
+      "platform_representation",
+      "write",
+      "API_readback",
+      "Front_Office_gross_verification"
+    ],
+    "anomaly_state": "NEEDS_REVIEW",
+    "vat": "channel/market configuration; never universal hardcode"
+  },
+  "automation": {
+    "principle": "HUMAN_BY_EXCEPTION_NOT_REPETITION",
+    "product_target_states": [
+      "AUTO_READY",
+      "NEEDS_REVIEW",
+      "BLOCKED"
+    ],
+    "batch_confirmations": true,
+    "product_by_product_typed_confirmations_for_normal_batch": false,
+    "fail_closed": true
+  },
+  "target_selection": {
+    "new_product_import": "explicit multi-select",
+    "formula": "WRITE_TARGETS = REQUESTED ∩ AUTHORIZED ∩ READY",
+    "default_all_channels": false,
+    "not_selected_ne_blocked": true,
+    "daily_sync": "existing mappings only; never auto-create missing channel product"
+  },
+  "benchmark": {
+    "global_commerce": [
+      "Amazon",
+      "Zalando",
+      "eBay"
+    ],
+    "information_design": [
+      "Apple"
+    ],
+    "factual_truth": "exact official manufacturer",
+    "local_market": [
+      "Stenso",
+      "Palltex",
+      "category-specific competitors"
+    ],
+    "search": "dynamic by country/language/query"
+  },
+  "current_live_acceptance": {
+    "installer": "R7K.3.2.2 accepted on Windows",
+    "tests": {
+      "incoming": 894,
+      "dedicated": 11,
+      "post_install": 898
+    },
+    "product_2041": {
+      "m99_reference": "M99 100018",
+      "supplier": "Palltex",
+      "brand": "BWOLF",
+      "supplier_reference": "042502",
+      "manufacturer_mpn": "042502",
+      "channel": "m99.eu",
+      "category_id": 26,
+      "active": 0,
+      "available_for_order": 0,
+      "visibility": "none",
+      "api_truth_verified": true,
+      "production_ready": false,
+      "blockers": [
+        "no image",
+        "BWOLF channel brand/manufacturer mapping missing",
+        "no real combinations",
+        "mixed-language/internal customer content",
+        "SEO quality incomplete",
+        "0% tax rule unvalidated"
+      ]
+    }
+  },
+  "next_milestone": {
+    "name": "R7K.4 — Complete Product Payload + Automated Category Pipeline + Supplier Price Monitoring + Dynamic Channel Pricing + VAT + Quality Readback MAXSIM",
+    "must_not_do": [
+      "activate Product 2041 before full quality pass",
+      "re-CREATE M99 100018",
+      "infer physical M99 stock from supplier availability",
+      "blind Commit All",
+      "website write from SAFE installer"
+    ]
+  },
+  "decisions": [
+    {
+      "id": "GOV-001",
+      "area": "governance",
+      "status": "DECIDED",
+      "statement": "M99 is the Single Source of Truth for canonical identity and verified knowledge.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "GOV-002",
+      "area": "governance",
+      "status": "DECIDED",
+      "statement": "Knowledge First: verified knowledge precedes content, publishing and downstream automation.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "GOV-003",
+      "area": "governance",
+      "status": "DECIDED",
+      "statement": "AI Native, not AI Invented: AI must not invent technical or commercial facts.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "GOV-004",
+      "area": "governance",
+      "status": "DECIDED",
+      "statement": "Before new architecture proposals, consult Decision Registry, Current Context, Project State, latest README, relevant ADR and tests/history.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "GOV-005",
+      "area": "governance",
+      "status": "DECIDED",
+      "statement": "A failed implementation attempt does not reopen a DECIDED rule.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "GOV-006",
+      "area": "governance",
+      "status": "DECIDED",
+      "statement": "README remains the master human-readable constitution and machine-readable governance files are mandatory project memory.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CORE-001",
+      "area": "core",
+      "status": "DECIDED",
+      "statement": "No Duplicate Data: reusable canonical facts/entities are stored once and mapped, not duplicated per channel.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CORE-002",
+      "area": "core",
+      "status": "DECIDED",
+      "statement": "Historical observations are preserved.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CORE-003",
+      "area": "core",
+      "status": "DECIDED",
+      "statement": "Market and Channel are separate concepts.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CORE-004",
+      "area": "core",
+      "status": "DECIDED",
+      "statement": "Removing a product from a channel must not destroy accumulated M99 knowledge.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "EVID-001",
+      "area": "evidence",
+      "status": "DECIDED",
+      "statement": "Important facts preserve provenance including source, observation/verification time and conflict/reviewer context where available.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "EVID-002",
+      "area": "evidence",
+      "status": "DECIDED",
+      "statement": "Evidence priority is exact manufacturer, official documentation/certificates, validated B2B, exact supplier, verified internal data, operator, then AI over verified data.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "EVID-003",
+      "area": "evidence",
+      "status": "DECIDED",
+      "statement": "Observation is evidence and does not automatically become canonical truth.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "UX-001",
+      "area": "operator_ux",
+      "status": "DECIDED",
+      "statement": "Operator-first UX.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "UX-002",
+      "area": "operator_ux",
+      "status": "DECIDED",
+      "statement": "One-decision-per-screen is the target operator UX.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "UX-003",
+      "area": "operator_ux",
+      "status": "DECIDED",
+      "statement": "Operators must not need Python, PowerShell, API, HTTP, JSON, XML, SQL, credentials or platform internals.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "UX-004",
+      "area": "operator_ux",
+      "status": "DECIDED",
+      "statement": "The primary operator workflow is generalized Add Products, not a dedicated Add to m99.eu screen.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "UX-005",
+      "area": "operator_ux",
+      "status": "DECIDED",
+      "statement": "Primary Supplier selection UX must not require URL copy/paste or BAT/Python scripts.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ID-001",
+      "area": "identity",
+      "status": "DECIDED_TESTED",
+      "statement": "M99 canonical identity is independent from external IDs.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ID-002",
+      "area": "identity",
+      "status": "SUPERSEDED",
+      "statement": "Historical rule: M99- followed by digits only. Superseded for new allocations by ID-006; retained only for compatibility/history.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only",
+      "superseded_by": "ID-006",
+      "statement_historical": "M99 Reference format is M99- followed by digits only."
+    },
+    {
+      "id": "ID-003",
+      "area": "identity",
+      "status": "DECIDED",
+      "statement": "Assigned M99 identity is never reused for another ProductGroup.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ID-004",
+      "area": "identity",
+      "status": "DECIDED",
+      "statement": "Identity Before Content.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ID-005",
+      "area": "identity",
+      "status": "DECIDED",
+      "statement": "Identity resolution states are NEW, EXISTING, AMBIGUOUS and UNRESOLVED; AMBIGUOUS requires human decision.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PG-001",
+      "area": "product_group",
+      "status": "DECIDED",
+      "statement": "ProductGroup lifecycle is draft -> active -> paused -> retired.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PG-002",
+      "area": "product_group",
+      "status": "DECIDED",
+      "statement": "Hard DELETE requires explicit human approval and typed DELETE confirmation.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ORG-001",
+      "area": "organization",
+      "status": "DECIDED",
+      "statement": "Supplier and Manufacturer are Organization roles; one Organization may hold both roles.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ORG-002",
+      "area": "organization",
+      "status": "DECIDED",
+      "statement": "New Supplier, Manufacturer and Brand proposals require Super Admin approval before general operator availability.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ORG-003",
+      "area": "organization",
+      "status": "DECIDED",
+      "statement": "A canonical product may have multiple verified supplier/manufacturer mappings.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "BRAND-001",
+      "area": "brand",
+      "status": "DECIDED",
+      "statement": "Brand is a separate canonical object linked to owner/manufacturer organizations and official sources.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "B2B-001",
+      "area": "b2b",
+      "status": "DECIDED",
+      "statement": "B2B portals belong to Organizations and declare connector capabilities.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SRC-001",
+      "area": "supplier_source",
+      "status": "DECIDED",
+      "statement": "An Organization may have multiple SupplierSources such as public website, B2B, API, feeds, catalogues, price lists and stock feeds.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SRC-002",
+      "area": "supplier_source",
+      "status": "DECIDED",
+      "statement": "SupplierSources declare explicit capabilities including identity, technical facts, images, price, availability, variants and stock where supported.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SRC-003",
+      "area": "supplier_source",
+      "status": "DECIDED",
+      "statement": "The running M99 runtime may use controlled read-only live SupplierSource access; SAFE installers do not crawl suppliers automatically.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SRC-004",
+      "area": "supplier_source",
+      "status": "DECIDED",
+      "statement": "Supplier-specific adapters implement one common Live Supplier Connector contract so the operator UI remains supplier-independent.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMP-001",
+      "area": "import",
+      "status": "DECIDED",
+      "statement": "Direct Supplier Selection is the target UX.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMP-002",
+      "area": "import",
+      "status": "DECIDED",
+      "statement": "Selection supports one or many products, one or many categories, and all products where the source supports it.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMP-003",
+      "area": "import",
+      "status": "DECIDED",
+      "statement": "Every new-product import is an auditable ImportJob.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMP-004",
+      "area": "import",
+      "status": "DECIDED",
+      "statement": "WRITE_TARGETS = REQUESTED intersect AUTHORIZED intersect READY.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMP-005",
+      "area": "import",
+      "status": "DECIDED",
+      "statement": "Import presets simplify workflows but never grant permissions not already held by the user.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CH-001",
+      "area": "channels",
+      "status": "DECIDED",
+      "statement": "Operators may choose one or more authorized target channels/ERP destinations for NEW PRODUCT IMPORT.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CH-002",
+      "area": "channels",
+      "status": "DECIDED",
+      "statement": "m99.eu is one target channel, not the central Add Product workflow.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CH-003",
+      "area": "channels",
+      "status": "DECIDED",
+      "statement": "NOT_SELECTED and BLOCKED are distinct target states.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-001",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "New products publish TEST/Draft first.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-002",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "TEST category is resolved live.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-003",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "Final category is operator-owned.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-004",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "CREATE and UPDATE are separate contracts.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-005",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "Duplicate guard runs before CREATE.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-006",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "Readback is mandatory after write.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-007",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "HTTP 200/201 does not equal Product Quality PASS.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-008",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "Activation requires authorization.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PUB-009",
+      "area": "publishing",
+      "status": "DECIDED",
+      "statement": "Front Office verification is required where applicable after channel writes.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CNT-001",
+      "area": "content",
+      "status": "DECIDED",
+      "statement": "Content is channel/market/language aware and based on verified facts.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CNT-002",
+      "area": "content",
+      "status": "DECIDED",
+      "statement": "Every required content field is reviewed per language; Image and ALT are reviewed together.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CNT-003",
+      "area": "content",
+      "status": "DECIDED",
+      "statement": "Supplier prose is not copied verbatim; prose/SEO is adapted per channel and language.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "LANG-001",
+      "area": "language",
+      "status": "DECIDED",
+      "statement": "Language Registry is dynamic and channel language IDs are discovered live rather than assumed.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMG-001",
+      "area": "images",
+      "status": "DECIDED",
+      "statement": "Image source priority is official manufacturer, then verified supplier; another M99 channel is not the master image source by default.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "IMG-002",
+      "area": "images",
+      "status": "DECIDED",
+      "statement": "Image pipeline is discover -> verify -> download -> relevance -> dedupe -> resize -> WebP -> localized ALT -> operator review -> upload -> readback.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "VAR-001",
+      "area": "variants",
+      "status": "DECIDED",
+      "statement": "A variational product must have exactly one default combination.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "VAR-002",
+      "area": "variants",
+      "status": "DECIDED",
+      "statement": "Visible size is not stock.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "VAR-003",
+      "area": "variants",
+      "status": "DECIDED",
+      "statement": "Dolibarr/M99 stock is variant-aware.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRC-001",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "Target selling price is gross VAT-included customer price.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRC-002",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "VAT is channel/market configuration and is not a universal hardcoded constant.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRC-003",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "Supplier price changes flow through approved pricing rule, currency, VAT, target gross, platform representation, write, readback and Front Office verification.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-001",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Existing products sync daily and NO_CHANGE means NO_WRITE.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-002",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Daily Existing Product Sync is separate from New Product Import and is not controlled by new-product target selection.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-003",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Daily Sync operates on canonical products with verified supplier/source mappings.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-004",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Daily Sync checks price, availability, variants/sizes, product changes and discontinuation.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-005",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Daily Sync updates only already-existing allowed channel/ERP mappings and never auto-creates a missing channel product.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-006",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Daily Sync change states include NO_CHANGE, PRICE_CHANGED, AVAILABILITY_CHANGED, VARIANT_AVAILABILITY_CHANGED, PRODUCT_CHANGED, SUPPLIER_DISCONTINUED and VERIFICATION_FAILED.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-007",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "VERIFICATION_FAILED is not interpreted as zero stock or OUT_OF_STOCK; last verified observation is preserved.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SYNC-008",
+      "area": "sync",
+      "status": "DECIDED",
+      "statement": "Daily Sync must expose business metrics including checked products, changes, writes, NO_CHANGE, blocked and errors.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "OBS-001",
+      "area": "observation",
+      "status": "DECIDED",
+      "statement": "Supplier observations preserve source/product/variant mapping, timestamps, price/currency, availability, changed fields and verification/provenance state.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "OBS-002",
+      "area": "observation",
+      "status": "DECIDED",
+      "statement": "Historical supplier observations are retained to explain commercial changes over time.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRES-001",
+      "area": "product_presence",
+      "status": "DECIDED",
+      "statement": "Presence is not Stock.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRES-002",
+      "area": "product_presence",
+      "status": "DECIDED",
+      "statement": "M99 provides bidirectional Product Presence reporting: Product -> Channels and Channel -> Products, including missing mappings.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRES-003",
+      "area": "product_presence",
+      "status": "DECIDED",
+      "statement": "Presence states include NOT_PRESENT, PRESENT_DRAFT, PRESENT_TEST, PRESENT_ACTIVE, PRESENT_PAUSED, PRESENT_RETIRED, PRESENT_LAST_VERIFIED, UNKNOWN and VERIFICATION_FAILED.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "PRES-004",
+      "area": "product_presence",
+      "status": "DECIDED",
+      "statement": "Product Presence stores external IDs, publication state, price, last verification/sync and errors where available.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ERP-001",
+      "area": "erp",
+      "status": "DECIDED",
+      "statement": "M99 owns canonical identity/knowledge; Dolibarr is the operational ERP/CRM/warehouse representation.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ERP-002",
+      "area": "erp",
+      "status": "DECIDED",
+      "statement": "M99-owned physical stock increases through supplier reception and decreases through customer shipment.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ERP-003",
+      "area": "erp",
+      "status": "DECIDED",
+      "statement": "Dolibarr uses a distinct target adapter/payload and is not treated as another website.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "WH-001",
+      "area": "warehouse",
+      "status": "DECIDED",
+      "statement": "Approved Supplier/Manufacturer Organizations may have linked EXTERNAL availability warehouses in Dolibarr named after the organization.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "WH-002",
+      "area": "warehouse",
+      "status": "DECIDED",
+      "statement": "Warehouse ownership/type distinguishes M99_PHYSICAL, SUPPLIER_EXTERNAL and MANUFACTURER_EXTERNAL.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "WH-003",
+      "area": "warehouse",
+      "status": "DECIDED",
+      "statement": "Supplier/manufacturer external warehouse availability is never interpreted automatically as M99-owned physical stock.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "WH-004",
+      "area": "warehouse",
+      "status": "DECIDED",
+      "statement": "External warehouse availability is variant-aware where reliable source data is variant-level.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "WH-005",
+      "area": "warehouse",
+      "status": "DECIDED",
+      "statement": "Numeric external warehouse quantity is written only when the source provides a reliable exact quantity; status-only availability never receives invented numeric stock.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "WH-006",
+      "area": "warehouse",
+      "status": "DECIDED",
+      "statement": "Supplier availability states may represent exact quantity, in stock, low stock, out of stock, on request, unknown or verification failed without fabricating quantities.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "REV-001",
+      "area": "revision",
+      "status": "DECIDED",
+      "statement": "Existing Product Content Revision is a separate operational class from New Product Import and Daily Sync.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "REV-002",
+      "area": "revision",
+      "status": "DECIDED",
+      "statement": "Existing approved Product Name and URL/slug are normally locked during content revision.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "REV-003",
+      "area": "revision",
+      "status": "DECIDED",
+      "statement": "Existing Category Name, URL/slug and structural identity fields are normally locked during content revision.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "REV-004",
+      "area": "revision",
+      "status": "DECIDED",
+      "statement": "Product and Category content may be revised without reopening structural identity by default.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "QG-001",
+      "area": "quality",
+      "status": "DECIDED",
+      "statement": "A numeric quality score can never override a failed critical Product Quality Gate.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SEC-001",
+      "area": "security",
+      "status": "DECIDED",
+      "statement": "Operators never see channel/B2B credentials and secrets are never committed to Git, logged or exposed in screenshots.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SEC-002",
+      "area": "security",
+      "status": "DECIDED",
+      "statement": "Permissions are enforced server-side, not only by menu visibility.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "SEC-003",
+      "area": "security",
+      "status": "DECIDED",
+      "statement": "Authentication direction includes secure password hashing, session management, timeout, failed-login protection, reset workflow and login/logout audit.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "AUDIT-001",
+      "area": "audit",
+      "status": "DECIDED",
+      "statement": "Central Super Admin logs include Audit, System, Supplier/B2B & Channel Integration and Security logs.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "AUDIT-002",
+      "area": "audit",
+      "status": "DECIDED",
+      "statement": "Minimum operational log context includes timestamp, severity, user, module, operation, entity, supplier/channel, job_id, result, message and correlation_id.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "MIG-001",
+      "area": "migration",
+      "status": "DECIDED",
+      "statement": "MoneyWork and legacy sites are reconciliation sources, not canonical masters.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "MIG-002",
+      "area": "migration",
+      "status": "DECIDED",
+      "statement": "Preferred migration flow is Inspect -> Normalize -> Deduplicate -> Identity Map -> Supplier/Customer Map -> Dry Run -> Import -> Reconcile -> Audit.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "CRM-001",
+      "area": "crm",
+      "status": "DECIDED",
+      "statement": "CRM foundation flow is First call -> Offer -> Second call.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "OPS-001",
+      "area": "operations",
+      "status": "DECIDED",
+      "statement": "Operational classes remain distinct: New Product Import, Existing Product Daily Sync, Manual/Exceptional Repair, Existing Product Content Revision, Existing Category Content Revision and Knowledge/Evidence Acquisition.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "DEV-001",
+      "area": "development",
+      "status": "DECIDED_TESTED",
+      "statement": "SAFE development uses clean baseline, controlled patch, compile, dedicated tests, full regression, exact scope review, explicit COMMIT and no automatic Push.",
+      "source": "README_v9.md",
+      "reopen_policy": "explicit_superseding_decision_only"
+    },
+    {
+      "id": "ID-006",
+      "area": "identity",
+      "status": "DECIDED_TESTED",
+      "statement": "Normative new M99 Reference format is literal \"M99 \" followed by exactly six digits. Historical hyphenated references remain compatibility-only and are never newly allocated.",
+      "source": "R7K.3/R7K.3.1, 2026-09-14",
+      "supersedes": [
+        "ID-002"
+      ]
+    },
+    {
+      "id": "ID-007",
+      "area": "identity",
+      "status": "DECIDED_TESTED",
+      "statement": "Canonical allocation preserves the historical reserved floor through M99 100017; the first new live canonical allocation is M99 100018 and assigned identities are never reused.",
+      "source": "R7K.3/R7K.3.1 + Product 2041 acceptance"
+    },
+    {
+      "id": "MFG-001",
+      "area": "manufacturer_evidence",
+      "status": "DECIDED_TESTED",
+      "statement": "Supplier and Manufacturer remain separate semantic roles even when Supplier Reference and Manufacturer MPN have the same character value.",
+      "source": "R7K.2/R7K.2.3"
+    },
+    {
+      "id": "MFG-002",
+      "area": "manufacturer_evidence",
+      "status": "DECIDED_TESTED",
+      "statement": "Durable Manufacturer evidence may be reused across jobs only by exact governed evidence scope (supplier reference + target + exact product URL/checksum context); no fuzzy or brand-wide inference.",
+      "source": "R7K.2.3"
+    },
+    {
+      "id": "CNT-004",
+      "area": "content",
+      "status": "DECIDED_TESTED",
+      "statement": "Publish-facing content is rebuilt from checksum-verified durable evidence with the current content generator; stale stored prose must not silently bypass the current content gate.",
+      "source": "R7K.3.2/R7K.3.2.2"
+    },
+    {
+      "id": "CNT-005",
+      "area": "content",
+      "status": "DECIDED",
+      "statement": "Customer-facing content must not expose internal M99 governance/evidence/debug wording; each channel language must be natural and language-pure.",
+      "source": "Product 2041 quality review, 2026-09-14"
+    },
+    {
+      "id": "SEO-001",
+      "area": "seo",
+      "status": "DECIDED",
+      "statement": "Benchmark framework: Amazon/Zalando/eBay for hierarchy, scanability, variants, images, specifications and buying information; Apple for clarity, hierarchy, concise benefits and low-noise presentation; exact manufacturer sources for factual truth; Stenso/Palltex and relevant local competitors for market terminology and positioning without copying prose.",
+      "source": "README v2 benchmark framework"
+    },
+    {
+      "id": "SEO-002",
+      "area": "seo",
+      "status": "DECIDED",
+      "statement": "Search benchmark is dynamic by country/language/query; there is no permanent hardcoded SEO winner.",
+      "source": "README v2 benchmark framework"
+    },
+    {
+      "id": "PRC-004",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "For M99 web channels, the target customer GROSS price is lower than the verified benchmark supplier GROSS price by a randomly generated percentage from 1.00% through 1.70%.",
+      "source": "User decision 2026-09-14"
+    },
+    {
+      "id": "PRC-005",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "The random undercut factor is generated for initial pricing and when a verified supplier benchmark price changes; NO_CHANGE means no price rewrite and no gratuitous re-randomization.",
+      "source": "PRC-004 + existing NO_CHANGE -> NO_WRITE policy"
+    },
+    {
+      "id": "PRC-006",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "Supplier benchmark price is observed daily from the highest-priority verified commercial source: validated B2B when available, otherwise exact supplier product page. Source/category/search/competitor pages are not accepted as commercial price evidence.",
+      "source": "README v3/v10 + user decision 2026-09-14"
+    },
+    {
+      "id": "PRC-007",
+      "area": "pricing",
+      "status": "DECIDED",
+      "statement": "Price change pipeline is SupplierObservation -> verified change detection -> M99 pricing rule -> market currency -> channel VAT -> target GROSS -> platform representation -> write -> API readback -> Front Office gross verification. Out-of-policy anomalies go to NEEDS_REVIEW.",
+      "source": "README v9/v10 + user decision 2026-09-14"
+    },
+    {
+      "id": "AUTO-001",
+      "area": "automation",
+      "status": "DECIDED",
+      "statement": "Human by exception, not by repetition: repeatable decisions covered by approved rules are automated; humans handle policy approval, exceptions, conflicts, destructive actions and high-risk anomalies.",
+      "source": "User decision 2026-09-14"
+    },
+    {
+      "id": "AUTO-002",
+      "area": "automation",
+      "status": "DECIDED",
+      "statement": "Category/multi-product processing must not require product-by-product typed confirmations. Products are machine-classified as AUTO_READY, NEEDS_REVIEW or BLOCKED; batch confirmation applies to the ready set while exceptions are reviewed separately.",
+      "source": "User decision 2026-09-14"
+    },
+    {
+      "id": "AUTO-003",
+      "area": "automation",
+      "status": "DECIDED",
+      "statement": "Automation is fail-closed: any failed critical gate blocks that product/target without blocking unrelated AUTO_READY items unless the failure is systemic.",
+      "source": "User decision 2026-09-14 + QG-001"
+    },
+    {
+      "id": "CH-004",
+      "area": "channels",
+      "status": "DECIDED",
+      "statement": "Every NEW PRODUCT ImportJob provides explicit multi-select target choice across all configured authorized channels; no channel is silently selected by default.",
+      "source": "Existing CH-001/IMP-004 reaffirmed 2026-09-14"
+    },
+    {
+      "id": "CH-005",
+      "area": "channels",
+      "status": "DECIDED",
+      "statement": "Current selectable web-channel scope is mela99.com, rabotni-drehi.com, m99.eu, medicinski-drehi.com, laviro.ro, alviro.ro and toplinka.com; Dolibarr is a separate ERP/CRM/warehouse destination when the workflow permits it.",
+      "source": "README v8/v14 + reaffirmed 2026-09-14"
+    },
+    {
+      "id": "BATCH-001",
+      "area": "batch_publish",
+      "status": "DECIDED",
+      "statement": "Category publishing uses one generalized engine for one product, many products, one/many categories, first N, only-new-to-M99 or all selected products; no per-product custom code.",
+      "source": "README v5/v8 + user decision 2026-09-14"
+    },
+    {
+      "id": "BATCH-002",
+      "area": "batch_publish",
+      "status": "DECIDED",
+      "statement": "Batch quality report must aggregate target readiness, successful writes/readbacks and exception reasons so the operator works on exceptions rather than repetitive confirmations.",
+      "source": "User decision 2026-09-14"
+    },
+    {
+      "id": "LIVE-001",
+      "area": "live_acceptance",
+      "status": "LIVE_ACCEPTED",
+      "statement": "First real Palltex canonical CREATE pilot: Product 2041 / M99 100018 on m99.eu, hidden/offline/non-orderable in Test category 26, strict API truth verified. It proves CREATE plumbing but is not production-ready and must not be activated yet.",
+      "source": "R7K.3.2.2 runtime acceptance, 2026-09-14"
+    },
+    {
+      "id": "LIVE-002",
+      "area": "live_acceptance",
+      "status": "DECIDED",
+      "statement": "Product 2041 quality blockers before production acceptance: no product image, no BWOLF channel brand/manufacturer mapping, no real combinations, mixed-language/customer-internal content, weak SEO lengths/slug, and unvalidated 0% tax rule.",
+      "source": "Back Office quality review, 2026-09-14"
+    }
+  ],
+  "source_checkpoints": [
+    "README v13 2026-09-06",
+    "README v14 2026-09-13",
+    "Decision Registry v2",
+    "R7K.3/R7K.3.1/R7K.3.2.2 accepted milestones",
+    "Product 2041 Back Office/API acceptance",
+    "User decisions 2026-09-14"
+  ],
+  "machine_memory_version": "v16",
+  "checkpoint_date": "2026-09-15",
+  "git_baseline_before_v16": "b9a3140b098287f600f7741c9f7a6bc6bc8aa0b9",
+  "git_governance_v16": {
+    "status": "DECIDED_NORMATIVE",
+    "rules": {
+      "GIT-001": "Every accepted revision ends with Safe Git Checkpoint.",
+      "GIT-002": "Use small checkpoints after each accepted coherent milestone.",
+      "GIT-003": "Runtime, secrets, local-only artifacts never enter Git.",
+      "GIT-004": "Run maintained regression suites only; historical/live diagnostics are separate.",
+      "GIT-005": "Documentation travels with accepted code and decisions do not remain only in chat.",
+      "GIT-006": "Fetch and verify remote parent before push; no force/reset-hard/clean/uncontrolled merge/rebase.",
+      "GIT-007": "One-click operator workflow; target approval is SAVE M99 CHECKPOINT.",
+      "GIT-008": "Every master README checkpoint automatically generates and checkpoints MD + machine JSON + Bulgarian DOCX + DOC as one governed artifact set."
+    },
+    "mandatory_master_artifacts": [
+      "README_M99_vNN_YYYY-MM-DD.md",
+      "M99_MASTER_MACHINE_MEMORY_vNN_YYYY-MM-DD.json",
+      "M99_All_Decisions_BG_vNN_YYYY-MM-DD.docx",
+      "M99_All_Decisions_BG_vNN_YYYY-MM-DD.doc"
+    ],
+    "completion": "Functional Acceptance PASS + Maintained Regression PASS + Safe Git Checkpoint PASS + Push PASS + HEAD == origin/main PASS",
+    "reference_checkpoint": {
+      "tests_passed": 898,
+      "safe_staged_paths": 34,
+      "denied_staged_paths": 0,
+      "runtime_excluded": 6,
+      "commit": "b9a3140b098287f600f7741c9f7a6bc6bc8aa0b9"
+    }
+  },
+  "artifact_integrity": {
+    "README_M99_v16_2026-09-15.md": "fe0972a6c73df1bac982c23eb5995cf2f735d52010f212a2ab7471f68f073ea5",
+    "M99_All_Decisions_BG_v16_2026-09-15.docx": "bcc4584ffa8d10391a37e0fdbb89b0f17b31958e624b9ab1d35ef202938c6917",
+    "M99_All_Decisions_BG_v16_2026-09-15.doc": "110f4ab159781aa6dcd174fd7008dd2fb015e4faa73d4746020f87198a3fc274"
+  }
+}
