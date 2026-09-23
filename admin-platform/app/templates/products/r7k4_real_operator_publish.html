@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Реално публикуване в m99.eu</h1>
+<p><strong>R7K.4 R7.2</strong> — операторско, HIDDEN-FIRST. Реален API write се изпълнява само след READY preview и потвърждение от Super Admin.</p>
+<div style="padding:12px;border:1px solid #bbb;margin:12px 0">
+<form method="post" action="/products/publish/m99eu/canonical/preview">
+<label>Import Job ID <input name="job_id" type="number" min="1" required value="{{ job_id }}"></label>
+<label> Item ID <input name="item_id" type="number" min="1" required value="{{ item_id }}"></label>
+<label> Категория m99.eu <input name="category_id" type="number" min="1" required value="{{ category_id }}"></label>
+<label> Пилотна цена <input name="price_override" required value="{{ price_override }}" placeholder="напр. 49.90"></label>
+<button type="submit">1. Провери продукта</button>
+</form>
+</div>
+{% if preview %}
+<h2>Canonical preview: {{ preview.status }}</h2>
+<p>M99 ID: <strong>{{ preview.identifiers.channel_reference }}</strong> | Supplier ref: {{ preview.identifiers.supplier_reference }} | Manufacturer MPN: {{ preview.identifiers.manufacturer_reference }}</p>
+<p>Снимки: {{ preview.images.count }} | Варианти: {{ preview.variants.rows_count }}</p>
+{% if preview.blockers %}<h3>BLOCKERS</h3><ul>{% for x in preview.blockers %}<li>{{ x }}</li>{% endfor %}</ul>{% endif %}
+{% if preview.ready %}
+<div style="padding:14px;border:2px solid #b55;margin:14px 0">
+<p><strong>Следващият бутон може реално да запише продукт в m99.eu.</strong> Продуктът се създава само като hidden/inactive/non-orderable. Ако M99 reference вече съществува, CREATE не се повтаря.</p>
+<form method="post" action="/products/publish/m99eu/canonical/publish">
+<input type="hidden" name="job_id" value="{{ job_id }}"><input type="hidden" name="item_id" value="{{ item_id }}">
+<input type="hidden" name="category_id" value="{{ category_id }}"><input type="hidden" name="price_override" value="{{ price_override }}">
+<label><input type="checkbox" name="operator_approved" value="yes" required> Потвърждавам реалното HIDDEN публикуване</label>
+<button type="submit">2. ПУБЛИКУВАЙ СКРИТО В m99.eu</button>
+</form></div>
+{% endif %}{% endif %}
+{% if error %}<div style="padding:12px;border:2px solid #b00"><strong>STOP:</strong> {{ error }}</div>{% endif %}
+{% if result %}
+<h2>Резултат</h2>
+<table>
+<tr><th>Created</th><td>{{ result.created }}</td></tr><tr><th>Product ID</th><td>{{ result.product_id }}</td></tr>
+<tr><th>M99 ID</th><td>{{ result.reference }}</td></tr><tr><th>Active</th><td>{{ result.active }}</td></tr>
+<tr><th>Orderable</th><td>{{ result.available_for_order }}</td></tr><tr><th>Visibility</th><td>{{ result.visibility }}</td></tr>
+<tr><th>API truth verified</th><td><strong>{{ result.api_truth_verified }}</strong></td></tr><tr><th>Readback</th><td>{{ result.truth_summary }}</td></tr>
+</table>{% endif %}
+{% endblock %}

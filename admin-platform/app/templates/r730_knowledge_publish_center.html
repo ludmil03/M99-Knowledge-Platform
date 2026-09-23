@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="bg"><head><meta charset="utf-8"><title>M99 Knowledge — Product Publish</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;color:#1d2939}.wrap{max-width:1180px;margin:24px auto;padding:0 20px}
+.card{background:white;border:1px solid #d0d5dd;border-radius:10px;padding:20px;margin-bottom:16px}
+h1{margin:0 0 6px}.muted{color:#667085}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.k{font-size:12px;color:#667085}.v{font-weight:700}.channels{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.ch{padding:12px;border:1px solid #e4e7ec;border-radius:8px}.ok{color:#067647;font-weight:700}.bad{color:#b42318;font-weight:700}
+button{padding:11px 18px;border:0;border-radius:7px;font-weight:700;cursor:pointer}.primary{background:#175cd3;color:white}.publish{background:#067647;color:white}
+.msg{padding:12px;background:#f2f4f7;border-radius:8px;margin:12px 0}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #eee;text-align:left}
+</style></head><body><div class="wrap">
+<div class="card"><h1>M99 Knowledge — Product Publish Center</h1><div class="muted">Phase 4.6 / R7.3 unified operator screen</div></div>
+<div class="card"><h2>{{ reference or "M99 100018" }}</h2><div class="grid">
+<div><div class="k">Supplier reference</div><div class="v">{{ supplier_reference }}</div></div>
+<div><div class="k">Manufacturer reference / MPN</div><div class="v">{{ manufacturer_reference }}</div></div>
+<div><div class="k">Images</div><div class="v">{{ images }}</div></div>
+<div><div class="k">Variants</div><div class="v">{{ variants }}</div></div>
+</div>{% if blockers %}<p class="bad">Canonical BLOCKED: {{ blockers|join(", ") }}</p>{% else %}<p class="ok">Canonical READY</p>{% endif %}</div>
+<form method="post" action="/r730/publish-center/preflight"><div class="card"><h3>Канали за публикуване</h3><div class="channels">
+{% for code,label in channels %}<label class="ch"><input type="checkbox" name="channels" value="{{code}}" {% if selected is defined and code in selected %}checked{% endif %}> {{label}}</label>{% endfor %}
+</div><p><button class="primary" type="submit">ПОДГОТВИ / PREFLIGHT</button></p></div></form>
+{% if message %}<div class="msg">{{message}}</div>{% endif %}
+{% if matrix is defined %}<div class="card"><h3>Publish readiness</h3><table><tr><th>Канал</th><th>Режим</th><th>Статус</th></tr>
+{% for code,r in matrix.items() %}<tr><td>{{r.label}}</td><td>{{r.mode}}</td><td class="{{'ok' if r.status=='AUTO_READY' else 'bad'}}">{{r.status}}</td></tr>{% endfor %}</table>
+<form method="post" action="/r730/publish-center/publish">{% for c in selected %}<input type="hidden" name="channels" value="{{c}}">{% endfor %}
+<input type="hidden" name="confirm" value="PUBLISH_AUTO_READY"><p><button class="publish" type="submit">ПУБЛИКУВАЙ AUTO_READY КАНАЛИТЕ</button></p></form></div>{% endif %}
+</div></body></html>
