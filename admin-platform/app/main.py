@@ -75,3 +75,21 @@ app.include_router(r37_add_products_flow_router)
 # M99_PHASE46_R3_ACTIVE_RUNTIME_INCLUDE
 from app.routers.phase46_r3_content_intelligence import router as phase46_r3_content_router
 app.include_router(phase46_r3_content_router)
+
+# R7K4 R7.1 operator publish route
+from app.api.r7k4_operator_publish_r71 import router as r7k4_operator_publish_r71_router
+app.include_router(r7k4_operator_publish_r71_router)
+
+# R7K4 R7.2 real operator canonical publish
+from app.routers.r7k4_real_operator_publish import router as r7k4_real_operator_publish_router
+app.include_router(r7k4_real_operator_publish_router)
+
+from app.routers import r730_knowledge_publish_center
+app.include_router(r730_knowledge_publish_center.router)
+
+from app.routers.r42_system_diagnostics import router as r42_system_diagnostics_router
+app.include_router(r42_system_diagnostics_router)
+
+# M99 R4.3 Control Center
+from app.routers.r43_control_center import router as r43_control_center_router
+app.include_router(r43_control_center_router)
