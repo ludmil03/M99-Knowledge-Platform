@@ -1,0 +1,127 @@
+{
+  "schema": "m99.knowledge.resume.v18",
+  "version": "18.0",
+  "date": "2026-09-26",
+  "purpose": "Complete restart/resume state. Facts marked verified only where Windows/Git evidence exists.",
+  "git": {
+    "repo": "ludmil03/M99-Knowledge-Platform",
+    "local_path": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+    "branch": "recovery/c447e0d-clean-reconstruction",
+    "observed_local_head": "9a115c10de35f6cc222bc174d980411f7cb22753",
+    "remote_verified_for_observed_head": false,
+    "action": "READ_ONLY_DISCOVER_BEFORE_ANY_RESET"
+  },
+  "verification_contract": {
+    "sequence": [
+      "STATIC",
+      "SYNTAX_AST",
+      "KNOWN_DEFECT_REGRESSION",
+      "STATE_SIMULATIONS",
+      "SAFETY_FAIL_CLOSED",
+      "FOCUSED_TESTS",
+      "FULL_REGRESSION",
+      "PACKAGE_INTEGRITY",
+      "WINDOWS_PRE_GATES",
+      "WINDOWS_ACCEPTANCE",
+      "COMMIT",
+      "PUSH",
+      "REMOTE_VERIFY"
+    ],
+    "missing_gate": "NOT_RELEASEABLE",
+    "failed_revision_never_baseline": true,
+    "windows_only_never_preclaimed_pass": true
+  },
+  "continuous_execution": {
+    "enabled": true,
+    "do_not_wait_when_technical_step_determined": true,
+    "stop_for": [
+      "new_business_rule",
+      "secret",
+      "destructive_action",
+      "new_live_write_authorization",
+      "identity_or_duplicate_ambiguity",
+      "merge_recovery_to_main"
+    ]
+  },
+  "identity": {
+    "format": "M99 + six digits",
+    "reserved_through": 100017,
+    "pilot": "M99 100018",
+    "next_new_id_min": 100019,
+    "create_ne_update": true,
+    "update_never_fallback_create": true
+  },
+  "pilot": {
+    "m99_id": "M99 100018",
+    "job": 27,
+    "item": 29,
+    "m99eu_product_id": 2041,
+    "source_url": "https://palltex.bg/bg/p/daytona/17374",
+    "supplier_ref": "042502",
+    "mpn": "042502",
+    "write_mode": "UPDATE_ONLY_HIDDEN_FIRST"
+  },
+  "pricing": {
+    "gross_below_supplier_percent_random_persisted": [
+      1.0,
+      1.7
+    ],
+    "do_not_regenerate_if_supplier_unchanged": true,
+    "vat": "resolve_from_live_channel_rules",
+    "fail_closed_if_price_or_vat_unproven": true
+  },
+  "channels": [
+    "m99.eu",
+    "mela99.com",
+    "medicinski-drehi.com",
+    "rabotni-drehi.com",
+    "laviro.ro",
+    "alviro.ro",
+    "toplinka.com",
+    "Dolibarr"
+  ],
+  "product_rules": {
+    "supplier_ne_manufacturer": true,
+    "supplier_ref_ne_mpn": true,
+    "delete": "manual_explicit_audited",
+    "productgroup_lifecycle": [
+      "draft",
+      "active",
+      "paused",
+      "retired"
+    ],
+    "daily_sync_creates": false
+  },
+  "automation": {
+    "states": [
+      "AUTO_READY",
+      "NEEDS_REVIEW",
+      "BLOCKED"
+    ],
+    "batch_only_auto_ready_hidden": true,
+    "human_by_exception": true,
+    "max_normal_confirmations": 2
+  },
+  "known_failures": {
+    "R2.8": "PathTooLongException from Copy-Item",
+    "R2.10": "PowerShell tokenization defect around throw plus stale expected HEAD",
+    "R2.11": "stale assumption that R2.9 three-file set was still staged"
+  },
+  "proven": {
+    "R2.9": {
+      "windows_ast": "PASS",
+      "focused": "66 passed",
+      "full_regression": "1064 passed, 6 warnings",
+      "windows_acceptance": "PASS",
+      "staged_files": 3
+    }
+  },
+  "next_action": [
+    "read-only inspect local commit 9a115c10de35f6cc222bc174d980411f7cb22753",
+    "inspect exact commit file set",
+    "fetch/compare origin recovery branch",
+    "no reset",
+    "close checkpoint only with proof",
+    "then resume Product 2041 corrected payload pipeline"
+  ]
+}
