@@ -1,4 +1,4 @@
-from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
+﻿from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -93,3 +93,6 @@ app.include_router(r42_system_diagnostics_router)
 # M99 R4.3 Control Center
 from app.routers.r43_control_center import router as r43_control_center_router
 app.include_router(r43_control_center_router)
+
+from app.routers.r730_knowledge_publish_center import router as r730_knowledge_publish_center
+app.include_router(r730_knowledge_publish_center)

@@ -1,0 +1,101 @@
+{
+  "schema": "m99.policy.full_verification.v1",
+  "policy_id": "M99-FULL-TEST-SIMULATION-RULE",
+  "version": "17.0",
+  "status": "NORMATIVE_MANDATORY",
+  "default_behavior": "FAIL_CLOSED",
+  "applies_to_every_executable_delivery": true,
+  "release_contract": {
+    "ordered_gates": [
+      "STATIC",
+      "SYNTAX_AST",
+      "KNOWN_DEFECT_REGRESSION",
+      "STATE_SIMULATIONS",
+      "SAFETY_FAIL_CLOSED",
+      "FOCUSED_TESTS",
+      "FULL_REGRESSION",
+      "PACKAGE_INTEGRITY",
+      "WINDOWS_PRE_GATES",
+      "WINDOWS_ACCEPTANCE"
+    ],
+    "git_checkpoint_extension": [
+      "COMMIT",
+      "PUSH",
+      "REMOTE_VERIFY"
+    ],
+    "skip_allowed": false,
+    "missing_gate_status": "NOT_RELEASEABLE",
+    "failed_revision_can_be_baseline": false
+  },
+  "known_defect_regression_catalog": [
+    "powershell_foreach_parser",
+    "powershell_automatic_args_collision",
+    "diverged_git_diff_discovery",
+    "arbitrary_staged_file_threshold",
+    "unicode_dependent_matching",
+    "pytest_wrong_root_import_context",
+    "unexpected_git_dirty_state",
+    "ambiguous_write_retry"
+  ],
+  "required_state_simulations": [
+    "happy_path",
+    "zero_change_idempotent",
+    "single_change",
+    "multi_change",
+    "partial_previous_run",
+    "dirty_tree",
+    "unexpected_staged",
+    "unexpected_unstaged",
+    "unexpected_untracked",
+    "missing_source_path_object",
+    "wrong_branch",
+    "wrong_head",
+    "wrong_origin",
+    "remote_moved_or_conflict"
+  ],
+  "safety_fail_closed": {
+    "protected_path_mutation": true,
+    "identity_or_duplicate_ambiguity": true,
+    "unauthorized_website_write": true,
+    "unauthorized_db_migration": true,
+    "unauthorized_process_control": true,
+    "secret_leakage": true,
+    "unintended_create_delete": true,
+    "update_to_create_fallback": true,
+    "ambiguous_write_outcome": true
+  },
+  "windows_only_policy": {
+    "label": "WINDOWS_ONLY",
+    "may_claim_pass_before_execution": false,
+    "automated_pregate_required": true,
+    "pregate_must_run_before_mutation": true
+  },
+  "evidence": {
+    "exact_counts_required": true,
+    "separate_static_simulation_runtime_windows": true,
+    "unverified_commit_push_claims_forbidden": true
+  },
+  "continuous_execution": {
+    "enabled": true,
+    "verification_skip_for_speed": false,
+    "consolidate_related_changes_when_safe": true
+  },
+  "current_proven_state": {
+    "revision": "R2.6",
+    "windows_ast": "PASS",
+    "focused": {
+      "passed": 66,
+      "failed": 0
+    },
+    "full_regression": {
+      "passed": 1064,
+      "failed": 0,
+      "warnings": 6
+    },
+    "windows_acceptance": "PASS",
+    "website_write": false,
+    "db_migration": false,
+    "process_kill": false,
+    "commit_push_by_revision": false
+  }
+}
