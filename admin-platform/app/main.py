@@ -1,4 +1,4 @@
-﻿from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
+from app.routers.rev31_source_category_governance import router as rev31_source_category_governance_router
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -96,3 +96,7 @@ app.include_router(r43_control_center_router)
 
 from app.routers.r730_knowledge_publish_center import router as r730_knowledge_publish_center
 app.include_router(r730_knowledge_publish_center)
+
+# M99 Bultex99 v2 additive read-only preview router
+from app.routers.bultex99_import_preview import router as bultex99_import_preview_router
+app.include_router(bultex99_import_preview_router)
