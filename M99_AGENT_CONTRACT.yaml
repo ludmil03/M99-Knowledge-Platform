@@ -1,0 +1,121 @@
+{
+  "schema": "m99.agent.contract.v1",
+  "version": "19.3",
+  "normative_source": "README_M99_v17_FULL_VERIFICATION_RULE.md",
+  "release_sequence": [
+    "STATIC",
+    "SYNTAX_AST",
+    "KNOWN_DEFECT_REGRESSION",
+    "STATE_SIMULATIONS",
+    "SAFETY_FAIL_CLOSED",
+    "FOCUSED_TESTS",
+    "FULL_REGRESSION",
+    "PACKAGE_INTEGRITY",
+    "WINDOWS_PRE_GATES",
+    "WINDOWS_ACCEPTANCE"
+  ],
+  "checkpoint_sequence": [
+    "COMMIT",
+    "PUSH",
+    "REMOTE_VERIFY"
+  ],
+  "missing_gate_status": "NOT_RELEASEABLE",
+  "continuous_execution": {
+    "enabled": true,
+    "do_not_wait_when_technical_step_determined": true,
+    "operator_decision_required_only_for": [
+      "new_business_rule",
+      "secret",
+      "destructive_action",
+      "new_live_write_authorization",
+      "identity_or_duplicate_ambiguity",
+      "merge_recovery_to_main"
+    ]
+  },
+  "git": {
+    "stable_baseline_never_mutated": true,
+    "failed_revision_never_baseline": true,
+    "forbidden_operations": [
+      "reset",
+      "clean",
+      "rebase",
+      "force_push",
+      "automatic_merge"
+    ],
+    "exact_staging_only": true,
+    "fail_closed_on_remote_moved_or_conflict": true
+  },
+  "safety": {
+    "website_write_requires_explicit_authorization": true,
+    "db_migration_requires_explicit_authorization": true,
+    "process_kill_requires_explicit_authorization": true,
+    "update_never_fallback_create": true,
+    "ambiguous_write_auto_retry": false,
+    "secret_storage_in_repo": false
+  },
+  "publishing": {
+    "write_targets_rule": "REQUESTED ∩ AUTHORIZED ∩ READY",
+    "operator_selects_scope": true,
+    "operator_selects_targets": true,
+    "selection_modes": [
+      "ONE_PRODUCT",
+      "MULTIPLE_PRODUCTS",
+      "ONE_CATEGORY",
+      "MULTIPLE_CATEGORIES",
+      "ALL_CATEGORIES",
+      "ONLY_NEW",
+      "FIRST_N",
+      "MANUAL_SELECTION"
+    ]
+  },
+  "supplier_architecture": {
+    "separate_adapters": [
+      "PALLTEX",
+      "STENSO_LEGACY",
+      "BULTEX99"
+    ],
+    "do_not_repurpose_palltex_for_bultex99": true
+  },
+  "milestone_policy": {
+    "unit": "ONE_FUNCTIONAL_MILESTONE",
+    "maximize_local_simulation_before_windows_acceptance": true,
+    "target_windows_acceptance_cycles": 1
+  },
+  "known_defect_regressions": {
+    "v19_self_referential_forbidden_token_scan": "FIXED",
+    "v19_nested_pause_with_captured_output": "FIXED",
+    "v19_focused_full_stage_separation": "FIXED",
+    "v19_1_wrong_pytest_root_import_context": "FIXED",
+    "v19_1_backup_test_duplicate_collection": "FIXED",
+    "v19_1_operational_script_collection": "FIXED",
+    "v19_1_live_bultex_network_collection": "FIXED",
+    "v19_1_live_bultex_credentials_collection": "FIXED",
+    "v19_2_dead_code_full_regression_fix_not_wired_into_stage_plan": "FIXED_CENTRAL_STAGE_PLAN",
+    "wrong_pytest_root_import_context": "FIXED",
+    "archive_duplicate_test_collection": "FIXED",
+    "operational_script_collection": "FIXED",
+    "credential_or_network_live_collection": "FIXED"
+  },
+  "full_regression_policy": {
+    "mode": "EXPLICIT_ALLOW_LIST",
+    "roots": [
+      {
+        "cwd": ".",
+        "target": "tests"
+      },
+      {
+        "cwd": "admin-platform",
+        "target": "tests"
+      }
+    ],
+    "forbidden_collection": [
+      "output/**",
+      "**/hotfix_backup/**",
+      "scripts/**",
+      "live network diagnostics",
+      "credential-dependent probes"
+    ],
+    "naked_repository_pytest_forbidden": true,
+    "admin_platform_import_context": "cwd=admin-platform"
+  }
+}

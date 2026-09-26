@@ -1,0 +1,10 @@
+{
+  "schema": "m99.release.manifest.v19.3",
+  "sha256": {
+    "M99_AGENT_CONTRACT.yaml": "917d6daf99d329d11bbc8a78b42a26a3c6fe986cde8fa01742940def9be66802",
+    "RUN_M99_RELEASE_GATE.cmd": "bc014522dd4d1d2131830e34a257d1b77c7be75890b760aa1d88d8fb8c2bfaf6",
+    "scripts/m99_release_gate.py": "334e26bcf48b3f1a1a499077458b2b6ed85fb056710301c6894e271267668a66",
+    "tests/test_m99_release_gate_v19.py": "a4afdde121076c40c2745a70c98f2e56a323ac35f7a1b7c71a6e1aa35861a99c",
+    "README_M99_v19_DEVELOPMENT_SYSTEM.md": "38845c27a2cef150d74086ec0816d35d853dd9fb87015b65209f172332cbad1d"
+  }
+}
