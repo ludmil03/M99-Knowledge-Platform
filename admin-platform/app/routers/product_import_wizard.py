@@ -1,10 +1,12 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pathlib import Path
 
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+
+from app.services.stage3_final_unified_intake import build_stage3_final_review
 
 from app.services.product_import_wizard import (
     ImportWizardDraft,
@@ -254,6 +256,8 @@ def prepare_preflight(request: Request):
             error="Няма READY target. Не може да се продължи.",
         )
 
+    final_result, final_context = build_stage3_final_review(draft)
+
     draft.current_state = "ready_for_preflight"
     _save_draft(request, draft)
 
@@ -262,9 +266,11 @@ def prepare_preflight(request: Request):
         "ready",
         draft,
         review=build_review_summary(draft),
-        message=(
-            "Wizard Foundation е готова. Следващата версия ще свърже "
-            "Identity Resolver, Supplier Browser и live per-channel Preflight. "
-            "В тази версия НЕ се прави write."
-        ),
+        stage3_final=final_result,
+        multi_selection=final_context["multi_selection"],
+        multi_review=final_context["multi_review"],
+        selection_blockers=final_context["selection_blockers"],
+        publish_enabled=False,
+        write_performed=False,
+        message="Stage 3 Unified Product Intake е активен в review-only режим. Няма publish/write.",
     )

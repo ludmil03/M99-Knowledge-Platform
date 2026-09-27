@@ -26,6 +26,21 @@
     {% endfor %}
   </div>
 
+  {% if qa_view is defined and qa_view %}
+  <section id="m99-stage3-qa" class="m99-card" aria-label="Stage 3 QA readiness">
+    <h3>QA / Готовност</h3>
+    {% if qa_view.ready_for_targets %}
+      <div class="m99-alert m99-alert-ok">READY_FOR_TARGETS</div>
+    {% else %}
+      <div class="m99-alert m99-alert-error">BLOCKED</div>
+    {% endif %}
+    {% if qa_view.blockers %}
+      <ul>{% for blocker in qa_view.blockers %}<li>{{ blocker }}</li>{% endfor %}</ul>
+    {% endif %}
+    <p><strong>Publish:</strong> ИЗКЛЮЧЕНО в Stage 3.</p>
+  </section>
+  {% endif %}
+
   {% if error %}
   <div class="m99-alert m99-alert-error">{{ error }}</div>
   {% endif %}
@@ -213,6 +228,27 @@
 </div>
 {% endblock %}
 
+
+<!-- M99_STAGE3_A11_UNIFIED_REVIEW_BEGIN -->
+{% if step == 'review' and product_evidence is defined %}
+<section class="m99-card" id="m99-unified-product-evidence">
+  <h3>Проверени продуктови данни</h3>
+  <div class="m99-summary-box">
+    <div><b>Supplier Product ID:</b> {{ product_evidence.supplier_product_id }}</div>
+    <div><b>Supplier SKU:</b> {{ product_evidence.supplier_product_sku or '—' }}</div>
+    <div><b>Variants:</b> {{ product_evidence.variants|join(', ') if product_evidence.variants else '—' }}</div>
+    <div><b>Availability:</b> {{ product_evidence.availability or 'NOT STATED' }}</div>
+    <div><b>Standard:</b> {{ product_evidence.standard or 'NOT STATED / N/A' }}</div>
+    <div><b>Standard status:</b> {{ product_evidence.standard_status }}</div>
+    <div><b>Provenance:</b> {{ product_evidence.standard_provenance or '—' }}</div>
+  </div>
+  {% if product_evidence.blockers %}<div class="m99-alert m99-alert-error">BLOCKERS: {{ product_evidence.blockers|join(', ') }}</div>
+  {% else %}<div class="m99-alert m99-alert-ok">Evidence review: READY</div>{% endif %}
+  <p class="m99-muted"><strong>Stage 3:</strong> review-only. Publish остава изключен.</p>
+</section>
+{% endif %}
+<!-- M99_STAGE3_A11_UNIFIED_REVIEW_END -->
+
 <!-- M99_STAGE2_R12_CHANNEL_STATUS_BEGIN -->
 <section id="m99-channel-governance-status" aria-label="M99 Channel Governance">
   <h3>Статус на каналите</h3>
@@ -234,3 +270,17 @@
 </section>
 <!-- M99_STAGE2_R12_CHANNEL_STATUS_END -->
 <!-- M99_CHANNEL_GOVERNANCE: targets supplied by governed product_import_wizard.available_targets(); publish remains disabled in Stage2 -->
+
+<!-- M99_STAGE3_FINAL_MAXSIM_BEGIN -->
+{% if stage3_final is defined %}
+<section class="card">
+<h2>Stage 3 - Unified Product Intake</h2>
+<p><strong>Selection:</strong> {{ stage3_final.selection_mode }}</p>
+<p><strong>Resolved:</strong> {{ stage3_final.resolved_count }} | <strong>READY:</strong> {{ stage3_final.ready_count }} | <strong>BLOCKED:</strong> {{ stage3_final.blocked_count }}</p>
+{% if selection_blockers %}<p><strong>Blockers:</strong> {{ selection_blockers|join(", ") }}</p>{% endif %}
+<p><strong>READY targets:</strong> {{ stage3_final.ready_targets|join(", ") }}</p>
+<p><strong>BLOCKED targets:</strong> {{ stage3_final.blocked_targets|join(", ") }}</p>
+<p>Review-only. Publish/write is disabled in Stage 3.</p>
+</section>
+{% endif %}
+<!-- M99_STAGE3_FINAL_MAXSIM_END -->
