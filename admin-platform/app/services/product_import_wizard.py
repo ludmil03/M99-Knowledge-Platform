@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from enum import StrEnum
@@ -127,36 +127,12 @@ def propose_organization(name: str, roles: Iterable[str]) -> dict[str, object]:
 
 
 def available_targets() -> list[TargetOption]:
-    return list(DEFAULT_TARGETS)
-
+    from app.services.channel_registry_bridge import available_governed_targets
+    return [TargetOption(x.key, x.key if x.key != "dolibarr" else "Dolibarr ERP", x.kind, x.authorized, x.ready, x.note) for x in available_governed_targets()]
 
 def resolve_target_scope(requested: Iterable[str]) -> dict[str, list[str]]:
-    requested_unique = list(dict.fromkeys(x.strip() for x in requested if x.strip()))
-    by_key = {t.key: t for t in DEFAULT_TARGETS}
-
-    authorized: list[str] = []
-    ready: list[str] = []
-    blocked: list[str] = []
-
-    for key in requested_unique:
-        target = by_key.get(key)
-        if target is None:
-            blocked.append(key)
-            continue
-        if target.authorized:
-            authorized.append(key)
-        if target.authorized and target.ready:
-            ready.append(key)
-        else:
-            blocked.append(key)
-
-    return {
-        "requested_targets": requested_unique,
-        "authorized_targets": authorized,
-        "ready_targets": ready,
-        "blocked_targets": blocked,
-    }
-
+    from app.services.channel_registry_bridge import resolve_governed_target_scope
+    return resolve_governed_target_scope(requested)
 
 def validate_selection(mode: str, products: list[str], categories: list[str], first_n: int | None) -> None:
     valid = {m.value for m in SelectionMode}

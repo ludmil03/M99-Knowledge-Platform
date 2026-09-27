@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block content %}
 <div class="m99-wizard-shell">
   <div class="m99-wizard-top">
@@ -212,3 +212,25 @@
   {% endif %}
 </div>
 {% endblock %}
+
+<!-- M99_STAGE2_R12_CHANNEL_STATUS_BEGIN -->
+<section id="m99-channel-governance-status" aria-label="M99 Channel Governance">
+  <h3>Статус на каналите</h3>
+  <p>Публикуване е разрешено само за избран канал, който е едновременно разрешен и готов.</p>
+  {% if targets is defined %}
+  <ul>
+    {% for target in targets %}
+    <li data-channel="{{ target.key }}">
+      <strong>{{ target.label }}</strong> —
+      {% if target.authorized and target.ready %}ГОТОВ
+      {% elif target.authorized %}РАЗРЕШЕН / ОЧАКВА ПРОВЕРКА
+      {% else %}БЛОКИРАН{% endif %}
+      {% if target.note %} — {{ target.note }}{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <p><strong>Stage 2:</strong> публикуването остава изключено.</p>
+</section>
+<!-- M99_STAGE2_R12_CHANNEL_STATUS_END -->
+<!-- M99_CHANNEL_GOVERNANCE: targets supplied by governed product_import_wizard.available_targets(); publish remains disabled in Stage2 -->
