@@ -1,0 +1,272 @@
+{
+  "schema": "m99.master_machine_memory.v20.consolidation_r1",
+  "generated_at": "2026-09-27T12:12:00+03:00",
+  "status": "DECIDED_DOCUMENTATION_CHECKPOINT",
+  "precedence": {
+    "rule": "latest explicit superseding decision wins; history preserved",
+    "anti_loop": "DECIDED != IMPLEMENTED"
+  },
+  "project": {
+    "name": "M99 Knowledge Platform",
+    "repository": "ludmil03/M99-Knowledge-Platform",
+    "proven_base_sha": "7c81f3b17148392041d31aabe4a3ed809f5ad5d0",
+    "operator_entrypoint": "/operator/add-products",
+    "publishing_ui": "M99 Knowledge only",
+    "cmd_role": "development/install/test only"
+  },
+  "supplier_lines": {
+    "stenso_bultex99": {
+      "role": "general import/selection + public/B2B separation",
+      "legacy_stenso": "migration/identity evidence only",
+      "golden_product": "Panda UNO LOW 11720E",
+      "reuse": [
+        "connector contract",
+        "8 selection modes",
+        "identity preview",
+        "target intersection",
+        "dry-run",
+        "wizard bridge"
+      ]
+    },
+    "calenda": {
+      "role": "evidence/hydration/variant/image accuracy",
+      "reuse": [
+        "supplier reference governance",
+        "color/size grouping",
+        "variant image evidence",
+        "availability semantics",
+        "reconciliation"
+      ]
+    },
+    "palltex": {
+      "role": "durable evidence + identity + publish/readback safety",
+      "reuse": [
+        "manufacturer/brand resolution",
+        "durable evidence",
+        "identity gates",
+        "content gate",
+        "controlled write",
+        "readback",
+        "audit"
+      ],
+      "historical_live_reference": "M99 100018 / m99.eu product 2041"
+    }
+  },
+  "unified_pipeline": [
+    "Supplier Selection",
+    "Selection Scope",
+    "Hydration",
+    "Evidence",
+    "Identity",
+    "Canonical Product",
+    "Content",
+    "Price/VAT",
+    "Quality Gates",
+    "Channel Selection",
+    "Review",
+    "Publish",
+    "Readback",
+    "Audit"
+  ],
+  "selection_modes": [
+    "one_product",
+    "multiple_products",
+    "one_category",
+    "multiple_categories",
+    "all_products",
+    "first_n",
+    "only_new_to_m99",
+    "manual_selection"
+  ],
+  "identity": {
+    "new_reference_regex": "^M99 [0-9]{6}$",
+    "states": [
+      "NEW",
+      "EXISTING",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "no_reuse": true,
+    "update_never_falls_back_to_create": true
+  },
+  "product_group": {
+    "lifecycle": [
+      "draft",
+      "active",
+      "paused",
+      "retired"
+    ],
+    "hard_delete": {
+      "operator_approval": true,
+      "typed_confirmation": "DELETE",
+      "audit": true
+    }
+  },
+  "canonical_languages": [
+    "BG",
+    "EN",
+    "RU",
+    "RO"
+  ],
+  "channels": [
+    {
+      "id": "mela99.com",
+      "platform": "Thirty Bees / PrestaShop 1.7 family",
+      "kind": "WEB"
+    },
+    {
+      "id": "m99.eu",
+      "platform": "PrestaShop 9.1.5",
+      "kind": "WEB",
+      "proven_languages": {
+        "1": "en",
+        "2": "bg",
+        "3": "ru"
+      }
+    },
+    {
+      "id": "rabotni-drehi.com",
+      "platform": "WordPress",
+      "kind": "WEB"
+    },
+    {
+      "id": "medicinski-drehi.com",
+      "platform": "WordPress",
+      "kind": "WEB"
+    },
+    {
+      "id": "laviro.ro",
+      "platform": "PrestaShop 1.6.1.24",
+      "kind": "WEB"
+    },
+    {
+      "id": "alviro.ro",
+      "platform": "Romanian e-commerce channel",
+      "kind": "WEB",
+      "ready": "TO_PROVE"
+    },
+    {
+      "id": "toplinka.com",
+      "platform": "WordPress / WooCommerce",
+      "kind": "WEB",
+      "status": "INCLUDED_IN_CHANNEL_REGISTRY_AND_SELECTION",
+      "ready": "TO_PROVE"
+    },
+    {
+      "id": "dolibarr",
+      "platform": "Dolibarr ERP/CRM/Warehouse",
+      "kind": "ERP",
+      "ready": "TO_PROVE"
+    }
+  ],
+  "target_formula": "WRITE_TARGETS = REQUESTED ∩ AUTHORIZED ∩ READY",
+  "pricing": {
+    "target": "GROSS_VAT_INCLUDED",
+    "supplier_undercut_percent": {
+      "min": 1.0,
+      "max": 1.7,
+      "selection": "persisted_random"
+    },
+    "no_change_no_write": true,
+    "monitoring": "DAILY",
+    "vat": "channel/market configuration; never universal hardcode"
+  },
+  "content": {
+    "evidence_first": true,
+    "languages": [
+      "BG",
+      "EN",
+      "RU",
+      "RO"
+    ],
+    "h1_exactly_one": true,
+    "short_meta_similarity_max": 0.75,
+    "long_description_target_words": "500-800 if evidence supports",
+    "faq_target": "4-8 if evidence supports",
+    "images": "WEBP approx 1200-1400px",
+    "variants": "evidence only; exactly one default combination"
+  },
+  "publishing": {
+    "operator_surface": "M99 Knowledge UI",
+    "cmd_publish": false,
+    "create_update_separate": true,
+    "delete_normal_pipeline": false,
+    "ambiguous_write_retry": false,
+    "mandatory_readback": true,
+    "audit": true
+  },
+  "development": {
+    "maxsim_before_windows": true,
+    "release_gate": [
+      "STATIC",
+      "SYNTAX_AST",
+      "KNOWN_DEFECT_REGRESSION",
+      "STATE_SIMULATIONS",
+      "SAFETY_FAIL_CLOSED",
+      "FOCUSED_TESTS",
+      "FULL_REGRESSION",
+      "PACKAGE_INTEGRITY",
+      "WINDOWS_PRE_GATES",
+      "WINDOWS_ACCEPTANCE",
+      "COMMIT",
+      "PUSH",
+      "REMOTE_VERIFY"
+    ],
+    "failed_revision_never_stable": true
+  },
+  "five_stage_plan": [
+    {
+      "stage": 1,
+      "name": "Consolidation Map",
+      "write": false,
+      "deliverables": [
+        "inventory",
+        "AUTHORITATIVE/REUSE/LEGACY/DEPRECATE/TEST-HISTORY map",
+        "dependency map",
+        "regression specification"
+      ]
+    },
+    {
+      "stage": 2,
+      "name": "Unified Supplier Adapter Contract",
+      "goal": "three supplier-specific adapters return one SupplierProductEvidence contract"
+    },
+    {
+      "stage": 3,
+      "name": "Unified Product Intake Pipeline",
+      "goal": "Selection→Hydration→Evidence→Identity→Canonical→Content→Price/VAT→QA→Targets under /operator/add-products"
+    },
+    {
+      "stage": 4,
+      "name": "Unified Publish Service",
+      "goal": "UI→Publish Service→Channel Adapter→API→Readback→Audit; supplier-independent; toplinka WooCommerce included"
+    },
+    {
+      "stage": 5,
+      "name": "Migration + Regression",
+      "golden_flows": [
+        "Bultex99 / Panda UNO LOW",
+        "Calenda color-size-image evidence scenario",
+        "Palltex / BWolf / M99 100018 history"
+      ],
+      "deprecate_old_paths_only_after_equivalence": true
+    }
+  ],
+  "current_decisions_2026_09_27": [
+    "Do not create a new operator path.",
+    "Publishing must occur through M99 Knowledge, not CMD.",
+    "Study and consolidate STENSO/Bultex99, Calenda and Palltex histories.",
+    "toplinka.com is WordPress/WooCommerce and must be included in Channel Registry and Channel Selection.",
+    "Next work is the five-stage consolidation plan.",
+    "Documentation checkpoint includes README, machine-readable memory, Bulgarian DOC and DOCX."
+  ],
+  "safety": [
+    "no reset/clean/rebase/force-push",
+    "exact staging only",
+    "no secrets",
+    "no blind retry after ambiguous write",
+    "supplier availability != M99 physical stock",
+    "API success != business acceptance",
+    "no live website write in Consolidation R1"
+  ]
+}
