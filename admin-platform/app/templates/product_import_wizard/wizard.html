@@ -284,3 +284,7 @@
 </section>
 {% endif %}
 <!-- M99_STAGE3_FINAL_MAXSIM_END -->
+
+<!-- M99_STAGE4_UI_AUTHORIZATION_BEGIN -->
+{% if stage4_publish_preview is defined %}<section class="m99-card" id="m99-stage4-publish-preview"><h2>Stage 4 — Преглед преди публикуване</h2><p><b>Източник:</b> {{ stage4_publish_preview.source }}</p><p><b>Канали:</b> {{ stage4_publish_preview.targets|join(', ') }}</p><p><b>Exact scope:</b> <code>{{ stage4_publish_preview.scope_token }}</code></p><div class="m99-alert">СИМУЛАЦИЯ / САМО ПРЕГЛЕД</div><button type="button" disabled>Публикувай — ЗАКЛЮЧЕНО</button><p>Write performed: NO</p></section>{% endif %}
+<!-- M99_STAGE4_UI_AUTHORIZATION_END -->

@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.services.stage3_final_unified_intake import build_stage3_final_review
+from app.services.stage4_ui_authorization_bridge import build_publish_preview
 
 from app.services.product_import_wizard import (
     ImportWizardDraft,
@@ -257,6 +258,7 @@ def prepare_preflight(request: Request):
         )
 
     final_result, final_context = build_stage3_final_review(draft)
+    publish_preview = build_publish_preview(draft, final_result)
 
     draft.current_state = "ready_for_preflight"
     _save_draft(request, draft)
@@ -272,5 +274,7 @@ def prepare_preflight(request: Request):
         selection_blockers=final_context["selection_blockers"],
         publish_enabled=False,
         write_performed=False,
+        stage4_publish_preview=publish_preview,
+        # M99_STAGE4_UI_AUTHORIZATION_BEGIN / END
         message="Stage 3 Unified Product Intake е активен в review-only режим. Няма publish/write.",
     )
