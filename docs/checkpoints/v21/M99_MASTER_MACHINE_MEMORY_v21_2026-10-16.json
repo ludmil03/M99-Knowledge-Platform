@@ -1,0 +1,100 @@
+{
+  "schema": "m99.master_machine_memory.v21",
+  "checkpoint_date": "2026-10-16",
+  "status": "DOCUMENTATION_PREPARED_LOCAL_GIT_AUDIT_PENDING_NOT_COMMITTED_NOT_PUSHED",
+  "precedence": "latest explicit superseding decision wins; v19 dated 2026-10-06 later than v20 dated 2026-09-27; SP001 2026-10-08 later",
+  "source_documents": [
+    {
+      "id": "v15",
+      "filename": "README_M99_v15_2026-09-14(1).md",
+      "sha256": "b22df4fcfe2f68675da1727ae272f45bacc1a8b1b0b09eb8e9715a714bb38656"
+    },
+    {
+      "id": "v16",
+      "filename": "README_M99_v16_2026-09-21(1).md",
+      "sha256": "ef42f99f6f0483e8114063d0eb1b8bcca3fa5e03cd35bfca41c5f0a5fd396c46"
+    },
+    {
+      "id": "v18",
+      "filename": "README_M99_v18_2026-09-26(3).md",
+      "sha256": "b461438bdb17868874a859484d03f986805f3aec0fd923a5c99bf8eb19cb7302"
+    },
+    {
+      "id": "v19",
+      "filename": "README_M99_v19_2026-10-06(3).md",
+      "sha256": "a9195a7bffa8425a2d8b5b79737aea5b84fe8b39d06d53b4f24fb1b341cb1915"
+    },
+    {
+      "id": "v20",
+      "filename": "README_M99_v20_CONSOLIDATION_R1_2026-09-27(1).md",
+      "sha256": "1cc9da5b1f51f682bf7a93ce44830098afb2aec462bf678c83359b2c4fb7d752"
+    },
+    {
+      "id": "SP001",
+      "filename": "M99_GOVERNANCE_RULE_M99-SP-001_2026-10-08.md",
+      "sha256": "e579315398926a7bcb01de3c7b22f1c8597f1badf06db4f898514fe0bdc2c012"
+    }
+  ],
+  "canonical_ui": "/add-products",
+  "source_adapters": [
+    "Bultex99 public",
+    "Calenda",
+    "Palltex",
+    "new supplier adapters (Feya NOT PROVEN)"
+  ],
+  "governance": {
+    "no_fourth_importer": true,
+    "selected_only_persistence": "M99-SP-001",
+    "write_targets": "REQUESTED ∩ AUTHORIZED ∩ READY",
+    "release_gate": [
+      "STATIC",
+      "SYNTAX_AST",
+      "KNOWN_DEFECT_REGRESSION",
+      "STATE_SIMULATIONS",
+      "SAFETY_FAIL_CLOSED",
+      "FOCUSED_TESTS",
+      "FULL_REGRESSION",
+      "PACKAGE_INTEGRITY",
+      "WINDOWS_PRE_GATES",
+      "WINDOWS_ACCEPTANCE",
+      "REAL_M99_UI_ACCEPTANCE",
+      "COMMIT",
+      "PUSH",
+      "REMOTE_VERIFY"
+    ],
+    "no_blind_commit_all": true,
+    "no_destructive_git": true
+  },
+  "last_documented_git": {
+    "original_worktree": "C:\\Users\\user\\Documents\\GitHub\\M99-Knowledge-Platform",
+    "changed_files_snapshot": 38,
+    "snapshot_date": "2026-10-06",
+    "current_local_state": "UNVERIFIED",
+    "clean_runtime_worktree": "C:\\Users\\user\\Documents\\GitHub\\M99-CANONICAL-ADD-PRODUCTS-V6-R1\\M99-Knowledge-Platform"
+  },
+  "remote_exact_path_audit": {
+    "main": {
+      "README.md": "PRESENT",
+      "README_M99_v15_2026-09-14.md": "PRESENT",
+      "README_M99_v16_2026-09-21.md": "NOT_FOUND_AT_EXACT_PATH",
+      "README_M99_v18_2026-09-26.md": "NOT_FOUND_AT_EXACT_PATH",
+      "README_M99_v19_2026-10-06.md": "NOT_FOUND_AT_EXACT_PATH",
+      "README_M99_v20_CONSOLIDATION_R1_2026-09-27.md": "NOT_FOUND_AT_EXACT_PATH",
+      "docs/governance/M99_GOVERNANCE_RULE_M99-SP-001_2026-10-08.md": "NOT_FOUND_AT_EXACT_PATH"
+    },
+    "docs/m99-sp-001": {
+      "README_M99_v15_2026-09-14.md": "PRESENT",
+      "README_M99_v18_2026-09-26.md": "PRESENT",
+      "README_M99_v20_CONSOLIDATION_R1_2026-09-27.md": "PRESENT",
+      "docs/governance/M99_GOVERNANCE_RULE_M99-SP-001_2026-10-08.md": "PRESENT"
+    }
+  },
+  "acceptance": {
+    "r7_r1_windows": "HISTORICAL_PASS",
+    "r7_r1_real_m99": "HISTORICAL_FAIL",
+    "latest_real_m99": "NOT_VERIFIED",
+    "docs_v21": "LOCAL_ONLY"
+  },
+  "next_action": "Run read-only local Git audit; review every changed file and secrets; reconcile branch-specific missing README; exact-stage after operator approval; commit/push/remote-verify",
+  "readme_v21_sha256": "49a292006fac334de9f07300c6c87b6c3a55b40e005e28a9de4dfd706e1ab319"
+}
