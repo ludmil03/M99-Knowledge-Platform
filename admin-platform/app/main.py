@@ -100,3 +100,7 @@ app.include_router(r730_knowledge_publish_center)
 # M99 Bultex99 v2 additive read-only preview router
 from app.routers.bultex99_import_preview import router as bultex99_import_preview_router
 app.include_router(bultex99_import_preview_router)
+
+# M99 operator VAT configuration (additive route)
+from app.routers.operator_vat_settings import router as operator_vat_settings_router
+app.include_router(operator_vat_settings_router)

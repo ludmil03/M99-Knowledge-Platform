@@ -8,7 +8,9 @@ WORKSPACE = ROOT / "admin-platform/app/templates/add_products/workspace.html"
 def test_explicit_prepare_then_explicit_draft():
     r = ROUTER.read_text(encoding="utf-8")
     w = WORKSPACE.read_text(encoding="utf-8")
-    assert '/add-products/r37/prepare' in w
+    # M99_M2_GOVERNANCE_TRANSITION
+    assert '/add-products/m2/review' in w
+    assert '/add-products/r37/prepare' not in w
     assert '@router.post("/prepare"' in r
     assert '@router.post("/create-draft"' in r
     assert "resolve_identity_then_create_draft" in r

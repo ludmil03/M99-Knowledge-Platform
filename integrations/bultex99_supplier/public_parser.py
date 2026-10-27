@@ -28,7 +28,7 @@ def parse_public_product(html:str,source_url:str)->PublicProduct:
     avail=None
     if re.search(r"В наличност",text,re.I): avail="IN_STOCK"
     elif re.search(r"Изчерпано",text,re.I): avail="OUT_OF_STOCK"
-    standard=re.search(r"\b(EN\s*\d+(?::\d{4})?(?:\+A\d:\d{4})?)\b",text,re.I)
+    standard=re.search(r"\b(EN(?:\s+ISO)?\s*:?\s*\d+(?::\d{4})?(?:\+A\d:\d{4})?)\b",text,re.I)
     if not name: raise Bultex99PublicParseError("Product name missing")
     return PublicProduct(
       supplier_product_id=pid,source_url=source_url,name=name,

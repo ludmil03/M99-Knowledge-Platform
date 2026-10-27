@@ -222,9 +222,35 @@
       <div><b>READY targets:</b> {{ review.ready_targets|join(', ') }}</div>
       <div><b>Blocked/Review:</b> {{ review.blocked_targets|join(', ') }}</div>
     </div>
-    <a class="m99-btn" href="/operator/add-products">Нов Import</a>
+    <a class="m99-btn" href="/add-products">Нов Import</a>
   </section>
   {% endif %}
+<!-- M99_STAGE5_LIVE_PREFLIGHT_UI_BEGIN -->
+{% if stage5_live_preflight is defined %}<section class="m99-card" id="m99-stage5-live-preflight"><h2>Stage 5 — m99.eu Live Preflight</h2><p><b>Authentication:</b> {{ 'OK' if stage5_live_preflight.authenticated else 'BLOCKED' }}</p><p><b>Languages:</b> EN={{ stage5_live_preflight.language_map.en }}, BG={{ stage5_live_preflight.language_map.bg }}, RU={{ stage5_live_preflight.language_map.ru }}</p><p><b>Products API:</b> GET={{ stage5_live_preflight.products_get }}, POST permission={{ stage5_live_preflight.products_post_permission }}, PUT permission={{ stage5_live_preflight.products_put_permission }}</p><p><b>Test category:</b> {{ stage5_live_preflight.category_id }} · <b>Schema fields:</b> {{ stage5_live_preflight.schema_fields }}</p><p><b>Credential:</b> {{ stage5_live_preflight.credential }}</p><div class="m99-alert">READ-ONLY PREFLIGHT. POST/PUT НЕ СЕ ИЗПЪЛНЯВАТ.</div><button type="button" disabled>Публикувай — ЗАКЛЮЧЕНО</button></section>{% endif %}
+{% if step == 'ready' and 'm99.eu' in draft.ready_targets %}<form method="post" action="/operator/add-products/m99eu-live-preflight"><button class="m99-btn m99-btn-primary" type="submit">Провери m99.eu — READ ONLY</button></form>{% endif %}
+<!-- M99_STAGE5_LIVE_PREFLIGHT_UI_END -->
+
+<!-- M99_STAGE5_PRODUCTION_READINESS_UI_BEGIN -->
+{% if step == 'ready' and 'm99.eu' in draft.ready_targets %}
+<form method="post" action="/operator/add-products/production-readiness">
+<button class="m99-btn m99-btn-primary" type="submit">Production readiness — READ ONLY</button>
+</form>
+{% endif %}
+{% if stage5_production_readiness is defined and stage5_production_readiness %}
+<section class="m99-card" id="m99-stage5-production-readiness">
+<h2>Stage 5 — Production Readiness</h2>
+<p><b>Status:</b> {{ 'READY' if stage5_production_readiness.ready else 'BLOCKED' }}</p>
+<p><b>Languages:</b> {{ stage5_production_readiness.language_map }}</p>
+<p><b>Tax rules group:</b> {{ stage5_production_readiness.tax_rules_group_id or 'UNPROVEN' }}</p>
+<p><b>VAT:</b> {{ stage5_production_readiness.vat_rate or 'UNPROVEN' }}</p>
+<p><b>Next collision-free candidate:</b> {{ stage5_production_readiness.next_reference or 'UNPROVEN' }}</p>
+<p><b>Price semantics:</b> {{ stage5_production_readiness.price_semantics }}</p>
+{% if stage5_production_readiness.blockers %}<div class="m99-alert m99-alert-error">{{ stage5_production_readiness.blockers|join(', ') }}</div>{% endif %}
+<div class="m99-alert">READ-ONLY. НЯМА POST/PUT. Publish остава заключен без server-built exact product plan.</div>
+</section>
+{% endif %}
+<!-- M99_STAGE5_PRODUCTION_READINESS_UI_END -->
+
 </div>
 {% endblock %}
 
@@ -288,3 +314,30 @@
 <!-- M99_STAGE4_UI_AUTHORIZATION_BEGIN -->
 {% if stage4_publish_preview is defined %}<section class="m99-card" id="m99-stage4-publish-preview"><h2>Stage 4 — Преглед преди публикуване</h2><p><b>Източник:</b> {{ stage4_publish_preview.source }}</p><p><b>Канали:</b> {{ stage4_publish_preview.targets|join(', ') }}</p><p><b>Exact scope:</b> <code>{{ stage4_publish_preview.scope_token }}</code></p><div class="m99-alert">СИМУЛАЦИЯ / САМО ПРЕГЛЕД</div><button type="button" disabled>Публикувай — ЗАКЛЮЧЕНО</button><p>Write performed: NO</p></section>{% endif %}
 <!-- M99_STAGE4_UI_AUTHORIZATION_END -->
+
+<!-- M99_STAGE5_FINAL_UI_PUBLISH_BEGIN -->
+{% if stage5_authorization is defined and stage5_authorization %}
+<section id="m99-stage5-final-publish">
+<h2>Финално публикуване - m99.eu</h2>
+<p><b>Операция:</b> {{ stage5_authorization.operation }}</p>
+<p><b>M99 ID:</b> {{ stage5_authorization.reference }}</p>
+<p><b>Target:</b> {{ stage5_authorization.target }}</p>
+<p><b>Exact scope:</b> <code>{{ stage5_authorization.scope_token }}</code></p>
+<form method="post" action="/operator/add-products/publish">
+<input type="hidden" name="scope_token" value="{{ stage5_authorization.scope_token }}">
+<input type="hidden" name="operation" value="{{ stage5_authorization.operation }}">
+<input type="hidden" name="reference" value="{{ stage5_authorization.reference }}">
+<input type="hidden" name="target" value="{{ stage5_authorization.target }}">
+<label><input type="checkbox" name="operator_confirmed" value="YES" required> Потвърждавам точно този scope.</label>
+<button type="submit">Публикувай в m99.eu</button>
+</form>
+</section>
+{% endif %}
+{% if publish_result is defined and publish_result %}
+<section><h2>Readback</h2><div>PUBLISHED_READBACK_OK</div></section>
+{% endif %}
+<!-- M99_STAGE5_FINAL_UI_PUBLISH_END -->
+
+
+
+

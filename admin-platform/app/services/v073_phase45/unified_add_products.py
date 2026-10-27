@@ -18,6 +18,11 @@ from app.services.v073_phase45.calenda_public_connector import (
     CalendaPublicConnector,
     CalendaConnectorError,
 )
+from app.services.v073_phase45.bultex99_native_source_channel import (
+    Bultex99NativeSourceChannel,
+    Bultex99NativeError,
+)
+# M99_BULTEX99_NATIVE_DISPATCH_M5
 
 
 @dataclass(frozen=True)
@@ -132,6 +137,8 @@ def connector_status(source: SourceView) -> ConnectorStatus:
             "READY",
             "Existing proven STENSO connector/runtime",
         )
+    if domain == "bultex99.com":
+        return ConnectorStatus("BULTEX99_NATIVE","READY","Bultex99 native collections/products/variants channel")
     return ConnectorStatus(
         "GENERIC",
         "NOT_CONFIGURED",
@@ -150,6 +157,11 @@ def list_source_categories(source: SourceView):
         try:
             return PalltexPublicConnector(source.base_url).list_categories()
         except PalltexConnectorError as exc:
+            raise SourceDiscoveryError(str(exc)) from exc
+    if domain == "bultex99.com":
+        try:
+            return Bultex99NativeSourceChannel(source.base_url).list_categories()
+        except Bultex99NativeError as exc:
             raise SourceDiscoveryError(str(exc)) from exc
     raise SourceDiscoveryError(
         f"No Add Products category connector registered for {domain}."
@@ -171,6 +183,11 @@ def list_category_products(source: SourceView, category_url: str):
             return PalltexPublicConnector(source.base_url).list_products(category_url)
         except PalltexConnectorError as exc:
             raise SourceDiscoveryError(str(exc)) from exc
+    if domain == "bultex99.com":
+        try:
+            return Bultex99NativeSourceChannel(source.base_url).list_products(category_url)
+        except Bultex99NativeError as exc:
+            raise SourceDiscoveryError(str(exc)) from exc
     raise SourceDiscoveryError(
         f"No list_products connector registered for {domain}."
     )
@@ -190,6 +207,11 @@ def hydrate_product(source: SourceView, product_url: str):
         try:
             return PalltexPublicConnector(source.base_url).get_product(product_url)
         except PalltexConnectorError as exc:
+            raise SourceDiscoveryError(str(exc)) from exc
+    if domain == "bultex99.com":
+        try:
+            return Bultex99NativeSourceChannel(source.base_url).get_product(product_url)
+        except Bultex99NativeError as exc:
             raise SourceDiscoveryError(str(exc)) from exc
     raise SourceDiscoveryError(
         f"No get_product connector registered for {domain}."

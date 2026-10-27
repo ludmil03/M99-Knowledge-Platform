@@ -8,9 +8,10 @@ def test_uno_context_no_publish():
  assert c["product_evidence"]["supplier_product_sku"]=="06100764"
  assert c["product_evidence"]["variants"]==("36","48")
  assert c["publish_enabled"] is False and c["write_performed"] is False
-def test_template_has_review_evidence_but_no_publish_action():
+def test_template_has_review_evidence_and_controlled_publish_action():
  from pathlib import Path
  s=Path("admin-platform/app/templates/product_import_wizard/wizard.html").read_text(encoding="utf-8")
  assert "M99_STAGE3_A11_UNIFIED_REVIEW_BEGIN" in s
  assert "product_evidence.supplier_product_sku" in s
- assert "/operator/add-products/publish" not in s
+ assert s.count('action="/operator/add-products/publish"') == 1
+ assert 'name="operator_confirmed"' in s

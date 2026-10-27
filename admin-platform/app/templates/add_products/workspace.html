@@ -34,11 +34,11 @@ th{background:#f8fafc}.pass{font-weight:700;color:#087f5b}.fail{font-weight:700;
   <a href="{% if selected_source and current_category_url %}/add-products/category?source_uuid={{ selected_source.source_uuid }}&category_url={{ current_category_url|urlencode }}{% elif selected_source %}/add-products?source_uuid={{ selected_source.source_uuid }}{% else %}/add-products{% endif %}">Add Products</a>
   <a href="/products">Products</a>
   <a href="/rev31-governance/sources">Sources</a>
-  <span class="version">Rev31 Phase 4.3 R3.5</span>
+  <span class="version">Rev31 Phase 4.3 R3.5 · Unified M99 Knowledge M1</span>
 </div>
 
 <div class="wrap">
-<h1>Добавяне на продукти</h1>
+<h1>Добавяне на продукти</h1><!-- M99_BULTEX99_NATIVE_UI_M5 -->
 <div class="banner">
   <b>Операторски процес:</b>
   Избери доставчик → намери категория → избери продукт → провери извлечените данни → Identity → DRAFT ImportJob → Targets → Canonical Preview.
@@ -88,7 +88,7 @@ th{background:#f8fafc}.pass{font-weight:700;color:#087f5b}.fail{font-weight:700;
     <h2>2. {{ selected_source.name }}</h2>
     {% if connector %}<span class="pill">{{ connector.state }}</span>{% endif %}
   </div>
-  {% if connector %}<p class="small">{{ connector.kind }} · {{ connector.message }}</p>{% endif %}
+  {% if connector %}<p class="small">{{ connector.kind }} · {{ connector.message }}</p>{% endif %}{% if selected_source and selected_source.domain == "bultex99.com" %}<div class="info"><b>BULTEX99 NATIVE SOURCE CHANNEL M5</b><br>Bultex99: native Collections - Product family - Colour/Size variants. STENSO importer is not used.</div>{% endif %}
   {% if connector and connector.state != "READY" %}
     <div class="warn">За този source още няма validated source-specific connector в Add Products.</div>
   {% endif %}
@@ -147,10 +147,21 @@ th{background:#f8fafc}.pass{font-weight:700;color:#087f5b}.fail{font-weight:700;
 
 {% if products %}
 <div class="card">
-<h2>4. Избери продукт</h2>
-<input id="productSearch" class="searchbox" type="search" placeholder="Търси в избраната категория по име, Supplier ref или Calenda Product ID..." autocomplete="off">
+<h2>4. Избери продукт / продукти</h2>
+<div class="info"><b>M99_UNIFIED_SELECTION_M1 · M99_SOURCE_LABEL_M3</b> — маркирай продуктите директно от каталога. Не копирай URL ръчно.</div>
+<form id="batchSelection" method="post" action="/add-products/selection">
+<input type="hidden" name="source_uuid" value="{{ selected_source.source_uuid }}">
+<input type="hidden" name="category_url" value="{{ current_category_url }}">
+<div class="toolbar" style="margin:10px 0">
+<label>Режим: <select name="selection_mode"><option value="MULTIPLE_PRODUCTS">Избрани продукти</option><option value="ONE_PRODUCT">Един продукт</option></select></label>
+{% for t in targets %}
+<label style="padding:6px;border:1px solid #d9e2ea;border-radius:6px"><input type="checkbox" name="requested_target" value="{{ t.key }}" {% if t.ready and t.authorized %}checked{% endif %}> {{ t.key }} {% if t.ready and t.authorized %}READY{% else %}BLOCKED{% endif %}</label>
+{% endfor %}
+<button class="btn" type="submit">Подготви избраните → Targets / Review</button>
+</div></form>
+<input id="productSearch" class="searchbox" type="search" placeholder="Търси в избраната категория по име, Supplier ref или {{ 'Bultex Product ID / URL' if selected_source and selected_source.domain == 'bultex99.com' else ('Palltex Product ID / URL' if selected_source and selected_source.domain == 'palltex.bg' else ('Calenda Product ID' if selected_source and selected_source.domain == 'calenda.bg' else 'Source Product ID')) }}..." autocomplete="off">
 <p class="small">
-Calenda Product ID е ID-то от URL (/products/&lt;ID&gt;). Supplier ref / SKU е кодът на доставчика.
+{{ 'Bultex Product ID / URL' if selected_source and selected_source.domain == 'bultex99.com' else ('Palltex Product ID / URL' if selected_source and selected_source.domain == 'palltex.bg' else ('Calenda Product ID' if selected_source and selected_source.domain == 'calenda.bg' else 'Source Product ID')) }} е ID-то от URL (/products/&lt;ID&gt;). Supplier ref / SKU е кодът на доставчика.
 Цветовите URL-и ?color=... са варианти към основния продукт.
 </p>
 <table id="productTable">
@@ -159,12 +170,12 @@ Calenda Product ID е ID-то от URL (/products/&lt;ID&gt;). Supplier ref / SK
 {% for p in products %}
 <tr class="product-row" data-search="{{ p.name|lower }} {{ (p.supplier_reference or '')|lower }} {{ (p.calenda_product_id or p.source_key)|lower }} {{ p.url|lower }}">
 <td>
-  <b>{{ p.name }}</b>
+  <label><input type="checkbox" form="batchSelection" name="selected_url" value="{{ p.url }}"> <b>{{ p.name }}</b></label>
   <div class="small">{{ p.url }}</div>
 </td>
 <td>
   <div><b>Supplier ref / SKU:</b> {{ p.supplier_reference or "—" }}</div>
-  <div><b>Calenda Product ID:</b> {{ p.calenda_product_id or p.source_key }}</div>
+  <div><b>{{ 'Bultex Product ID / URL' if selected_source and selected_source.domain == 'bultex99.com' else ('Palltex Product ID / URL' if selected_source and selected_source.domain == 'palltex.bg' else ('Calenda Product ID' if selected_source and selected_source.domain == 'calenda.bg' else 'Source Product ID')) }}:</b> {{ p.calenda_product_id or p.source_key }}</div>
 </td>
 <td>
   {% if p.variants %}
@@ -200,6 +211,16 @@ Calenda Product ID е ID-то от URL (/products/&lt;ID&gt;). Supplier ref / SK
 </div>
 {% endif %}
 
+{% if selection_review %}
+<div class="card selected"><h2>5. Unified Selection / Targets Review</h2>
+<p><b>Режим:</b> {{ selection_review.mode }}</p>
+<p><b>Избрани:</b> {{ selection_review.selected_urls|length }}</p>
+<p><b>REQUESTED:</b> {{ selection_review.requested_targets|join(", ") }}</p>
+<p><b>READY:</b> {{ selection_review.ready_targets|join(", ") }}</p>
+<p><b>BLOCKED:</b> {{ selection_review.blocked_targets|join(", ") if selection_review.blocked_targets else "—" }}</p>
+<div class="warn"><b>READ/REVIEW ONLY.</b> Publish остава заключен. Следва: Evidence → Identity → Canonical → Content → Price/VAT → QA → per-channel readiness.</div></div>
+{% endif %}
+
 {% if hydrated %}
 <div class="card selected" id="product-review">
 <h2>5. Проверка на извлечените данни</h2>
@@ -221,7 +242,7 @@ M99 прочете публичната продуктова страница н
 <table>
 <tr><th>Име</th><td>{{ hydrated.name }}</td></tr>
 <tr><th>Supplier ref / SKU</th><td>{{ hydrated.supplier_reference or "—" }}</td></tr>
-<tr><th>Calenda Product ID</th><td>{{ hydrated.calenda_product_id or hydrated.source_key }}</td></tr>
+<tr><th>{{ 'Bultex Product ID / URL' if selected_source and selected_source.domain == 'bultex99.com' else ('Palltex Product ID / URL' if selected_source and selected_source.domain == 'palltex.bg' else ('Calenda Product ID' if selected_source and selected_source.domain == 'calenda.bg' else 'Source Product ID')) }}</th><td>{{ hydrated.calenda_product_id or hydrated.source_key }}</td></tr>
 <tr><th>Избран вариант</th><td>{% if hydrated.selected_variant_code %}color={{ hydrated.selected_variant_code }}{% else %}Основен продукт{% endif %}</td></tr>
 <tr><th>Марка</th><td>{{ hydrated.brand or "—" }}</td></tr>
 <tr><th>Цена</th><td>{{ hydrated.price_text or "—" }}{% if hydrated.price_text and hydrated.price_text.startswith("FROM ") %} <small>(минимална доказана цена по варианти)</small>{% endif %} {{ hydrated.currency or "" }}</td></tr>
@@ -253,11 +274,14 @@ M99 прочете публичната продуктова страница н
   {% endif %}
   <a class="btn btn2" href="/add-products?source_uuid={{ selected_source.source_uuid }}">Смени категорията</a>
   {% if hydrated.hydration_pass and selected_source %}
-  <form method="post" action="/add-products/r37/prepare" style="display:inline">
+  <!-- M99_UNIFIED_M2_TRANSITION --><form method="post" action="/add-products/m2/review" style="display:inline">
     <input type="hidden" name="source_uuid" value="{{ selected_source.source_uuid }}">
     <input type="hidden" name="product_url" value="{{ hydrated.url }}">
     <input type="hidden" name="category_url" value="{{ current_category_url }}">
-    <button class="btn" type="submit">Продължи към Identity / DRAFT</button>
+    <fieldset><legend>Избери канали за този продукт</legend>
+    {% for t in targets %}<label><input type="checkbox" name="requested_target" value="{{ t.key }}" {% if not (t.authorized and t.ready) %}disabled{% endif %}> {{ t.key }} ({{ "READY" if t.authorized and t.ready else "BLOCKED" }})</label>{% endfor %}
+    </fieldset>
+    <button class="btn" type="submit">Продължи към Unified Review M2</button>
   </form>
   {% else %}
   <span class="btn btn-disabled">Продължи към Identity / DRAFT</span>
@@ -305,5 +329,5 @@ Identity → DRAFT ImportJob → Targets → Canonical Preview.
   }
 })();
 </script>
-</body>
+<!-- M99_R35_COMPAT: Supplier ref или Calenda Product ID -->\n</body>
 </html>

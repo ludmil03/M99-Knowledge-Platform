@@ -8,6 +8,13 @@ from fastapi.templating import Jinja2Templates
 
 from app.services.stage3_final_unified_intake import build_stage3_final_review
 from app.services.stage4_ui_authorization_bridge import build_publish_preview
+from app.services.stage5_production_authorization import build_authorization
+from app.services.stage5_final_ui_publish import execute_ui_publish, FinalPublishBlocked, ReadbackFailed
+from integrations.m99eu_prestashop.config import load_m99eu_prestashop_config
+from app.services.stage5_ui_live_preflight_bridge import build_live_preflight_view
+from app.services.stage5_production_readiness import run_production_readiness
+from integrations.m99eu_prestashop.config import load_m99eu_prestashop_config
+from integrations.m99eu_prestashop.readonly_preflight_r2 import OneShotBasicGetTransport, run_preflight
 
 from app.services.product_import_wizard import (
     ImportWizardDraft,
@@ -69,6 +76,28 @@ def _save_draft(request: Request, draft: ImportWizardDraft) -> None:
 
 
 def _render(request: Request, step: str, draft: ImportWizardDraft, **extra):
+    session = _session(request)
+    username = str(session.get("username") or session.get("user") or "operator")
+    user = {
+        "username": username,
+        "full_name": str(session.get("full_name") or username),
+        "email": str(session.get("email") or ""),
+        "is_superuser": bool(session.get("is_superuser") or False),
+    }
+    ui = {
+        "dashboard": "Dashboard",
+        "catalog": "Catalog",
+        "products": "Products",
+        "presence": "Presence",
+        "suppliers": "Suppliers",
+        "imports": "Imports",
+        "system": "System",
+        "users": "Users",
+        "roles": "Roles",
+        "languages": "Languages",
+        "audit": "Audit",
+        "logout": "Logout",
+    }
     context = {
         "step": step,
         "draft": draft.as_dict(),
@@ -76,6 +105,9 @@ def _render(request: Request, step: str, draft: ImportWizardDraft, **extra):
         "selection_modes": selection_modes(),
         "targets": available_targets(),
         "title": "Добави продукти",
+        "user": user,
+        "ui": ui,
+        "current_lang": str(session.get("current_lang") or "BG").upper(),
     }
     context.update(extra)
     return templates.TemplateResponse(
@@ -159,7 +191,7 @@ def choose_selection(
     selection_mode: str = Form(""),
     product_refs: str = Form(""),
     category_refs: str = Form(""),
-    first_n: int | None = Form(None),
+    first_n: str = Form(""),
 ):
     auth = _require_auth(request)
     if auth:
@@ -169,15 +201,23 @@ def choose_selection(
     products = [x.strip() for x in product_refs.splitlines() if x.strip()]
     categories = [x.strip() for x in category_refs.splitlines() if x.strip()]
 
+    raw_first_n = first_n.strip()
+    parsed_first_n = None
+    if raw_first_n:
+        try:
+            parsed_first_n = int(raw_first_n)
+        except ValueError:
+            return _render(request, "selection", draft, error="first_n трябва да е цяло число.")
+
     try:
-        validate_selection(selection_mode, products, categories, first_n)
+        validate_selection(selection_mode, products, categories, parsed_first_n)
     except ValueError as exc:
         return _render(request, "selection", draft, error=str(exc))
 
     draft.selection_mode = selection_mode
     draft.selected_product_refs = products
     draft.selected_category_refs = categories
-    draft.first_n = first_n
+    draft.first_n = parsed_first_n
     draft.identity_summary = "Ще бъде проверено за NEW / EXISTING / AMBIGUOUS / UNRESOLVED"
     draft.current_state = "identity"
     _save_draft(request, draft)
@@ -278,3 +318,77 @@ def prepare_preflight(request: Request):
         # M99_STAGE4_UI_AUTHORIZATION_BEGIN / END
         message="Stage 3 Unified Product Intake е активен в review-only режим. Няма publish/write.",
     )
+
+# M99_STAGE5_LIVE_PREFLIGHT_ROUTE_BEGIN
+@router.post("/m99eu-live-preflight", response_class=HTMLResponse)
+def m99eu_live_preflight(request: Request):
+    auth = _require_auth(request)
+    if auth:
+        return auth
+    draft = _load_draft(request)
+    if "m99.eu" not in draft.ready_targets:
+        return _render(request, "ready", draft, review=build_review_summary(draft), error="m99.eu is not in READY target scope.", publish_enabled=False, write_performed=False)
+    try:
+        cfg = load_m99eu_prestashop_config()
+        result = run_preflight(cfg, OneShotBasicGetTransport(cfg.base_url, cfg.api_key, cfg.timeout_seconds))
+        return _render(request, "ready", draft, review=build_review_summary(draft), stage5_live_preflight=build_live_preflight_view(result), publish_enabled=False, write_performed=False, message="m99.eu read-only preflight completed. Publish remains locked.")
+    except Exception as exc:
+        return _render(request, "ready", draft, review=build_review_summary(draft), error="m99.eu read-only preflight BLOCKED: "+type(exc).__name__, publish_enabled=False, write_performed=False)
+# M99_STAGE5_LIVE_PREFLIGHT_ROUTE_END
+
+# M99_STAGE5_PRODUCTION_READINESS_ROUTE_BEGIN
+@router.post("/production-readiness", response_class=HTMLResponse)
+def stage5_production_readiness(request: Request):
+    auth = _require_auth(request)
+    if auth:
+        return auth
+    draft = _load_draft(request)
+    if "m99.eu" not in draft.ready_targets:
+        return _render(request, "ready", draft, review=build_review_summary(draft), error="m99.eu is not READY.")
+    try:
+        cfg=load_m99eu_prestashop_config()
+        readiness=run_production_readiness(cfg)
+        _session(request)["m99_stage5_production_readiness"]={
+            "ready":readiness.ready,"language_map":readiness.language_map,
+            "tax_rules_group_id":readiness.tax_rules_group_id,"vat_rate":readiness.vat_rate,
+            "next_reference":readiness.next_reference,"blockers":list(readiness.blockers),
+        }
+        return _render(request,"ready",draft,review=build_review_summary(draft),
+            stage5_production_readiness=readiness,publish_enabled=False,write_performed=False,
+            message="Production readiness READ-ONLY completed. Publish remains fail-closed until exact product plan is server-built.")
+    except Exception as exc:
+        return _render(request,"ready",draft,review=build_review_summary(draft),
+            error="PRODUCTION READINESS BLOCKED: "+type(exc).__name__,publish_enabled=False,write_performed=False)
+# M99_STAGE5_PRODUCTION_READINESS_ROUTE_END
+
+# M99_STAGE5_FINAL_UI_PUBLISH_BEGIN
+@router.post("/publish", response_class=HTMLResponse)
+async def stage5_publish(request: Request):
+    auth = _require_auth(request)
+    if auth:
+        return auth
+    draft = _load_draft(request)
+    form = await request.form()
+    if "m99.eu" not in draft.ready_targets:
+        return _render(request, "ready", draft, review=build_review_summary(draft), error="m99.eu is not READY.")
+    token = str(form.get("scope_token") or "")
+    operation = str(form.get("operation") or "")
+    reference = str(form.get("reference") or "")
+    target = str(form.get("target") or "")
+    confirmed = str(form.get("operator_confirmed") or "") == "YES"
+    plan_raw = _session(request).get("m99_stage5_authorization_plan")
+    if not isinstance(plan_raw, dict):
+        return _render(request, "ready", draft, review=build_review_summary(draft), error="No valid server-side AuthorizationPlan.")
+    try:
+        plan = build_authorization(**plan_raw)
+        result = execute_ui_publish(
+            cfg=load_m99eu_prestashop_config(), plan=plan,
+            submitted_token=token, submitted_operation=operation,
+            submitted_reference=reference, submitted_target=target,
+            operator_confirmed=confirmed,
+        )
+    except (ValueError, FinalPublishBlocked, ReadbackFailed) as exc:
+        return _render(request, "ready", draft, review=build_review_summary(draft), error="PUBLISH BLOCKED: " + str(exc))
+    return _render(request, "ready", draft, review=build_review_summary(draft), publish_result=result, message="Publish and mandatory readback completed.")
+# M99_STAGE5_FINAL_UI_PUBLISH_END
+
