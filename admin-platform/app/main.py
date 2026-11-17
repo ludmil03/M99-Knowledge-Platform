@@ -94,9 +94,6 @@ app.include_router(r42_system_diagnostics_router)
 from app.routers.r43_control_center import router as r43_control_center_router
 app.include_router(r43_control_center_router)
 
-from app.routers.r730_knowledge_publish_center import router as r730_knowledge_publish_center
-app.include_router(r730_knowledge_publish_center)
-
 # M99 Bultex99 v2 additive read-only preview router
 from app.routers.bultex99_import_preview import router as bultex99_import_preview_router
 app.include_router(bultex99_import_preview_router)

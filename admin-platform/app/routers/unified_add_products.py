@@ -19,6 +19,7 @@ from app.services.v073_phase45.unified_add_products import (
     list_category_products,
     list_source_categories,
     require_source,
+    validate_selection,
 )
 
 router = APIRouter(prefix="/add-products", tags=["Unified Add Products"])
