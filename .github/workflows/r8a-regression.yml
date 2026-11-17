@@ -1,0 +1,119 @@
+name: R8-A offline regression
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'dev/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    name: ${{ matrix.os }} / ${{ matrix.suite }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        suite: [root, admin]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements*.txt
+            admin-platform/requirements*.txt
+      - name: Install declared test dependencies
+        run: python -m pip install -r requirements-dev.txt -r admin-platform/requirements-dev.txt
+      - name: Configure isolated offline tests
+        shell: python
+        run: |
+          import os
+          import pathlib
+          import secrets
+          import textwrap
+
+          root = pathlib.Path(os.environ['GITHUB_WORKSPACE'])
+          guard = pathlib.Path(os.environ['RUNNER_TEMP']) / 'm99-offline-guard'
+          guard.mkdir(parents=True, exist_ok=True)
+          (guard / 'sitecustomize.py').write_text(textwrap.dedent('''\
+              import ipaddress
+              import socket
+
+              def _local(host):
+                  if isinstance(host, bytes):
+                      host = host.decode('ascii')
+                  if str(host).lower() == 'localhost':
+                      return True
+                  try:
+                      return ipaddress.ip_address(str(host)).is_loopback
+                  except ValueError:
+                      return False
+
+              _getaddrinfo = socket.getaddrinfo
+              _connect = socket.socket.connect
+              _connect_ex = socket.socket.connect_ex
+
+              def _offline_getaddrinfo(host, *args, **kwargs):
+                  if host is not None and not _local(host):
+                      raise RuntimeError('M99_CI_EXTERNAL_NETWORK_BLOCKED')
+                  return _getaddrinfo(host, *args, **kwargs)
+
+              def _check(sock, address):
+                  if sock.family in (socket.AF_INET, socket.AF_INET6):
+                      if not _local(address[0]):
+                          raise RuntimeError('M99_CI_EXTERNAL_NETWORK_BLOCKED')
+
+              def _offline_connect(sock, address):
+                  _check(sock, address)
+                  return _connect(sock, address)
+
+              def _offline_connect_ex(sock, address):
+                  _check(sock, address)
+                  return _connect_ex(sock, address)
+
+              socket.getaddrinfo = _offline_getaddrinfo
+              socket.socket.connect = _offline_connect
+              socket.socket.connect_ex = _offline_connect_ex
+              '''), encoding='utf-8')
+          values = {
+              'PYTHONPATH': os.pathsep.join((str(guard), str(root / 'admin-platform'), str(root))),
+              'M99_DATABASE_URL': 'sqlite:///:memory:',
+              'M99_SESSION_SECRET': secrets.token_hex(32),
+              'PYTHONUTF8': '1',
+              'PYTHONIOENCODING': 'utf-8',
+          }
+          # A fresh per-job test secret is never printed or committed.
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as output:
+              for key, value in values.items():
+                  output.write(f'{key}={value}\n')
+      - name: Run repository tests
+        if: matrix.suite == 'root'
+        run: python -m pytest tests -q --junitxml=regression-root.xml
+      - name: Run admin tests from admin directory
+        if: matrix.suite == 'admin'
+        working-directory: admin-platform
+        run: python -m pytest tests -q --junitxml=regression-admin.xml
+      - name: Retain test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-${{ matrix.os }}-${{ matrix.suite }}
+          path: |
+            regression-root.xml
+            admin-platform/regression-admin.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
+# These jobs exercise maintained tests only. No installer, live diagnostic,
+# migration, publish, activation, merge or deployment command runs here.
+# Passing this workflow does not replace Windows/operator acceptance.
